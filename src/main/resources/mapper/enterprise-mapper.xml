@@ -25,4 +25,12 @@
       br.longitude 'branches.longitude', br.telephone 'branches.telephone'
     from enterprise ent join branch br on ent.enterprise_id = br.enterprise_id
   </select>
+  <update id="update" parameterType="Enterprise">
+    update enterprise set
+      name=#{name},
+      img_url=#{imgUrl},
+      introduction=#{introduction},
+      video_url=#{videoUrl},
+      detail=#{detail}
+  </update>
 </mapper>
