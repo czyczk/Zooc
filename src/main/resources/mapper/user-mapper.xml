@@ -2,6 +2,24 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper>
-
+<mapper namespace="com.zzzz.dao.UserDao">
+  <insert id="insert" parameterType="User">
+    insert into user(username, password, email, telephone, avatar_url)
+    values(#{username}, #{password}, #{email}, #{telephone}, #{avatarUrl})
+  </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from user
+    where user_id=#{userId}
+  </select>
+  <select id="checkExistenceByEmail" parameterType="java.lang.String" resultType="boolean">
+    select count(*)
+    from user
+    where user_id=#{email}
+  </select>
+  <select id="getById" parameterType="long" resultType="User">
+    select user_id, username, password, email, telephone, avatar_url
+    from user
+    where user_id=#{userId}
+  </select>
 </mapper>

@@ -1,18 +1,18 @@
 package com.zzzz.po;
 
 public class User {
-    private long userId;
+    private Long userId;
     private String username;
     private String password;
     private String email;
     private String telephone;
     private String avatarUrl;
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
