@@ -1,18 +1,21 @@
-package com.zzzz.po;
+package com.zzzz.dto;
+
+import java.util.List;
 
 public class Enterprise {
-    private Long enterpriseId;
+    private long enterpriseId;
     private String name;
     private String imgUrl;
     private String introduction;
     private String videoUrl;
     private String detail;
+    private List<Branch> branches;
 
-    public Long getEnterpriseId() {
+    public long getEnterpriseId() {
         return enterpriseId;
     }
 
-    public void setEnterpriseId(Long enterpriseId) {
+    public void setEnterpriseId(long enterpriseId) {
         this.enterpriseId = enterpriseId;
     }
 
@@ -56,6 +59,13 @@ public class Enterprise {
         this.detail = detail;
     }
 
+    public List<Branch> getBranches() {
+        return branches;
+    }
+
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
+    }
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Enterprise{");
@@ -65,6 +75,7 @@ public class Enterprise {
         sb.append(", introduction='").append(introduction).append('\'');
         sb.append(", videoUrl='").append(videoUrl).append('\'');
         sb.append(", detail='").append(detail).append('\'');
+        sb.append(", branchesCount=").append(branches == null ? 0 : branches.size());
         sb.append('}');
         return sb.toString();
     }
