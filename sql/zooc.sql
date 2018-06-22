@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-22 21:43:43
+Date: 2018-06-22 23:21:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `enterprise_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `img` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `video_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
@@ -218,6 +218,7 @@ CREATE TABLE `trial` (
   `name` varchar(63) COLLATE utf8mb4_general_ci NOT NULL,
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `category_id` bigint(20) unsigned NOT NULL,
   `branch_id` bigint(20) unsigned NOT NULL,
   `lecturer_id` bigint(20) unsigned NOT NULL,
   `release_time` datetime NOT NULL,
@@ -225,7 +226,9 @@ CREATE TABLE `trial` (
   PRIMARY KEY (`trial_id`),
   KEY `fk_trial_branch_id` (`branch_id`),
   KEY `fk_trial_lecturer_id` (`lecturer_id`),
+  KEY `fk_trial_category_id` (`category_id`),
   CONSTRAINT `fk_trial_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_trial_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
