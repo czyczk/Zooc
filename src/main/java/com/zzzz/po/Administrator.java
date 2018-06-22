@@ -1,15 +1,15 @@
 package com.zzzz.po;
 
 public class Administrator {
-    private long administratorId;
+    private Long administratorId;
     private String username;
     private String password;
 
-    public long getAdministratorId() {
+    public Long getAdministratorId() {
         return administratorId;
     }
 
-    public void setAdministratorId(long administratorId) {
+    public void setAdministratorId(Long administratorId) {
         this.administratorId = administratorId;
     }
 
