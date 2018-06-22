@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.BranchDao">
+  <insert id="insert" parameterType="Branch">
+    insert into branch(enterprise_id, name, address, latitude, longitude, telephone)
+    values(#{enterpriseId}, #{name}, #{address}, #{latitude}, #{longitude}, #{telephone})
+  </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from branch
+    where branch_id=#{branchId}
+  </select>
+  <select id="getById" parameterType="long" resultType="boolean">
+    select branch_id, enterprise_id, name, address, latitude, longitude, telephone
+    from branch
+    where branch_id=#{branchId}
+  </select>
+  <update id="update" parameterType="Branch">
+    update branch set
+      name=#{name},
+      address=#{address},
+      latitude=#{latitude},
+      longitude=#{longitude},
+      telephone=#{telephone}
+  </update>
+</mapper>

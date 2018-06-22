@@ -3,27 +3,27 @@ package com.zzzz.po;
 import java.math.BigDecimal;
 
 public class Branch {
-    private long branchId;
-    private long enterpriseId;
+    private Long branchId;
+    private Long enterpriseId;
     private String name;
     private String address;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String telephone;
 
-    public long getBranchId() {
+    public Long getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(long branchId) {
+    public void setBranchId(Long branchId) {
         this.branchId = branchId;
     }
 
-    public long getEnterpriseId() {
+    public Long getEnterpriseId() {
         return enterpriseId;
     }
 
-    public void setEnterpriseId(long enterpriseId) {
+    public void setEnterpriseId(Long enterpriseId) {
         this.enterpriseId = enterpriseId;
     }
 
