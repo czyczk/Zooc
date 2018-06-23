@@ -1,6 +1,7 @@
 package com.zzzz.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Branch {
     private long branchId;
@@ -9,6 +10,7 @@ public class Branch {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String telephone;
+    private List<Lecturer> lecturers;
 
     public long getBranchId() {
         return branchId;
@@ -56,5 +58,13 @@ public class Branch {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public List<Lecturer> getLecturers() {
+        return lecturers;
+    }
+
+    public void setLecturers(List<Lecturer> lecturers) {
+        this.lecturers = lecturers;
     }
 }

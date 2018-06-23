@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.BranchDao">
+  <sql id="all_columns">
+    branch_id, enterprise_id, name, address, latitude, longitude, telephone
+  </sql>
   <insert id="insert" parameterType="Branch">
     insert into branch(enterprise_id, name, address, latitude, longitude, telephone)
     values(#{enterpriseId}, #{name}, #{address}, #{latitude}, #{longitude}, #{telephone})
@@ -13,8 +16,15 @@
     where branch_id=#{branchId}
   </select>
   <select id="getById" parameterType="long" resultType="boolean">
-    select branch_id, enterprise_id, name, address, latitude, longitude, telephone
+    select <include refid="all_columns" />
     from branch
+    where branch_id=#{branchId}
+  </select>
+  <select id="getDtoById" parameterType="long" resultType="boolean">
+    select br.branch_id, br.name, br.address, br.latitude, br.longitude, br.telephone,
+      lec.lecturer_id 'lecturers.lecturer_id', lec.name 'lecturers.name',
+      lec.photo_url 'lecturers.photo_url', lec.introduction 'lecturers.introduction'
+    from branch br join lecturer lec on br.branch_id = lec.branch_id
     where branch_id=#{branchId}
   </select>
   <update id="update" parameterType="Branch">
