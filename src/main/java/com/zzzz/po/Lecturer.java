@@ -1,17 +1,17 @@
 package com.zzzz.po;
 
 public class Lecturer {
-    private long lecturerId;
+    private Long lecturerId;
     private String name;
     private String photoUrl;
     private String introduction;
-    private long branchId;
+    private Long branchId;
 
-    public long getLecturerId() {
+    public Long getLecturerId() {
         return lecturerId;
     }
 
-    public void setLecturerId(long lecturerId) {
+    public void setLecturerId(Long lecturerId) {
         this.lecturerId = lecturerId;
     }
 
@@ -39,11 +39,11 @@ public class Lecturer {
         this.introduction = introduction;
     }
 
-    public long getBranchId() {
+    public Long getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(long branchId) {
+    public void setBranchId(Long branchId) {
         this.branchId = branchId;
     }
 
