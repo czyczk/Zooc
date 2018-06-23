@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-22 23:21:40
+Date: 2018-06-24 00:29:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -68,7 +68,8 @@ DROP TABLE IF EXISTS `course_category`;
 CREATE TABLE `course_category` (
   `category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`category_id`)
+  PRIMARY KEY (`category_id`),
+  UNIQUE KEY `unique_course_category_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
