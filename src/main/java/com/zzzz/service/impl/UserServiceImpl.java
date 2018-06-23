@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
-import static com.zzzz.service.UserServiceException.*;
+import static com.zzzz.service.UserServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class UserServiceImpl implements UserService {
