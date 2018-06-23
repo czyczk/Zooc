@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.UserDao">
+  <sql id="all_columns">
+    user_id, username, password, email, telephone, avatar_url
+  </sql>
+
   <insert id="insert" parameterType="User">
     insert into user(username, password, email, telephone, avatar_url)
     values(#{username}, #{password}, #{email}, #{telephone}, #{avatarUrl})
@@ -18,9 +22,14 @@
     where user_id=#{email}
   </select>
   <select id="getById" parameterType="long" resultType="User">
-    select user_id, username, password, email, telephone, avatar_url
+    select <include refid="all_columns" />
     from user
     where user_id=#{userId}
+  </select>
+  <select id="getByEmail" parameterType="java.lang.String" resultType="User">
+    select <include refid="all_columns" />
+    from user
+    where email=#{email}
   </select>
   <update id="update" parameterType="User">
     update user set
