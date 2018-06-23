@@ -9,4 +9,8 @@ public interface UserDao {
     boolean checkExistenceById(long userId) throws SQLException;
     boolean checkExistenceByEmail(String email) throws SQLException;
     User getById(long userId) throws SQLException;
+    int update(User user) throws SQLException;
+
+    // TODO
+    // Cascade when deleted. Implemented later.
 }

@@ -22,4 +22,12 @@
     from user
     where user_id=#{userId}
   </select>
+  <update id="update" parameterType="User">
+    update user set
+      username=#{username},
+      password=#{password},
+      email=#{email},
+      telephone=#{telephone},
+      avatar_url=#{avatarUrl}
+  </update>
 </mapper>
