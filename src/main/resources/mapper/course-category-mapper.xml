@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.CourseCategoryDao">
+  <insert id="insert" parameterType="CourseCategory">
+    insert into course_category(name)
+    values(#{name})
+  </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from course_category
+    where category_id=#{categoryId}
+  </select>
+  <select id="checkExistenceByName" parameterType="java.lang.String" resultType="boolean">
+    select count(*)
+    from course_category
+    where name=#{name}
+  </select>
+  <select id="getById" parameterType="long" resultType="CourseCategory">
+    select category_id, name
+    from course_category
+    where category_id=#{categoryId}
+  </select>
+  <update id="update" parameterType="CourseCategory">
+    update course_category set
+      name=#{name}
+  </update>
+</mapper>
