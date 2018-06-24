@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.AdministratorDao">
   <insert id="insert" parameterType="Administrator">
-    insert into administrator(username, password)
-    values(#{username}, #{password})
+    insert into administrator(username, password, type, enterpriseId)
+    values(#{username}, #{password}, #{type}, #{enterpriseId})
   </insert>
   <select id="checkExistenceById" parameterType="long" resultType="boolean">
     select count(*)
@@ -13,7 +13,7 @@
     where administrator_id=#{administratorId}
   </select>
   <select id="getById" parameterType="long" resultType="Administrator">
-    select administrator_id, username, password
+    select administrator_id, username, password, type, enterprise_id
     from administrator
     where administrator_id=#{administratorId}
   </select>
