@@ -4,12 +4,13 @@ import com.zzzz.dto.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 
 public interface EnterpriseService {
-    /**
+    /*
      * Create an enterprise with a default template.
      * @param administratorId The ID of the administrator whom the new enterprise belongs to
      * @throws EnterpriseServiceException An exception is thrown if the insertion is not successful.
      */
-    void createTemplate(String administratorId) throws EnterpriseServiceException;
+//    void createTemplate(String administratorId) throws EnterpriseServiceException;
+
     void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException;
     Enterprise getById(String enterpriseId) throws EnterpriseServiceException;
     EnterpriseDetail getDtoById(String enterpriseId) throws EnterpriseServiceException;

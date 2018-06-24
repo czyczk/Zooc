@@ -14,7 +14,7 @@ public class ParameterChecker<T extends Exception> {
      * @param possibleException The exception to be thrown when the parameter is invalid.
      * @throws T An exception is thrown if the parameter is invalid.
      */
-    public void isNullOrEmpty(String parameter, T possibleException) throws T {
+    public void rejectIfNullOrEmpty(String parameter, T possibleException) throws T {
         if (parameter == null || parameter.isEmpty())
             throw possibleException;
     }

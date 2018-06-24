@@ -25,38 +25,6 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
     private ParameterChecker<EnterpriseServiceException> checker = new ParameterChecker<>();
 
-    private static Enterprise createEmptyTemplate(long administratorId) {
-        Enterprise result = new Enterprise();
-        result.setAdministratorId(administratorId);
-        result.setName("");
-        result.setImgUrl("");
-        result.setVideoUrl("");
-        result.setDetail("");
-        result.setIntroduction("");
-        return result;
-    }
-
-    @Override
-    @Transactional(rollbackFor = EnterpriseServiceException.class)
-    public void createTemplate(String administratorId) throws EnterpriseServiceException {
-        // Check if the administrator ID is valid
-        checker.isNullOrEmpty(administratorId, new EnterpriseServiceException(EMPTY_ADMINISTRATOR_ID));
-        long administratorIdLong = checker.parseUnsignedLong(administratorId, new EnterpriseServiceException(INVALID_ADMINISTRATOR_ID));
-
-        try {
-            // Check if the administrator exists
-            boolean isExisting = administratorDao.checkExistenceById(administratorIdLong);
-            if (!isExisting)
-                throw new EnterpriseServiceException(ADMINISTRATOR_NOT_EXISTING);
-
-            // Insert one with the default template
-            enterpriseDao.insert(createEmptyTemplate(administratorIdLong));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new EnterpriseServiceException(INTERNAL_ERROR);
-        }
-    }
-
     @Override
     @Transactional(rollbackFor = EnterpriseServiceException.class)
     public void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException {
@@ -73,14 +41,23 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     @Override
     @Transactional(readOnly = true)
     public Enterprise getById(String enterpriseId) throws EnterpriseServiceException {
-        // TODO implemented later
-        throw new UnsupportedOperationException();
+        Enterprise result;
 
         // Check if the enterprise ID is valid
+        checker.rejectIfNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
-        // Check if the enterprise exists
+        try {
+            // Fetch the enterprise
+            result = enterpriseDao.getById(enterpriseIdLong);
+            if (result == null)
+                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new EnterpriseServiceException(INTERNAL_ERROR);
+        }
 
-        // Fetch the enterprise
+        return result;
     }
 
     @Override
@@ -89,7 +66,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         EnterpriseDetail result;
 
         // Check if the enterprise ID is valid
-        checker.isNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
+        checker.rejectIfNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
         try {
@@ -109,7 +86,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     @Transactional(rollbackFor = EnterpriseServiceException.class)
     public void update(String targetEnterpriseId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException {
         // Check if the ID is valid
-        checker.isNullOrEmpty(targetEnterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
+        checker.rejectIfNullOrEmpty(targetEnterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
         long targetEnterpriseIdLong = checker.parseUnsignedLong(targetEnterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
         try {
