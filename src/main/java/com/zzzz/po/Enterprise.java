@@ -2,6 +2,7 @@ package com.zzzz.po;
 
 public class Enterprise {
     private Long enterpriseId;
+    private long administratorId;
     private String name;
     private String imgUrl;
     private String introduction;
@@ -14,6 +15,14 @@ public class Enterprise {
 
     public void setEnterpriseId(Long enterpriseId) {
         this.enterpriseId = enterpriseId;
+    }
+
+    public long getAdministratorId() {
+        return administratorId;
+    }
+
+    public void setAdministratorId(long administratorId) {
+        this.administratorId = administratorId;
     }
 
     public String getName() {
@@ -60,6 +69,7 @@ public class Enterprise {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Enterprise{");
         sb.append("enterpriseId=").append(enterpriseId);
+        sb.append(", administratorId=").append(administratorId);
         sb.append(", name='").append(name).append('\'');
         sb.append(", imgUrl='").append(imgUrl).append('\'');
         sb.append(", introduction='").append(introduction).append('\'');
