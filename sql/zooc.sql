@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-24 00:29:47
+Date: 2018-06-24 14:55:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,6 +23,7 @@ CREATE TABLE `administrator` (
   `administrator_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('SYSTEM','ENTERPRISE') COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`administrator_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,12 +97,15 @@ CREATE TABLE `course_offering` (
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `enterprise_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  `video_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `administrator_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `introduction` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `video_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`enterprise_id`)
+  PRIMARY KEY (`enterprise_id`),
+  KEY `fk_enterprise_administrator_id` (`administrator_id`),
+  CONSTRAINT `fk_enterprise_administrator_id` FOREIGN KEY (`administrator_id`) REFERENCES `administrator` (`administrator_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
