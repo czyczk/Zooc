@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-24 14:55:11
+Date: 2018-06-24 19:45:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,11 @@ CREATE TABLE `administrator` (
   `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
   `type` enum('SYSTEM','ENTERPRISE') COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`administrator_id`)
+  `enterprise_id` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`administrator_id`),
+  UNIQUE KEY `unique_administrator_pk` (`administrator_id`),
+  UNIQUE KEY `unique_administrator_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_administrator_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -40,7 +44,8 @@ CREATE TABLE `branch` (
   `longitude` decimal(11,8) NOT NULL,
   `telephone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`branch_id`),
-  KEY `fk_branch_enterprise_id` (`enterprise_id`),
+  UNIQUE KEY `unique_branch_pk` (`branch_id`),
+  KEY `fk_branch_enterprise_id` (`enterprise_id`) USING BTREE,
   CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -58,7 +63,9 @@ CREATE TABLE `course` (
   `price` decimal(10,2) unsigned NOT NULL,
   `status` enum('AVAILABLE','OFF','IN_REVIEW') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'IN_REVIEW',
   PRIMARY KEY (`course_id`),
+  UNIQUE KEY `unique_course_pk` (`course_id`),
   KEY `fk_course_category_id` (`category_id`),
+  KEY `idx_suit_available_course_by_category` (`status`,`category_id`) USING BTREE,
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -97,15 +104,13 @@ CREATE TABLE `course_offering` (
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `enterprise_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `administrator_id` bigint(20) unsigned NOT NULL,
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `introduction` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `video_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`enterprise_id`),
-  KEY `fk_enterprise_administrator_id` (`administrator_id`),
-  CONSTRAINT `fk_enterprise_administrator_id` FOREIGN KEY (`administrator_id`) REFERENCES `administrator` (`administrator_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY `unique_enterprise_pk` (`enterprise_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------

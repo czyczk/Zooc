@@ -5,6 +5,7 @@ public class Administrator {
     private String username;
     private String password;
     private AdministratorTypeEnum type;
+    private long enterpriseId;
 
     public Long getAdministratorId() {
         return administratorId;
@@ -38,6 +39,14 @@ public class Administrator {
         this.type = type;
     }
 
+    public long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(long enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Administrator{");
@@ -45,6 +54,7 @@ public class Administrator {
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", type=").append(type);
+        sb.append(", enterpriseId=").append(enterpriseId);
         sb.append('}');
         return sb.toString();
     }
