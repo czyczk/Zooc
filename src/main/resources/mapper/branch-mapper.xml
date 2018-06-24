@@ -15,12 +15,12 @@
     from branch
     where branch_id=#{branchId}
   </select>
-  <select id="getById" parameterType="long" resultType="boolean">
+  <select id="getById" parameterType="long" resultType="Branch">
     select <include refid="all_columns" />
     from branch
     where branch_id=#{branchId}
   </select>
-  <select id="getDtoById" parameterType="long" resultType="boolean">
+  <select id="getDtoById" parameterType="long" resultType="com.zzzz.dto.BranchDetail">
     select br.branch_id, br.name, br.address, br.latitude, br.longitude, br.telephone,
       lec.lecturer_id 'lecturers.lecturer_id', lec.name 'lecturers.name',
       lec.photo_url 'lecturers.photo_url', lec.introduction 'lecturers.introduction'

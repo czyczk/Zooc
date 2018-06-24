@@ -2,7 +2,7 @@ package com.zzzz.dto;
 
 import java.util.List;
 
-public class Enterprise {
+public class EnterpriseDetail {
     private long enterpriseId;
     private String name;
     private String imgUrl;
