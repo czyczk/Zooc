@@ -35,13 +35,8 @@ public class UserServiceException extends Exception {
     }
 
     private ExceptionTypeEnum exceptionTypeEnum;
-
     public ExceptionTypeEnum getExceptionTypeEnum() {
         return exceptionTypeEnum;
-    }
-
-    public void setExceptionTypeEnum(ExceptionTypeEnum exceptionTypeEnum) {
-        this.exceptionTypeEnum = exceptionTypeEnum;
     }
 
     public UserServiceException(ExceptionTypeEnum exceptionTypeEnum) {
