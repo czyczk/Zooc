@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -89,6 +90,9 @@ public class UserController {
 
     /**
      * Log in. After a successful login, the user ID will be returned.
+     * The state of login and the ID of the authenticated user
+     * will also be stored in the session with attributes `isLoggedIn: boolean`
+     * and `userId: long` respectively.
      * @param req HttpServletRequest
      * @param email Email
      * @param password Password
@@ -100,8 +104,9 @@ public class UserController {
                                 String password) {
         try {
             long userId = userService.logIn(email, password);
-            req.getSession().setAttribute("isLoggedIn", true);
-            req.getSession().setAttribute("userId", userId);
+            HttpSession session = req.getSession();
+            session.setAttribute("isLoggedIn", true);
+            session.setAttribute("userId", userId);
             return ResponseEntity.ok(userId);
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
