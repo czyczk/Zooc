@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.TrialDao">
+  <sql id="all_columns">
+    trial_id, name, detail, img_url, category_id, branch_id, lecturer_id, release_time, status
+  </sql>
+  <insert id="insert" parameterType="Trial">
+    insert into trial(name, detail, img_url, category_id, branch_id, lecturer_id, release_time, status)
+    values(#{name}, #{detail}, #{imgUrl}, #{categoryId}, #{branchId}, #{lecturerId}, #{releaseTime}, #{status})
+  </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from trial
+    where trial_id=#{trialId}
+  </select>
+  <select id="getById" parameterType="long" resultType="Trial">
+    select <include refid="all_columns" />
+    from trial
+    where trial_id=#{trialId}
+  </select>
+  <select id="getDtoById" parameterType="long" resultType="com.zzzz.dto.TrialDetail">
+    select tr.trial_id, tr.name, tr.detail, tr.img_url,
+      tr.category_id, cat.name 'category_name',
+      tr.branch_id, br.name 'branch_name',
+      tr.lecturer_id, lec.name 'lecturer_name',
+      tr.release_time, tr.status
+    from trial tr join course_category cat on tr.category_id = cat.category_id
+      join branch br on tr.branch_id = br.branch_id
+      join lecturer lec on tr.lecturer_id = lec.lecturer_id
+    where trial_id=#{trialId}
+  </select>
+  <update id="update" parameterType="Trial">
+    update trial set
+      name=#{name},
+      detail=#{detail},
+      img_url=#{imgUrl},
+      category_id=#{categoryId},
+      branch_id=#{branchId},
+      lecturer_id=#{lecturerId},
+      release_time=#{releaseTime},
+      status=#{status}
+  </update>
+</mapper>
