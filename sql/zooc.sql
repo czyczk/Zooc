@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-25 09:47:39
+Date: 2018-06-25 11:05:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -247,13 +247,13 @@ CREATE TABLE `trial` (
 -- ----------------------------
 DROP TABLE IF EXISTS `trial_reservation`;
 CREATE TABLE `trial_reservation` (
-  `revervation_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `reservation_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
   `trial_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
   `message` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` enum('PENDING','CANCELED','AVAILABLE','USED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PENDING',
-  PRIMARY KEY (`revervation_id`),
+  PRIMARY KEY (`reservation_id`),
   KEY `fk_trial_reservation` (`user_id`),
   KEY `fk_trial_reservation_trial_id` (`trial_id`),
   CONSTRAINT `fk_trial_reservation` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
