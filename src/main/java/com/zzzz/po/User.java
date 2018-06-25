@@ -5,7 +5,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String telephone;
+    private String mobile;
     private String avatarUrl;
 
     public Long getUserId() {
@@ -40,12 +40,12 @@ public class User {
         this.email = email;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getAvatarUrl() {
@@ -63,7 +63,7 @@ public class User {
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", email='").append(email).append('\'');
-        sb.append(", telephone='").append(telephone).append('\'');
+        sb.append(", mobile='").append(mobile).append('\'');
         sb.append(", avatarUrl='").append(avatarUrl).append('\'');
         sb.append('}');
         return sb.toString();

@@ -56,13 +56,37 @@ public class ParameterChecker<T extends Exception> {
     }
 
     /**
+     * Reject an email input if it is invalid.
+     * @param email Email
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public void rejectEmailIfInvalid(String email, T possibleException) throws T {
+        String[] parts = email.split("@");
+        if (parts.length != 2 || parts[0].length() == 0 || parts[1].length() == 0) {
+            throw possibleException;
+        }
+    }
+
+    /**
      * Reject a telephone input if it contains less than 8 chars.
      * @param telephone Telephone
      * @param possibleException The exception to be thrown when the parameter is invalid.
      * @throws T An exception is thrown if the parameter is invalid.
      */
-    public void rejectIfInvalidTelephone(String telephone, T possibleException) throws T {
+    public void rejectTelephoneIfInvalid(String telephone, T possibleException) throws T {
         if (telephone.length() < 8)
+            throw possibleException;
+    }
+
+    /**
+     * Reject a mobile input if it contains less than 11 chars.
+     * @param mobile Mobile
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public void rejectMobileIfInvalid(String mobile, T possibleException) throws T {
+        if (mobile.length() < 11)
             throw possibleException;
     }
 }

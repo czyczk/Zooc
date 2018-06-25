@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/branch")
+@RequestMapping("/api/v1")
 public class BranchController {
     @Autowired
     private BranchService branchService;
@@ -27,8 +27,8 @@ public class BranchController {
      * @param telephone Telephone
      * @return Success: Branch ID; Bad request: 400; Internal: 500
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity create(String enterpriseId,
+    @RequestMapping(value = "/course/{id}/branch", method = RequestMethod.POST)
+    public ResponseEntity create(@PathVariable("id") String enterpriseId,
                                  String name,
                                  String address,
                                  String latitude,
@@ -49,7 +49,7 @@ public class BranchController {
      * @param branchId The target branch ID
      * @return Success: Branch; Bad request: 400; Not found: 404; Internal: 500
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/branch/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable("id")String branchId) {
         // TODO authentication not implemented yet
         try {
@@ -69,10 +69,10 @@ public class BranchController {
      * @param latitude New latitude
      * @param longitude New longitude
      * @param telephone New telephone
-     * @return Success: 203; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Internal: 500
      */
-    @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity update(String targetBranchId,
+    @RequestMapping(value = "/branch/{id}", method = RequestMethod.PUT)
+    public ResponseEntity update(@PathVariable("id") String targetBranchId,
                                  String name,
                                  String address,
                                  String latitude,

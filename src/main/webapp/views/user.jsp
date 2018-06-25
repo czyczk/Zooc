@@ -10,11 +10,20 @@
   <title>User Test</title>
 </head>
 <body>
-<form action="<%=contextPath%>/api/v1/user/create" method="post">
-  <input type="text" name="username" placeholder="username" />
-  <input type="text" name="password" placeholder="password" />
-  <input type="text" name="aaa" placeholder="whatever" />
-  <button type="submit">Submit</button>
-</form>
+<div>
+  <form action="<%=contextPath%>/api/v1/user" method="post">
+    <input type="text" name="username" placeholder="username" />
+    <input type="text" name="password" placeholder="password" />
+    <input type="text" name="email" placeholder="email" />
+    <input type="text" name="mobile" placeholder="mobile" />
+    <button type="submit">Create</button>
+  </form>
+</div>
+<div>
+  <form action="<%=contextPath%>/api/v1/user/1" method="post">
+    <input type="text" name="password" placeholder="password" />
+    <button type="submit">Update</button>
+  </form>
+</div>
 </body>
 </html>

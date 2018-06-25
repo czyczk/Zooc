@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-25 14:22:10
+Date: 2018-06-25 19:15:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -268,10 +268,11 @@ CREATE TABLE `user` (
   `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(31) COLLATE utf8mb4_general_ci NOT NULL,
-  `telephone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `avatar_url` varchar(511) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `unique_email` (`email`)
+  UNIQUE KEY `unique_email` (`email`),
+  UNIQUE KEY `unique_mobile` (`mobile`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 SET FOREIGN_KEY_CHECKS=1;

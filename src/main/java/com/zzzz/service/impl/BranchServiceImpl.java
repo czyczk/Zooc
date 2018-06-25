@@ -37,7 +37,7 @@ public class BranchServiceImpl implements BranchService {
         checker.rejectIfNullOrEmpty(telephone, new BranchServiceException(EMPTY_TELEPHONE));
 
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new BranchServiceException(INVALID_ENTERPRISE_ID));
-        checker.rejectIfInvalidTelephone(telephone, new BranchServiceException(INVALID_TELEPHONE));
+        checker.rejectTelephoneIfInvalid(telephone, new BranchServiceException(INVALID_TELEPHONE));
         BigDecimal latitudeBd = checker.parseBigDecimal(latitude, new BranchServiceException(INVALID_LATITUDE));
         BigDecimal longitudeBd = checker.parseBigDecimal(longitude, new BranchServiceException(INVALID_LONGITUDE));
 
@@ -138,7 +138,7 @@ public class BranchServiceImpl implements BranchService {
                 branch.setLongitude(longitudeBd);
             }
             if (telephone != null) {
-                checker.rejectIfInvalidTelephone(telephone, new BranchServiceException(INVALID_TELEPHONE));
+                checker.rejectTelephoneIfInvalid(telephone, new BranchServiceException(INVALID_TELEPHONE));
                 branch.setTelephone(telephone);
             }
 

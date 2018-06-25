@@ -60,10 +60,10 @@ public class EnterpriseController {
      * @param introduction New introduction
      * @param videoUrl New video URL
      * @param detail New detail
-     * @return Success: 203; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Internal: 500
      */
-    @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity update(String targetId,
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity update(@PathVariable("id") String targetId,
                                  @Nullable String name,
                                  @Nullable String imgUrl,
                                  @Nullable String introduction,

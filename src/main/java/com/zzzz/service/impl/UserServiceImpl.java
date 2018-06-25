@@ -4,6 +4,7 @@ import com.zzzz.dao.UserDao;
 import com.zzzz.po.User;
 import com.zzzz.service.UserService;
 import com.zzzz.service.UserServiceException;
+import com.zzzz.service.util.ParameterChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,36 +18,46 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    private ParameterChecker<UserServiceException> checker = new ParameterChecker<>();
+
     @Override
     @Transactional(rollbackFor = UserServiceException.class)
-    public void insert(String username, String password, String email, String telephone, String avatarUrl) throws UserServiceException {
+    public void insert(String username, String password, String email, String mobile, String avatarUrl) throws UserServiceException {
         // All information is required except the avatar URL
         // Check if all required information is valid
-        if (username == null || username.trim().isEmpty())
-            throw new UserServiceException(EMPTY_USERNAME);
-        if (password == null || password.isEmpty())
-            throw new UserServiceException(EMPTY_PASSWORD);
-        if (email == null || email.isEmpty())
-            throw new UserServiceException(EMPTY_EMAIL);
-        if (!checkEmailValidity(email))
-            throw new UserServiceException(INVALID_EMAIL);
-        if (telephone == null || telephone.isEmpty())
-            throw new UserServiceException(EMPTY_TELEPHONE);
-        if (!checkTelephoneValidity(telephone))
-            throw new UserServiceException(INVALID_TELEPHONE);
+        checker.rejectIfNullOrEmpty(username, new UserServiceException(EMPTY_USERNAME));
+        checker.rejectIfNullOrEmpty(password, new UserServiceException(EMPTY_PASSWORD));
+        // At least one identifier must be provided
+        if ((email == null || email.isEmpty()) && (mobile == null || mobile.isEmpty()))
+            throw new UserServiceException(MISSING_IDENTIFIER);
 
         try {
-            // Check if the email is occupied
-            boolean isOccupied = userDao.checkExistenceByEmail(email);
-            if (isOccupied)
-                throw new UserServiceException(EMAIL_OCCUPIED);
+            // Check the email if the email is provided
+            if (email == null || email.isEmpty())
+                email = null;
+            else {
+                checker.rejectEmailIfInvalid(email, new UserServiceException(INVALID_EMAIL));
+                // Check if the email is occupied
+                boolean isOccupied = userDao.checkExistenceByEmail(email);
+                if (isOccupied)
+                    throw new UserServiceException(EMAIL_OCCUPIED);
+            }
+
+            // Check the mobile if the mobile is provided
+            if (mobile == null || mobile.isEmpty())
+                mobile = null;
+            else {
+                checker.rejectMobileIfInvalid(mobile, new UserServiceException(INVALID_MOBILE));
+                // Check if the mobile is occupied
+                boolean isOccupied = userDao.checkExistenceByMobile(mobile);
+            }
 
             // Insert
             User user = new User();
             user.setUsername(username);
             user.setPassword(password);
             user.setEmail(email);
-            user.setTelephone(telephone);
+            user.setMobile(mobile);
             user.setAvatarUrl(avatarUrl);
             userDao.insert(user);
         } catch (SQLException e) {
@@ -55,25 +66,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean checkEmailValidity(String email) {
-        String[] parts = email.split("@");
-        if (parts.length != 2 || parts[0].length() == 0 || parts[1].length() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkTelephoneValidity(String telephone) {
-        // A telephone number is invalid if it contains less than 8 chars
-        return telephone.length() >= 8;
-    }
-
     @Override
     @Transactional(readOnly = true)
-    public User getById(long userId) throws UserServiceException {
+    public User getById(String userId) throws UserServiceException {
+        // Check if the ID is invalid
+        checker.rejectIfNullOrEmpty(userId, new UserServiceException(EMPTY_USER_ID));
+        long userIdLong = checker.parseUnsignedLong(userId, new UserServiceException(INVALID_USER_ID));
+
         User result;
         try {
-            result = userDao.getById(userId);
+            result = userDao.getById(userIdLong);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UserServiceException(INTERNAL_ERROR);
@@ -83,10 +85,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = UserServiceException.class)
-    public void update(long targetUserId, String username, String password, String email, String telephone, String avatarUrl) throws UserServiceException {
+    public void update(String targetUserId, String username, String password, String email, String mobile, String avatarUrl) throws UserServiceException {
+        // Check if the ID is invalid
+        checker.rejectIfNullOrEmpty(targetUserId, new UserServiceException(EMPTY_USER_ID));
+        long targetUserIdLong = checker.parseUnsignedLong(targetUserId, new UserServiceException(INVALID_USER_ID));
+
         try {
             // Check if the target exists
-            User user = userDao.getById(targetUserId);
+            User user = userDao.getById(targetUserIdLong);
             if (user == null)
                 throw new UserServiceException(USER_NOT_EXISTING);
 
@@ -103,17 +109,17 @@ public class UserServiceImpl implements UserService {
                 else
                     user.setPassword(password);
             }
-            if (email != null) {
-                if (!checkEmailValidity(email))
-                    throw new UserServiceException(EMPTY_EMAIL);
-                else
-                    user.setEmail(email);
+            // If a new email is specified (not the same as before)
+            if (email != null && !email.equalsIgnoreCase(user.getEmail())) {
+                // Set the email if it's valid
+                checker.rejectEmailIfInvalid(email, new UserServiceException(INVALID_EMAIL));
+                user.setEmail(email);
             }
-            if (telephone != null) {
-                if (!checkTelephoneValidity(telephone))
-                    throw new UserServiceException(EMPTY_TELEPHONE);
-                else
-                    user.setTelephone(telephone);
+            // If a new mobile is specified (not the same as before)
+            if (mobile != null && !mobile.equalsIgnoreCase(user.getMobile())) {
+                // Set the mobile if it's valid
+                checker.rejectMobileIfInvalid(mobile, new UserServiceException(INVALID_MOBILE));
+                user.setMobile(mobile);
             }
             // Nullable avatarUrl
             if (avatarUrl != null && avatarUrl.isEmpty())
@@ -129,16 +135,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public long logIn(String email, String password) throws UserServiceException {
+    public long logInByEmail(String email, String password) throws UserServiceException {
         // Check if the email and the password are not empty
-        if (email == null || email.isEmpty())
-            throw new UserServiceException(EMPTY_EMAIL);
-        if (password == null || password.isEmpty())
-            throw new UserServiceException(EMPTY_PASSWORD);
+        checker.rejectIfNullOrEmpty(email, new UserServiceException(EMPTY_EMAIL));
+        checker.rejectIfNullOrEmpty(password, new UserServiceException(EMPTY_PASSWORD));
 
         // Check if the email is valid
-        if (!checkEmailValidity(email))
-            throw new UserServiceException(INVALID_EMAIL);
+        checker.rejectEmailIfInvalid(email, new UserServiceException(INVALID_EMAIL));
 
         try {
             // Check if the user exists
@@ -155,5 +158,12 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
             throw new UserServiceException(INTERNAL_ERROR);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long logInByMobile(String mobile, String validationCode) throws UserServiceException {
+        // TODO not implemented yet
+        throw new UnsupportedOperationException();
     }
 }

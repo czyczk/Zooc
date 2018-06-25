@@ -8,8 +8,10 @@ public interface UserDao {
     int insert(User user) throws SQLException;
     boolean checkExistenceById(long userId) throws SQLException;
     boolean checkExistenceByEmail(String email) throws SQLException;
+    boolean checkExistenceByMobile(String mobile) throws SQLException;
     User getById(long userId) throws SQLException;
     User getByEmail(String email) throws SQLException;
+    User getByMobile(String mobile) throws SQLException;
     int update(User user) throws SQLException;
 
     // TODO

@@ -23,7 +23,7 @@ public class UserController {
      * @param username Username
      * @param password Password
      * @param email Email address
-     * @param telephone Telephone
+     * @param mobile Mobile
      * @param avatarUrl Avatar URL (Nullable)
      * @return Success: 201; Bad request: 400; Internal: 500
      */
@@ -31,10 +31,10 @@ public class UserController {
     public ResponseEntity create(String username,
                                  String password,
                                  String email,
-                                 String telephone,
+                                 String mobile,
                                  @Nullable String avatarUrl) {
         try {
-            userService.insert(username, password, email, telephone, avatarUrl);
+            userService.insert(username, password, email, mobile, avatarUrl);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
@@ -48,7 +48,7 @@ public class UserController {
      * @return Success: user; User not found: 404; Internal: 500
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity getById(@PathVariable("id") long userId) {
+    public ResponseEntity getById(@PathVariable("id") String userId) {
         // TODO
         // Authentication not implemented yet.
         try {
@@ -66,21 +66,21 @@ public class UserController {
      * @param username New username
      * @param password New password
      * @param email New email address
-     * @param telephone New telephone
+     * @param mobile New mobile
      * @param avatarUrl New avatar URL
-     * @return Success: 203; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Internal: 500
      */
-    @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity update(long targetId,
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity update(@PathVariable("id") String targetId,
                                  @Nullable String username,
                                  @Nullable String password,
                                  @Nullable String email,
-                                 @Nullable String telephone,
+                                 @Nullable String mobile,
                                  @Nullable String avatarUrl) {
         // TODO
         // Authentication not implemented yet.
         try {
-            userService.update(targetId, username, password, email, telephone, avatarUrl);
+            userService.update(targetId, username, password, email, mobile, avatarUrl);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
@@ -98,12 +98,12 @@ public class UserController {
      * @param password Password
      * @return Success: userId; User not found: 404; Incorrect password: 401
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity logIn(HttpServletRequest req,
+    @RequestMapping(value = "/login/email", method = RequestMethod.POST)
+    public ResponseEntity logInByEmail(HttpServletRequest req,
                                 String email,
                                 String password) {
         try {
-            long userId = userService.logIn(email, password);
+            long userId = userService.logInByEmail(email, password);
             HttpSession session = req.getSession();
             session.setAttribute("isLoggedIn", true);
             session.setAttribute("userId", userId);
