@@ -36,7 +36,4 @@
       video_url=#{videoUrl},
       detail=#{detail}
   </update>
-  <select id="getLastInsertId" resultType="long">
-    select last_insert_id();
-  </select>
 </mapper>

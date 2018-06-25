@@ -11,7 +11,6 @@ public interface EnterpriseDao {
     Enterprise getById(long enterpriseId) throws SQLException;
     EnterpriseDetail getDtoById(long enterpriseId) throws SQLException;
     int update(Enterprise enterprise) throws SQLException;
-    long getLastInsertId() throws SQLException;
 
     // TODO
     // Cascade when deleted. Implemented later.

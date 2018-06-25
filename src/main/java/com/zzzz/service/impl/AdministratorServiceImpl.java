@@ -2,6 +2,7 @@ package com.zzzz.service.impl;
 
 import com.zzzz.dao.AdministratorDao;
 import com.zzzz.dao.EnterpriseDao;
+import com.zzzz.dao.GeneralDao;
 import com.zzzz.po.Administrator;
 import com.zzzz.po.AdministratorTypeEnum;
 import com.zzzz.po.Enterprise;
@@ -18,6 +19,9 @@ import static com.zzzz.service.AdministratorServiceException.ExceptionTypeEnum.*
 
 @Service
 public class AdministratorServiceImpl implements AdministratorService {
+    @Autowired
+    private GeneralDao generalDao;
+
     @Autowired
     private AdministratorDao administratorDao;
 
@@ -52,7 +56,7 @@ public class AdministratorServiceImpl implements AdministratorService {
             // Insert
             administratorDao.insert(administrator);
             // Fetch the ID of the last inserted item
-            long lastId = administratorDao.getLastInsertId();
+            long lastId = generalDao.getLastInsertId();
             return lastId;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,12 +80,12 @@ public class AdministratorServiceImpl implements AdministratorService {
             // Insert a new enterprise with the default template
             Enterprise enterprise = createEnterpriseTemplate();
             // Fetch the ID of the last inserted item (enterprise)
-            long lastId = enterpriseDao.getLastInsertId();
+            long lastId = generalDao.getLastInsertId();
             administrator.setEnterpriseId(lastId);
             // Insert the new administrator
             administratorDao.insert(administrator);
             // Fetch the ID of the last inserted item
-            lastId = administratorDao.getLastInsertId();
+            lastId = generalDao.getLastInsertId();
             return lastId;
         } catch (SQLException e) {
             e.printStackTrace();
