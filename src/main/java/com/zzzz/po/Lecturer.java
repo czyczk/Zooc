@@ -5,7 +5,7 @@ public class Lecturer {
     private String name;
     private String photoUrl;
     private String introduction;
-    private Long branchId;
+    private Long enterpriseId;
 
     public Long getLecturerId() {
         return lecturerId;
@@ -39,12 +39,12 @@ public class Lecturer {
         this.introduction = introduction;
     }
 
-    public Long getBranchId() {
-        return branchId;
+    public Long getEnterpriseId() {
+        return enterpriseId;
     }
 
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
+    public void setEnterpriseId(Long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Lecturer {
         sb.append(", name='").append(name).append('\'');
         sb.append(", photoUrl='").append(photoUrl).append('\'');
         sb.append(", introduction='").append(introduction).append('\'');
-        sb.append(", branchId=").append(branchId);
+        sb.append(", enterpriseId=").append(enterpriseId);
         sb.append('}');
         return sb.toString();
     }

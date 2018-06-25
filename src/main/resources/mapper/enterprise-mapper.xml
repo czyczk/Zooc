@@ -22,8 +22,11 @@
       ent.enterprise_id, ent.name, ent.img_url, ent.introduction, ent.video_url, ent.detail,
       br.branch_id 'branches.branch_id', br.name 'branches.name',
       br.address 'branches.address', br.latitude 'branches.latitude',
-      br.longitude 'branches.longitude', br.telephone 'branches.telephone'
+      br.longitude 'branches.longitude', br.telephone 'branches.telephone',
+      lec.lecturer_id 'lecturers.lecturer_id', lec.name 'lecturers.name',
+      lec.photo_url 'lecturers.photo_url', lec.introduction 'lecturers.introduction'
     from enterprise ent join branch br on ent.enterprise_id = br.enterprise_id
+      join lecturer lec on ent.enterprise_id = lec.enterprise_id
   </select>
   <update id="update" parameterType="Enterprise">
     update enterprise set

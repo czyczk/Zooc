@@ -10,6 +10,7 @@ public class EnterpriseDetail {
     private String videoUrl;
     private String detail;
     private List<Branch> branches;
+    private List<Lecturer> lecturers;
 
     public long getEnterpriseId() {
         return enterpriseId;
@@ -66,6 +67,15 @@ public class EnterpriseDetail {
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
     }
+
+    public List<Lecturer> getLecturers() {
+        return lecturers;
+    }
+
+    public void setLecturers(List<Lecturer> lecturers) {
+        this.lecturers = lecturers;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Enterprise{");
@@ -76,6 +86,7 @@ public class EnterpriseDetail {
         sb.append(", videoUrl='").append(videoUrl).append('\'');
         sb.append(", detail='").append(detail).append('\'');
         sb.append(", branchesCount=").append(branches == null ? 0 : branches.size());
+        sb.append(", lecturersCount=").append(lecturers == null ? 0 : lecturers.size());
         sb.append('}');
         return sb.toString();
     }

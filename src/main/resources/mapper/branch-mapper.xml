@@ -20,13 +20,6 @@
     from branch
     where branch_id=#{branchId}
   </select>
-  <select id="getDtoById" parameterType="long" resultType="com.zzzz.dto.BranchDetail">
-    select br.branch_id, br.name, br.address, br.latitude, br.longitude, br.telephone,
-      lec.lecturer_id 'lecturers.lecturer_id', lec.name 'lecturers.name',
-      lec.photo_url 'lecturers.photo_url', lec.introduction 'lecturers.introduction'
-    from branch br join lecturer lec on br.branch_id = lec.branch_id
-    where branch_id=#{branchId}
-  </select>
   <update id="update" parameterType="Branch">
     update branch set
       name=#{name},

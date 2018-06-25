@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-24 19:45:51
+Date: 2018-06-25 09:47:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -122,10 +122,10 @@ CREATE TABLE `lecturer` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `photo_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  `branch_id` bigint(20) unsigned NOT NULL,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`lecturer_id`),
-  KEY `fk_lecturer_branch_id` (`branch_id`),
-  CONSTRAINT `fk_lecturer_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
