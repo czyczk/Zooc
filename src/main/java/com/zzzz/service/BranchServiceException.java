@@ -17,7 +17,7 @@ public class BranchServiceException extends Exception {
         INVALID_TELEPHONE("电话不合法。", HttpStatus.BAD_REQUEST),
         INVALID_LATITUDE("纬度不合法。", HttpStatus.BAD_REQUEST),
         INVALID_LONGITUDE("经度不合法。", HttpStatus.BAD_REQUEST),
-        ENTERPRISE_NOT_EXISTING("该企业不存在。", HttpStatus.BAD_REQUEST),
+        ENTERPRISE_NOT_EXISTING("该企业不存在。", HttpStatus.NOT_FOUND),
         ;
 
         private String message;

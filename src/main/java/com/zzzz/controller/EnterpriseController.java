@@ -22,7 +22,7 @@ public class EnterpriseController {
     /**
      * Get an enterprise
      * @param enterpriseId The target enterprise ID
-     * @return Success: Enterprise; Bad request: 400; Internal: 500
+     * @return Success: Enterprise; Bad request: 400; Not found: 404; Internal: 500
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable("id") String enterpriseId) {
@@ -39,7 +39,7 @@ public class EnterpriseController {
     /**
      * Get the details of an enterprise (including its branches).
      * @param enterpriseId The target enterprise ID
-     * @return Success: Enterprise detail; Bad request: 400; Internal: 500
+     * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
      */
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public ResponseEntity getDetailById(@PathVariable("id") String enterpriseId) {

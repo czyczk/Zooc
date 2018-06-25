@@ -7,6 +7,7 @@ import com.zzzz.service.BranchService;
 import com.zzzz.service.BranchServiceException;
 import com.zzzz.service.util.ParameterChecker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 
 import static com.zzzz.service.BranchServiceException.ExceptionTypeEnum.*;
 
+@Service
 public class BranchServiceImpl implements BranchService {
     @Autowired
     private GeneralDao generalDao;
