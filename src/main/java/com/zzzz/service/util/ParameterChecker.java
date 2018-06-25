@@ -1,5 +1,7 @@
 package com.zzzz.service.util;
 
+import java.math.BigDecimal;
+
 /**
  * Parameter checker.
  * It provides utilities to help facilitate parameter checking in the service implementations.
@@ -34,5 +36,33 @@ public class ParameterChecker<T extends Exception> {
             throw possibleException;
         }
         return result;
+    }
+
+    /**
+     * Parse a parameter to a BigDecimal.
+     * @param parameter Parameter
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @return The parsed number.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public BigDecimal parseBigDecimal(String parameter, T possibleException) throws T {
+        BigDecimal result;
+        try {
+            result = new BigDecimal(parameter);
+        } catch (NumberFormatException e) {
+            throw possibleException;
+        }
+        return result;
+    }
+
+    /**
+     * Reject a telephone input if it contains less than 8 chars.
+     * @param telephone Telephone
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public void rejectIfInvalidTelephone(String telephone, T possibleException) throws T {
+        if (telephone.length() < 8)
+            throw possibleException;
     }
 }
