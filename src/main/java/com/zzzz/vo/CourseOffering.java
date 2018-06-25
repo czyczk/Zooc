@@ -1,4 +1,4 @@
-package com.zzzz.dto;
+package com.zzzz.vo;
 
 public class CourseOffering {
     private long courseOfferingId;

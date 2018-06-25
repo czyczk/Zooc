@@ -1,6 +1,6 @@
 package com.zzzz.service;
 
-import com.zzzz.dto.EnterpriseDetail;
+import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 
 public interface EnterpriseService {

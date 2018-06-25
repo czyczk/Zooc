@@ -1,5 +1,6 @@
 package com.zzzz.controller;
 
+import com.zzzz.dto.UserParam;
 import com.zzzz.po.User;
 import com.zzzz.service.UserService;
 import com.zzzz.service.UserServiceException;
@@ -7,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -20,21 +23,16 @@ public class UserController {
 
     /**
      * Create a new user.
-     * @param username Username
-     * @param password Password
-     * @param email Email address
-     * @param mobile Mobile
-     * @param avatarUrl Avatar URL (Nullable)
+     * At least one of the email address or the mobile should be provided.
+     * Avatar URL is optional.
+     * @param userParam username, password, email, mobile, avatarUrl
      * @return Success: 201; Bad request: 400; Internal: 500
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity create(String username,
-                                 String password,
-                                 String email,
-                                 String mobile,
-                                 @Nullable String avatarUrl) {
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity create(@RequestBody UserParam userParam) {
         try {
-            userService.insert(username, password, email, mobile, avatarUrl);
+            userService.insert(userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
@@ -47,7 +45,7 @@ public class UserController {
      * @param userId Target user ID
      * @return Success: user; User not found: 404; Internal: 500
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity getById(@PathVariable("id") String userId) {
         // TODO
         // Authentication not implemented yet.
@@ -63,24 +61,16 @@ public class UserController {
     /**
      * Update a user. A field should not be provided if it's not to be modified.
      * @param targetId ID of the target user
-     * @param username New username
-     * @param password New password
-     * @param email New email address
-     * @param mobile New mobile
-     * @param avatarUrl New avatar URL
+     * @param userParam username, password, email, mobile, avatarUrl
      * @return Success: 204; Bad request: 400; Internal: 500
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,
-                                 @Nullable String username,
-                                 @Nullable String password,
-                                 @Nullable String email,
-                                 @Nullable String mobile,
-                                 @Nullable String avatarUrl) {
+                                 @RequestBody UserParam userParam) {
         // TODO
         // Authentication not implemented yet.
         try {
-            userService.update(targetId, username, password, email, mobile, avatarUrl);
+            userService.update(targetId, userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
@@ -98,7 +88,7 @@ public class UserController {
      * @param password Password
      * @return Success: userId; User not found: 404; Incorrect password: 401
      */
-    @RequestMapping(value = "/login/email", method = RequestMethod.POST)
+    @PostMapping(value = "/login/email")
     public ResponseEntity logInByEmail(HttpServletRequest req,
                                 String email,
                                 String password) {

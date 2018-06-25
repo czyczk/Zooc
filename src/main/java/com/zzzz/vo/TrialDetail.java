@@ -1,4 +1,4 @@
-package com.zzzz.dto;
+package com.zzzz.vo;
 
 import com.zzzz.po.TrialStatusEnum;
 

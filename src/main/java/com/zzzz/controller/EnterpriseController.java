@@ -1,6 +1,6 @@
 package com.zzzz.controller;
 
-import com.zzzz.dto.EnterpriseDetail;
+import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 import com.zzzz.service.EnterpriseService;
 import com.zzzz.service.EnterpriseServiceException;

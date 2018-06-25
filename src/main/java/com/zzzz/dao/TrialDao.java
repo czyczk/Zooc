@@ -1,6 +1,6 @@
 package com.zzzz.dao;
 
-import com.zzzz.dto.TrialDetail;
+import com.zzzz.vo.TrialDetail;
 import com.zzzz.po.Trial;
 
 import java.sql.SQLException;

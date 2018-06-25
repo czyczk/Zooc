@@ -20,7 +20,7 @@
     from trial
     where trial_id=#{trialId}
   </select>
-  <select id="getDtoById" parameterType="long" resultType="com.zzzz.dto.TrialDetail">
+  <select id="getDtoById" parameterType="long" resultType="com.zzzz.vo.TrialDetail">
     select tr.trial_id, tr.name, tr.detail, tr.img_url,
       tr.category_id, cat.name 'category_name',
       tr.branch_id, br.name 'branch_name',

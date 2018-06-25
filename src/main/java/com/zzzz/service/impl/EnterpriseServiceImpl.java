@@ -2,7 +2,7 @@ package com.zzzz.service.impl;
 
 import com.zzzz.dao.AdministratorDao;
 import com.zzzz.dao.EnterpriseDao;
-import com.zzzz.dto.EnterpriseDetail;
+import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 import com.zzzz.service.EnterpriseService;
 import com.zzzz.service.EnterpriseServiceException;

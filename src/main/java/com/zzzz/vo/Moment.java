@@ -1,4 +1,4 @@
-package com.zzzz.dto;
+package com.zzzz.vo;
 
 import java.util.Date;
 import java.util.List;
