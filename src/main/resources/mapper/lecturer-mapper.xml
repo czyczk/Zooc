@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.LecturerDao">
   <sql id="all_columns">
-    lecturer_id, name, photo_url, introduction, enterprise_id
+    lecturer_id, enterprise_id, name, photo_url, introduction
   </sql>
   <insert id="insert" parameterType="Lecturer">
-    insert into lecturer(name, photo_url, introduction, enterprise_id)
-    values(#{name}, #{photoUrl}, #{introduction}, #{enterpriseId})
+    insert into lecturer(enterprise_id, name, photo_url, introduction)
+    values(#{enterpriseId}, #{name}, #{photoUrl}, #{introduction})
   </insert>
   <select id="checkExistenceById" parameterType="long" resultType="boolean">
     select count(*)
@@ -24,7 +24,6 @@
     update lecturer set
       name=#{name},
       photo_url=#{photoUrl},
-      introduction=#{introduction},
-      enterprise_id=#{enterpriseId}
+      introduction=#{introduction}
   </update>
 </mapper>

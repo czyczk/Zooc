@@ -10,5 +10,5 @@ public interface LecturerDao {
     Lecturer getById(long lecturerId) throws SQLException;
     int update(Lecturer lecturer) throws SQLException;
 
-    // Cascade when deleted. Implemented later.
+    // TODO Cascade when deleted. Implemented later.
 }

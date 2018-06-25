@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-25 11:05:21
+Date: 2018-06-25 14:22:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -119,10 +119,10 @@ CREATE TABLE `enterprise` (
 DROP TABLE IF EXISTS `lecturer`;
 CREATE TABLE `lecturer` (
   `lecturer_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `photo_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  `enterprise_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE

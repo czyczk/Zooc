@@ -2,10 +2,10 @@ package com.zzzz.po;
 
 public class Lecturer {
     private Long lecturerId;
+    private Long enterpriseId;
     private String name;
     private String photoUrl;
     private String introduction;
-    private Long enterpriseId;
 
     public Long getLecturerId() {
         return lecturerId;
@@ -13,6 +13,14 @@ public class Lecturer {
 
     public void setLecturerId(Long lecturerId) {
         this.lecturerId = lecturerId;
+    }
+
+    public Long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(Long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
     public String getName() {
@@ -39,22 +47,14 @@ public class Lecturer {
         this.introduction = introduction;
     }
 
-    public Long getEnterpriseId() {
-        return enterpriseId;
-    }
-
-    public void setEnterpriseId(Long enterpriseId) {
-        this.enterpriseId = enterpriseId;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Lecturer{");
         sb.append("lecturerId=").append(lecturerId);
+        sb.append(", enterpriseId=").append(enterpriseId);
         sb.append(", name='").append(name).append('\'');
         sb.append(", photoUrl='").append(photoUrl).append('\'');
         sb.append(", introduction='").append(introduction).append('\'');
-        sb.append(", enterpriseId=").append(enterpriseId);
         sb.append('}');
         return sb.toString();
     }
