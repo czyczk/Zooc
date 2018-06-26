@@ -2,7 +2,7 @@ package com.zzzz.vo;
 
 import java.math.BigDecimal;
 
-public class Branch {
+class Branch {
     private long branchId;
     private String name;
     private String address;

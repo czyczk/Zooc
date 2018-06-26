@@ -1,6 +1,6 @@
 package com.zzzz.vo;
 
-public class Lecturer {
+class Lecturer {
     private long lecturerId;
     private String name;
     private String photoUrl;

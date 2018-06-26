@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.COurseDao">
+  <sql id="all_columns">
+    course_id, name, detail, img_url, category_id, release_time, price, status
+  </sql>
+  <insert id="insert">
+    insert into course(name, detail, img_url, category_id, release_time, price, status)
+    values(#{name}, #{detail}, #{imgUrl}, #{categoryId}, #{releaseTime}, #{price}, #{status})
+  </insert>
+  <select id="checkExistenceById" resultType="boolean">
+    select count(*)
+    from course
+    where course_id=#{courseId}
+  </select>
+  <select id="getById" parameterType="long" resultType="Course">
+    select <include refid="all_columns" />
+    from course
+    where course_id=#{courseId}
+  </select>
+  <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.CourseDetail">
+    select crs.course_id, crs.name, crs.detail, crs.img_url,
+      crs.category_id, cat.name 'category_name',
+      crs.release_time, crs.price, crs.status,
+      crsofr.course_offering_id 'course_offerings.course_offering_id',
+      crsofr.branch_id 'course_offerings.branch_id',
+      br.name 'course_offerings.branch_name',
+      crsofr.lecturer_id 'course_offerings.lecturer_id',
+      lec.lecturer_id 'course_offerings.lecturer_name'
+    from course crs join course_category cat on crs.category_id = cat.category_id
+      join course_offering crsofr on crsofr.course_id = crs.course_id
+      join branch br on crsofr.branch_id = br.branch_id
+      join lecturer lec on crsofr.lecturer_id = lec.lecturer_id
+    where crs.course_id=#{courseId}
+  </select>
+  <update id="update" parameterType="Course">
+    update course set
+      name=#{name},
+      detail=#{detail},
+      img_url=#{imgUrl},
+      category_id=#{categoryId},
+      release_time=#{releaseTime},
+      price=#{price},
+      status=#{status}
+  </update>
+</mapper>

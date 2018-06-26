@@ -1,9 +1,7 @@
 package com.zzzz.vo;
 
-public class CourseOffering {
+class CourseOffering {
     private long courseOfferingId;
-    private long courseId;
-    private String courseName;
     private long branchId;
     private String branchName;
     private long lecturerId;
@@ -15,22 +13,6 @@ public class CourseOffering {
 
     public void setCourseOfferingId(long courseOfferingId) {
         this.courseOfferingId = courseOfferingId;
-    }
-
-    public long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(long courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
     }
 
     public long getBranchId() {
@@ -69,8 +51,6 @@ public class CourseOffering {
     public String toString() {
         final StringBuilder sb = new StringBuilder("CourseOffering{");
         sb.append("courseOfferingId=").append(courseOfferingId);
-        sb.append(", courseId=").append(courseId);
-        sb.append(", courseName='").append(courseName).append('\'');
         sb.append(", branchId=").append(branchId);
         sb.append(", branchName='").append(branchName).append('\'');
         sb.append(", lecturerId=").append(lecturerId);
