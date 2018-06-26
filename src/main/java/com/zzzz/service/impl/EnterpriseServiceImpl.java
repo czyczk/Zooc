@@ -62,7 +62,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
     @Override
     @Transactional(readOnly = true)
-    public EnterpriseDetail getDtoById(String enterpriseId) throws EnterpriseServiceException {
+    public EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException {
         EnterpriseDetail result;
 
         // Check if the enterprise ID is valid
@@ -71,7 +71,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
         try {
             // Fetch the enterprise
-            result = enterpriseDao.getDtoById(enterpriseIdLong);
+            result = enterpriseDao.getVoById(enterpriseIdLong);
             if (result == null)
                 throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
         } catch (SQLException e) {

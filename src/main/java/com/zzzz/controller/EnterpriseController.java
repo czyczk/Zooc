@@ -44,7 +44,7 @@ public class EnterpriseController {
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public ResponseEntity getDetailById(@PathVariable("id") String enterpriseId) {
         try {
-            EnterpriseDetail result = enterpriseService.getDtoById(enterpriseId);
+            EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
             return ResponseEntity.ok(result);
         } catch (EnterpriseServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())

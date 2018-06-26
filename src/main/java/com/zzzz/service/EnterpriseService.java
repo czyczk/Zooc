@@ -13,7 +13,7 @@ public interface EnterpriseService {
 
     void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException;
     Enterprise getById(String enterpriseId) throws EnterpriseServiceException;
-    EnterpriseDetail getDtoById(String enterpriseId) throws EnterpriseServiceException;
+    EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException;
 
     /**
      * Update an enterprise. A field should be left null if no modification is to be made.
