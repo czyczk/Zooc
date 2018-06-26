@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.CourseOfferingDao">
+  <sql id="all_columns">
+    course_offering_id, course_id, branch_id, lecturer_id
+  </sql>
+  <insert id="insert" parameterType="CourseOffering">
+    insert into course_offering(course_id, branch_id, lecturer_id)
+    values(#{courseId}, #{branchId}, #{lecturerId});
+  </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from course_offering
+    where course_offering_id=#{courseOfferingId}
+  </select>
+  <select id="getById" parameterType="long" resultType="CourseOffering">
+    select <include refid="all_columns" />
+    from course_offering
+    where course_offering_id=#{courseOfferingId}
+  </select>
+  <update id="update" parameterType="CourseOffering">
+    update course_offering set
+      course_id=#{courseId},
+      branch_id=#{branchId},
+      lecturer_id=#{lecturerId}
+  </update>
+</mapper>
