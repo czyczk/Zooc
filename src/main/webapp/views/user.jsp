@@ -48,7 +48,7 @@
 
     $("#update-button").click(() => {
       const user = {
-        password: 'dddd'
+        mobile: '1234'
       };
       $.ajax({
         url: '<%=contextPath%>/api/v1/user/1',

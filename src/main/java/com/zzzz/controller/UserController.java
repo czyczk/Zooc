@@ -7,13 +7,10 @@ import com.zzzz.service.UserServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -36,7 +33,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getMessage());
+                    .body(e.getExceptionTypeEnum().getMessage());
         }
     }
 
@@ -54,7 +51,7 @@ public class UserController {
             return ResponseEntity.ok(result);
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getMessage());
+                    .body(e.getExceptionTypeEnum().getMessage());
         }
     }
 
@@ -73,8 +70,10 @@ public class UserController {
             userService.update(targetId, userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (UserServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getMessage());
+            ResponseEntity result = ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
+                    .body(e.getExceptionTypeEnum().getMessage());
+            System.out.println(result);
+            return result;
         }
     }
 
@@ -100,7 +99,7 @@ public class UserController {
             return ResponseEntity.ok(userId);
         } catch (UserServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getMessage());
+                    .body(e.getExceptionTypeEnum().getMessage());
         }
     }
 }
