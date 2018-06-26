@@ -1,5 +1,6 @@
 package com.zzzz.controller;
 
+import com.zzzz.dto.EnterpriseParam;
 import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 import com.zzzz.service.EnterpriseService;
@@ -8,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -24,7 +22,7 @@ public class EnterpriseController {
      * @param enterpriseId The target enterprise ID
      * @return Success: Enterprise; Bad request: 400; Not found: 404; Internal: 500
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity getById(@PathVariable("id") String enterpriseId) {
         // TODO authentication not implemented yet
         try {
@@ -41,7 +39,7 @@ public class EnterpriseController {
      * @param enterpriseId The target enterprise ID
      * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
      */
-    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/detail/{id}")
     public ResponseEntity getDetailById(@PathVariable("id") String enterpriseId) {
         try {
             EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
@@ -55,24 +53,15 @@ public class EnterpriseController {
     /**
      * Update an enterprise. Don't pass in fields that are meant to be left unchanged.
      * @param targetId The ID of the enterprise to be modified.
-     * @param name New name
-     * @param imgUrl New image URL
-     * @param introduction New introduction
-     * @param videoUrl New video URL
-     * @param detail New detail
+     * @param enterpriseParam name, imgUrl, introduction, videoUrl, detail
      * @return Success: 204; Bad request: 400; Internal: 500
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,
-                                 @Nullable String name,
-                                 @Nullable String imgUrl,
-                                 @Nullable String introduction,
-                                 @Nullable String videoUrl,
-                                 @Nullable String detail) {
+                                 @RequestBody EnterpriseParam enterpriseParam) {
         // TODO authentication not implemented yet
-
         try {
-            enterpriseService.update(targetId, name, imgUrl, introduction, videoUrl, detail);
+            enterpriseService.update(targetId, enterpriseParam.getName(), enterpriseParam.getImgUrl(), enterpriseParam.getIntroduction(), enterpriseParam.getVideoUrl(), enterpriseParam.getDetail());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (EnterpriseServiceException e) {
             return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
