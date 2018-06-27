@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-25 19:15:11
+Date: 2018-06-27 10:07:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -55,19 +55,22 @@ CREATE TABLE `branch` (
 DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (
   `course_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
   `name` varchar(63) COLLATE utf8mb4_general_ci NOT NULL,
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `category_id` bigint(20) unsigned NOT NULL,
   `release_time` datetime NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
-  `status` enum('AVAILABLE','OFF','IN_REVIEW') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'IN_REVIEW',
+  `status` enum('AVAILABLE','OFF','IN_REVIEW') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'AVAILABLE',
   PRIMARY KEY (`course_id`),
   UNIQUE KEY `unique_course_pk` (`course_id`),
   KEY `fk_course_category_id` (`category_id`),
   KEY `idx_suit_available_course_by_category` (`status`,`category_id`) USING BTREE,
-  CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `fk_course_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_category
@@ -78,7 +81,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -111,7 +114,7 @@ CREATE TABLE `enterprise` (
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`enterprise_id`),
   UNIQUE KEY `unique_enterprise_pk` (`enterprise_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for lecturer
@@ -274,5 +277,11 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `unique_email` (`email`),
   UNIQUE KEY `unique_mobile` (`mobile`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- View structure for view_available_course
+-- ----------------------------
+DROP VIEW IF EXISTS `view_available_course`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_course` AS select `course`.`course_id` AS `course_id`,`course`.`enterprise_id` AS `enterprise_id`,`course`.`name` AS `name`,`course`.`detail` AS `detail`,`course`.`img_url` AS `img_url`,`course`.`category_id` AS `category_id`,`course`.`release_time` AS `release_time`,`course`.`price` AS `price`,`course`.`status` AS `status` from `course` where (`course`.`status` = 'AVAILABLE') ;
 SET FOREIGN_KEY_CHECKS=1;

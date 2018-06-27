@@ -27,6 +27,7 @@
       lec.photo_url 'lecturers.photo_url', lec.introduction 'lecturers.introduction'
     from enterprise ent join branch br on ent.enterprise_id = br.enterprise_id
       join lecturer lec on ent.enterprise_id = lec.enterprise_id
+      join view_available_course a_crs on ent.enterprise_id = a_crs.enterprise_id
   </select>
   <update id="update" parameterType="Enterprise">
     update enterprise set

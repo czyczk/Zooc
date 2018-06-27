@@ -11,6 +11,7 @@ public class EnterpriseDetail {
     private String detail;
     private List<Branch> branches;
     private List<Lecturer> lecturers;
+    private List<Course> courses;
 
     public long getEnterpriseId() {
         return enterpriseId;
@@ -76,6 +77,14 @@ public class EnterpriseDetail {
         this.lecturers = lecturers;
     }
 
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Enterprise{");
@@ -87,6 +96,7 @@ public class EnterpriseDetail {
         sb.append(", detail='").append(detail).append('\'');
         sb.append(", branchesCount=").append(branches == null ? 0 : branches.size());
         sb.append(", lecturersCount=").append(lecturers == null ? 0 : lecturers.size());
+        sb.append(", coursesCount=").append(courses == null ? 0 : courses.size());
         sb.append('}');
         return sb.toString();
     }

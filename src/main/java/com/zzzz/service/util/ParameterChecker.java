@@ -56,6 +56,25 @@ public class ParameterChecker<T extends Exception> {
     }
 
     /**
+     * Parse a parameter to an unsigned BigDecimal.
+     * @param parameter Parameter
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @return The parsed number.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public BigDecimal parseUnsignedBigDecimal(String parameter, T possibleException) throws T {
+        BigDecimal result;
+        try {
+            result = new BigDecimal(parameter);
+            if (result.compareTo(BigDecimal.ZERO) < 0)
+                throw possibleException;
+        } catch (NumberFormatException e) {
+            throw possibleException;
+        }
+        return result;
+    }
+
+    /**
      * Reject an email input if it is invalid.
      * @param email Email
      * @param possibleException The exception to be thrown when the parameter is invalid.

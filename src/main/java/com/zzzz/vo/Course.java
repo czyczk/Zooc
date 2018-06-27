@@ -1,18 +1,17 @@
-package com.zzzz.po;
+package com.zzzz.vo;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Course {
+class Course {
     private long courseId;
-    private long enterpriseId;
     private String name;
     private String detail;
     private String imgUrl;
     private long categoryId;
+    private String categoryName;
     private Date releaseTime;
     private BigDecimal price;
-    private CourseStatusEnum status;
 
     public long getCourseId() {
         return courseId;
@@ -20,14 +19,6 @@ public class Course {
 
     public void setCourseId(long courseId) {
         this.courseId = courseId;
-    }
-
-    public long getEnterpriseId() {
-        return enterpriseId;
-    }
-
-    public void setEnterpriseId(long enterpriseId) {
-        this.enterpriseId = enterpriseId;
     }
 
     public String getName() {
@@ -62,6 +53,14 @@ public class Course {
         this.categoryId = categoryId;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public Date getReleaseTime() {
         return releaseTime;
     }
@@ -78,27 +77,4 @@ public class Course {
         this.price = price;
     }
 
-    public CourseStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(CourseStatusEnum status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Course{");
-        sb.append("courseId=").append(courseId);
-        sb.append(", enterpriseId=").append(enterpriseId);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", detail='").append(detail).append('\'');
-        sb.append(", imgUrl='").append(imgUrl).append('\'');
-        sb.append(", categoryId=").append(categoryId);
-        sb.append(", releaseTime=").append(releaseTime);
-        sb.append(", price=").append(price);
-        sb.append(", status=").append(status);
-        sb.append('}');
-        return sb.toString();
-    }
 }
