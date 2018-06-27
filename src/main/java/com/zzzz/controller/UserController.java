@@ -59,7 +59,7 @@ public class UserController {
      * Update a user. A field should not be provided if it's not to be modified.
      * @param targetId ID of the target user
      * @param userParam username, password, email, mobile, avatarUrl
-     * @return Success: 204; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,

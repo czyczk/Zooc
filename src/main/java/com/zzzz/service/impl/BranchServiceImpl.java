@@ -95,7 +95,7 @@ public class BranchServiceImpl implements BranchService {
             result = branchDao.getById(branchIdLong);
             // Check if the enterprise exists
             if (result == null)
-                throw new BranchServiceException(ENTERPRISE_NOT_EXISTING);
+                throw new BranchServiceException(BRANCH_NOT_EXISTING);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new BranchServiceException(INTERNAL_ERROR);
@@ -110,9 +110,11 @@ public class BranchServiceImpl implements BranchService {
         checker.rejectIfNullOrEmpty(targetBranchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(targetBranchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        // Check if the target branch exists
         try {
+            // Check if the target branch exists
             Branch branch = branchDao.getById(branchIdLong);
+            if (branch == null)
+                throw new BranchServiceException(BRANCH_NOT_EXISTING);
 
             // Check if the parameters need updating
             if (name != null) {

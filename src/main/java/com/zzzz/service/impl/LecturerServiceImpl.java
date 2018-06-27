@@ -109,6 +109,9 @@ public class LecturerServiceImpl implements LecturerService {
         try {
             // Fetch the old one
             Lecturer lecturer = lecturerDao.getById(lecturerIdLong);
+            if (lecturer == null)
+                throw new LecturerServiceException(LECTURER_NOT_EXISTING);
+
             // Check if the parameters are valid
             if (name != null) {
                 if (name.isEmpty())

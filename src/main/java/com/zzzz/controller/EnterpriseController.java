@@ -54,7 +54,7 @@ public class EnterpriseController {
      * Update an enterprise. Don't pass in fields that are meant to be left unchanged.
      * @param targetId The ID of the enterprise to be modified.
      * @param enterpriseParam name, imgUrl, introduction, videoUrl, detail
-     * @return Success: 204; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,

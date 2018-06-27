@@ -55,7 +55,7 @@ public class LecturerController {
      * Update a lecturer. Don't pass in fields meant to be kept unchanged.
      * @param targetLecturerId Target lecturer ID
      * @param lecturerParam name, photoUrl, introduction
-     * @return Success: 204; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping(value = "/lecturer/{id}")
     public ResponseEntity update(@PathVariable("id") String targetLecturerId,

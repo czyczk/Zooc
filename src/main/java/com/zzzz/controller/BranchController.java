@@ -55,7 +55,7 @@ public class BranchController {
      * Update a branch. Don't pass in fields meant to be left unchanged.
      * @param targetBranchId Target branch ID
      * @param branchParam name, address, latitude, longitude, telephone
-     * @return Success: 204; Bad request: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping(value = "/branch/{id}")
     public ResponseEntity update(@PathVariable("id") String targetBranchId,
