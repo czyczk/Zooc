@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+  <!-- Console appender -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <!--
+  Rolling file appender:
+    Generate a new file if the original one exceeds 5MB;
+    Archives over 3 months may be overridden.
+  -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- For Windows -->
+    <file>D:/zooc_log/zooc_log.log</file>
+    <!-- For *nix -->
+    <!--<file>~/zooc_log/zooc_log.log</file>-->
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>zooc_log_%i.zip</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>5</maxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>5MB</maxFileSize>
+    </triggeringPolicy>
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.zzzz.controller.GlobalExceptionHandler" level="DEBUG">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
