@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -26,15 +27,9 @@ public class UserController {
      * @return Success: 201; Bad request: 400; Internal: 500
      */
     @PostMapping
-    @ResponseBody
-    public ResponseEntity create(@RequestBody UserParam userParam) {
-        try {
-            userService.insert(userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (UserServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+    public ResponseEntity create(@RequestBody UserParam userParam) throws UserServiceException, SQLException {
+        userService.insert(userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -43,16 +38,11 @@ public class UserController {
      * @return Success: user; User not found: 404; Internal: 500
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity getById(@PathVariable("id") String userId) {
+    public ResponseEntity<User> getById(@PathVariable("id") String userId) throws UserServiceException, SQLException {
         // TODO
         // Authentication not implemented yet.
-        try {
-            User result = userService.getById(userId);
-            return ResponseEntity.ok(result);
-        } catch (UserServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        User result = userService.getById(userId);
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -63,18 +53,11 @@ public class UserController {
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,
-                                 @RequestBody UserParam userParam) {
+                                 @RequestBody UserParam userParam) throws UserServiceException, SQLException {
         // TODO
         // Authentication not implemented yet.
-        try {
-            userService.update(targetId, userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (UserServiceException e) {
-            ResponseEntity result = ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-            System.out.println(result);
-            return result;
-        }
+        userService.update(targetId, userParam.getUsername(), userParam.getPassword(), userParam.getEmail(), userParam.getMobile(), userParam.getAvatarUrl());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /**
@@ -89,17 +72,12 @@ public class UserController {
      */
     @PostMapping(value = "/login/email")
     public ResponseEntity logInByEmail(HttpServletRequest req,
-                                String email,
-                                String password) {
-        try {
-            long userId = userService.logInByEmail(email, password);
-            HttpSession session = req.getSession();
-            session.setAttribute("isLoggedIn", true);
-            session.setAttribute("userId", userId);
-            return ResponseEntity.ok(userId);
-        } catch (UserServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+                                       String email,
+                                       String password) throws UserServiceException, SQLException {
+        long userId = userService.logInByEmail(email, password);
+        HttpSession session = req.getSession();
+        session.setAttribute("isLoggedIn", true);
+        session.setAttribute("userId", userId);
+        return ResponseEntity.ok(userId);
     }
 }

@@ -2,9 +2,8 @@ package com.zzzz.service;
 
 import org.springframework.http.HttpStatus;
 
-public class UserServiceException extends Exception {
+public class UserServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
-        INTERNAL_ERROR("服务器内部错误。", HttpStatus.INTERNAL_SERVER_ERROR),
         EMPTY_USER_ID("用户编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_USERNAME("用户名为空。", HttpStatus.BAD_REQUEST),
         EMPTY_PASSWORD("密码为空。", HttpStatus.BAD_REQUEST),
@@ -38,13 +37,12 @@ public class UserServiceException extends Exception {
         }
     }
 
-    private ExceptionTypeEnum exceptionTypeEnum;
-    public ExceptionTypeEnum getExceptionTypeEnum() {
-        return exceptionTypeEnum;
+    public UserServiceException(String message, HttpStatus status) {
+        super(message, status);
     }
 
     public UserServiceException(ExceptionTypeEnum exceptionTypeEnum) {
-        this.exceptionTypeEnum = exceptionTypeEnum;
+        this(exceptionTypeEnum.message, exceptionTypeEnum.status);
     }
 
 }

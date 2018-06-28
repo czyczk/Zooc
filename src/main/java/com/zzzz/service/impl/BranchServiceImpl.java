@@ -26,8 +26,8 @@ public class BranchServiceImpl implements BranchService {
     private ParameterChecker<BranchServiceException> checker = new ParameterChecker<>();
 
     @Override
-    @Transactional(rollbackFor = BranchServiceException.class)
-    public long insert(String enterpriseId, String name, String address, String latitude, String longitude, String telephone) throws BranchServiceException {
+    @Transactional(rollbackFor = { BranchServiceException.class, SQLException.class })
+    public long insert(String enterpriseId, String name, String address, String latitude, String longitude, String telephone) throws BranchServiceException, SQLException {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(enterpriseId, new BranchServiceException(EMPTY_ENTERPRISE_ID));
         checker.rejectIfNullOrEmpty(name, new BranchServiceException(EMPTY_NAME));
@@ -41,115 +41,94 @@ public class BranchServiceImpl implements BranchService {
         BigDecimal latitudeBd = checker.parseBigDecimal(latitude, new BranchServiceException(INVALID_LATITUDE));
         BigDecimal longitudeBd = checker.parseBigDecimal(longitude, new BranchServiceException(INVALID_LONGITUDE));
 
-        try {
-            // Check if the enterprise exists
-            boolean isExisting = branchDao.checkExistenceById(enterpriseIdLong);
-            if (!isExisting)
-                throw new BranchServiceException(ENTERPRISE_NOT_EXISTING);
+        // Check if the enterprise exists
+        boolean isExisting = branchDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new BranchServiceException(ENTERPRISE_NOT_EXISTING);
 
-            // Insert
-            Branch branch = new Branch();
-            branch.setEnterpriseId(enterpriseIdLong);
-            branch.setName(name);
-            branch.setAddress(address);
-            branch.setLatitude(latitudeBd);
-            branch.setLongitude(longitudeBd);
-            branchDao.insert(branch);
+        // Insert
+        Branch branch = new Branch();
+        branch.setEnterpriseId(enterpriseIdLong);
+        branch.setName(name);
+        branch.setAddress(address);
+        branch.setLatitude(latitudeBd);
+        branch.setLongitude(longitudeBd);
+        branchDao.insert(branch);
 
-            // Fetch the last ID
-            long lastId = generalDao.getLastInsertId();
-            return lastId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new BranchServiceException(INTERNAL_ERROR);
-        }
+        // Fetch the last ID
+        long lastId = generalDao.getLastInsertId();
+        return lastId;
 
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkExistenceById(String branchId) throws BranchServiceException {
+    public boolean checkExistenceById(String branchId) throws BranchServiceException, SQLException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(branchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        // Query
-        try {
-            return branchDao.checkExistenceById(branchIdLong);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new BranchServiceException(INTERNAL_ERROR);
-        }
+        return branchDao.checkExistenceById(branchIdLong);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Branch getById(String branchId) throws BranchServiceException {
+    public Branch getById(String branchId) throws BranchServiceException, SQLException {
         Branch result;
 
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(branchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        try {
-            result = branchDao.getById(branchIdLong);
-            // Check if the enterprise exists
-            if (result == null)
-                throw new BranchServiceException(BRANCH_NOT_EXISTING);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new BranchServiceException(INTERNAL_ERROR);
-        }
+        result = branchDao.getById(branchIdLong);
+        // Check if the enterprise exists
+        if (result == null)
+            throw new BranchServiceException(BRANCH_NOT_EXISTING);
         return result;
     }
 
     @Override
-    @Transactional(rollbackFor = BranchServiceException.class)
-    public void update(String targetBranchId, String name, String address, String latitude, String longitude, String telephone) throws BranchServiceException {
+    @Transactional(rollbackFor = { BranchServiceException.class, SQLException.class })
+    public void update(String targetBranchId, String name, String address, String latitude, String longitude, String telephone) throws BranchServiceException, SQLException {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(targetBranchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(targetBranchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        try {
-            // Check if the target branch exists
-            Branch branch = branchDao.getById(branchIdLong);
-            if (branch == null)
-                throw new BranchServiceException(BRANCH_NOT_EXISTING);
+        // Check if the target branch exists
+        Branch branch = branchDao.getById(branchIdLong);
+        if (branch == null)
+            throw new BranchServiceException(BRANCH_NOT_EXISTING);
 
-            // Check if the parameters need updating
-            if (name != null) {
-                if (name.isEmpty())
-                    throw new BranchServiceException(EMPTY_NAME);
-                else
-                    branch.setName(name);
-            }
-            if (address != null) {
-                if (address.isEmpty())
-                    throw new BranchServiceException(EMPTY_ADDRESS);
-                else
-                    branch.setAddress(address);
-            }
-            BigDecimal latitudeBd;
-            if (latitude != null) {
-                latitudeBd = checker.parseBigDecimal(latitude, new BranchServiceException(INVALID_LATITUDE));
-                branch.setLatitude(latitudeBd);
-            }
-            BigDecimal longitudeBd;
-            if (longitude != null) {
-                longitudeBd = checker.parseBigDecimal(longitude, new BranchServiceException(INVALID_LONGITUDE));
-                branch.setLongitude(longitudeBd);
-            }
-            if (telephone != null) {
-                checker.rejectTelephoneIfInvalid(telephone, new BranchServiceException(INVALID_TELEPHONE));
-                branch.setTelephone(telephone);
-            }
-
-            // Update
-            branchDao.update(branch);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new BranchServiceException(INTERNAL_ERROR);
+        // Check if the parameters need updating
+        if (name != null) {
+            if (name.isEmpty())
+                throw new BranchServiceException(EMPTY_NAME);
+            else
+                branch.setName(name);
         }
+        if (address != null) {
+            if (address.isEmpty())
+                throw new BranchServiceException(EMPTY_ADDRESS);
+            else
+                branch.setAddress(address);
+        }
+        BigDecimal latitudeBd;
+        if (latitude != null) {
+            latitudeBd = checker.parseBigDecimal(latitude, new BranchServiceException(INVALID_LATITUDE));
+            branch.setLatitude(latitudeBd);
+        }
+        BigDecimal longitudeBd;
+        if (longitude != null) {
+            longitudeBd = checker.parseBigDecimal(longitude, new BranchServiceException(INVALID_LONGITUDE));
+            branch.setLongitude(longitudeBd);
+        }
+        if (telephone != null) {
+            checker.rejectTelephoneIfInvalid(telephone, new BranchServiceException(INVALID_TELEPHONE));
+            branch.setTelephone(telephone);
+        }
+
+        // Update
+        branchDao.update(branch);
 
     }
 }

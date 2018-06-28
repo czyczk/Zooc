@@ -26,7 +26,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     private ParameterChecker<EnterpriseServiceException> checker = new ParameterChecker<>();
 
     @Override
-    @Transactional(rollbackFor = EnterpriseServiceException.class)
+    @Transactional(rollbackFor = { EnterpriseServiceException.class, SQLException.class })
     public void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException {
         // TODO implemented later
         throw new UnsupportedOperationException();
@@ -40,98 +40,83 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
     @Override
     @Transactional(readOnly = true)
-    public Enterprise getById(String enterpriseId) throws EnterpriseServiceException {
+    public Enterprise getById(String enterpriseId) throws EnterpriseServiceException, SQLException {
         Enterprise result;
 
         // Check if the enterprise ID is valid
         checker.rejectIfNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
-        try {
-            // Fetch the enterprise
-            result = enterpriseDao.getById(enterpriseIdLong);
-            if (result == null)
-                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new EnterpriseServiceException(INTERNAL_ERROR);
-        }
+        // Fetch the enterprise
+        result = enterpriseDao.getById(enterpriseIdLong);
+        if (result == null)
+            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
 
         return result;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException {
+    public EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException, SQLException {
         EnterpriseDetail result;
 
         // Check if the enterprise ID is valid
         checker.rejectIfNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
-        try {
-            // Fetch the enterprise
-            result = enterpriseDao.getVoById(enterpriseIdLong);
-            if (result == null)
-                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new EnterpriseServiceException(INTERNAL_ERROR);
-        }
+        // Fetch the enterprise
+        result = enterpriseDao.getVoById(enterpriseIdLong);
+        if (result == null)
+            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
 
         return result;
     }
 
     @Override
-    @Transactional(rollbackFor = EnterpriseServiceException.class)
-    public void update(String targetEnterpriseId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException {
+    @Transactional(rollbackFor = { EnterpriseServiceException.class, SQLException.class })
+    public void update(String targetEnterpriseId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException, SQLException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(targetEnterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
         long targetEnterpriseIdLong = checker.parseUnsignedLong(targetEnterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
-        try {
-            // Fetch the original enterprise
-            Enterprise enterprise = enterpriseDao.getById(targetEnterpriseIdLong);
-            if (enterprise == null)
-                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+        // Fetch the original enterprise
+        Enterprise enterprise = enterpriseDao.getById(targetEnterpriseIdLong);
+        if (enterprise == null)
+            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
 
-            if (name != null) {
-                if (name.isEmpty())
-                    throw new EnterpriseServiceException(EMPTY_NAME);
-                else
-                    enterprise.setName(name);
-            }
-            if (imgUrl != null) {
-                if (imgUrl.isEmpty())
-                    throw new EnterpriseServiceException(EMPTY_IMG_URL);
-                else
-                    enterprise.setImgUrl(imgUrl);
-            }
-            if (introduction != null) {
-                if (introduction.isEmpty())
-                    throw new EnterpriseServiceException(EMPTY_INTRODUCTION);
-                else
-                    enterprise.setIntroduction(introduction);
-            }
-            if (videoUrl != null) {
-                if (videoUrl.isEmpty())
-                    throw new EnterpriseServiceException(EMPTY_VIDEO_URL);
-                else
-                    enterprise.setVideoUrl(videoUrl);
-            }
-            if (detail != null) {
-                if (detail.isEmpty())
-                    throw new EnterpriseServiceException(EMPTY_DETAIL);
-                else
-                    enterprise.setDetail(detail);
-            }
-
-            // Update
-            enterpriseDao.update(enterprise);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new EnterpriseServiceException(INTERNAL_ERROR);
+        if (name != null) {
+            if (name.isEmpty())
+                throw new EnterpriseServiceException(EMPTY_NAME);
+            else
+                enterprise.setName(name);
         }
+        if (imgUrl != null) {
+            if (imgUrl.isEmpty())
+                throw new EnterpriseServiceException(EMPTY_IMG_URL);
+            else
+                enterprise.setImgUrl(imgUrl);
+        }
+        if (introduction != null) {
+            if (introduction.isEmpty())
+                throw new EnterpriseServiceException(EMPTY_INTRODUCTION);
+            else
+                enterprise.setIntroduction(introduction);
+        }
+        if (videoUrl != null) {
+            if (videoUrl.isEmpty())
+                throw new EnterpriseServiceException(EMPTY_VIDEO_URL);
+            else
+                enterprise.setVideoUrl(videoUrl);
+        }
+        if (detail != null) {
+            if (detail.isEmpty())
+                throw new EnterpriseServiceException(EMPTY_DETAIL);
+            else
+                enterprise.setDetail(detail);
+        }
+
+        // Update
+        enterpriseDao.update(enterprise);
 
     }
 }

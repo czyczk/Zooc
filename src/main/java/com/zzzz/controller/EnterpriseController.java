@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/api/v1/")
 public class EnterpriseController {
@@ -23,15 +25,10 @@ public class EnterpriseController {
      * @return Success: Enterprise; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity getById(@PathVariable("id") String enterpriseId) {
+    public ResponseEntity<Enterprise> getById(@PathVariable("id") String enterpriseId) throws EnterpriseServiceException, SQLException {
         // TODO authentication not implemented yet
-        try {
-            Enterprise result = enterpriseService.getById(enterpriseId);
-            return ResponseEntity.ok(result);
-        } catch (EnterpriseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        Enterprise result = enterpriseService.getById(enterpriseId);
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -40,14 +37,9 @@ public class EnterpriseController {
      * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping(value = "/detail/{id}")
-    public ResponseEntity getDetailById(@PathVariable("id") String enterpriseId) {
-        try {
-            EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
-            return ResponseEntity.ok(result);
-        } catch (EnterpriseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+    public ResponseEntity<EnterpriseDetail> getDetailById(@PathVariable("id") String enterpriseId) throws EnterpriseServiceException, SQLException {
+        EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -58,14 +50,9 @@ public class EnterpriseController {
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") String targetId,
-                                 @RequestBody EnterpriseParam enterpriseParam) {
+                                 @RequestBody EnterpriseParam enterpriseParam) throws EnterpriseServiceException, SQLException {
         // TODO authentication not implemented yet
-        try {
-            enterpriseService.update(targetId, enterpriseParam.getName(), enterpriseParam.getImgUrl(), enterpriseParam.getIntroduction(), enterpriseParam.getVideoUrl(), enterpriseParam.getDetail());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (EnterpriseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        enterpriseService.update(targetId, enterpriseParam.getName(), enterpriseParam.getImgUrl(), enterpriseParam.getIntroduction(), enterpriseParam.getVideoUrl(), enterpriseParam.getDetail());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

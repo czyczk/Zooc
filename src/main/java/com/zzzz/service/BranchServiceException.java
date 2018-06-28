@@ -2,9 +2,8 @@ package com.zzzz.service;
 
 import org.springframework.http.HttpStatus;
 
-public class BranchServiceException extends Exception {
+public class BranchServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
-        INTERNAL_ERROR("内部错误。", HttpStatus.INTERNAL_SERVER_ERROR),
         EMPTY_ENTERPRISE_ID("企业编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_BRANCH_ID("分部编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_NAME("名称为空。", HttpStatus.BAD_REQUEST),
@@ -37,12 +36,11 @@ public class BranchServiceException extends Exception {
         }
     }
 
-    private ExceptionTypeEnum exceptionTypeEnum;
-    public ExceptionTypeEnum getExceptionTypeEnum() {
-        return exceptionTypeEnum;
+    public BranchServiceException(String message, HttpStatus status) {
+        super(message, status);
     }
 
     public BranchServiceException(ExceptionTypeEnum exceptionTypeEnum) {
-        this.exceptionTypeEnum = exceptionTypeEnum;
+        this(exceptionTypeEnum.message, exceptionTypeEnum.status);
     }
 }

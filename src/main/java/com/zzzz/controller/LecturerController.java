@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/api/v1")
 public class LecturerController {
@@ -23,15 +25,10 @@ public class LecturerController {
      */
     @PostMapping(value ="/course/{id}/lecturer")
     public ResponseEntity create(@PathVariable("id") String enterpriseId,
-                                 @RequestBody LecturerParam lecturerParam) {
+                                 @RequestBody LecturerParam lecturerParam) throws SQLException, LecturerServiceException {
         // TODO authentication not implemented yet
-        try {
-            long lecturerId = lecturerService.insert(enterpriseId, lecturerParam.getName(), lecturerParam.getPhotoUrl(), lecturerParam.getIntroduction());
-            return ResponseEntity.ok(lecturerId);
-        } catch (LecturerServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        long lecturerId = lecturerService.insert(enterpriseId, lecturerParam.getName(), lecturerParam.getPhotoUrl(), lecturerParam.getIntroduction());
+        return ResponseEntity.ok(lecturerId);
     }
 
     /**
@@ -41,14 +38,9 @@ public class LecturerController {
      */
     @GetMapping(value = "/lecturer/{id}")
     // TODO authentication not implemented yet
-    public ResponseEntity getById(@PathVariable("id") String lecturerId) {
-        try {
-            Lecturer lecturer = lecturerService.getById(lecturerId);
-            return ResponseEntity.ok(lecturer);
-        } catch (LecturerServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+    public ResponseEntity<Lecturer> getById(@PathVariable("id") String lecturerId) throws SQLException, LecturerServiceException {
+        Lecturer lecturer = lecturerService.getById(lecturerId);
+        return ResponseEntity.ok(lecturer);
     }
 
     /**
@@ -59,14 +51,9 @@ public class LecturerController {
      */
     @PutMapping(value = "/lecturer/{id}")
     public ResponseEntity update(@PathVariable("id") String targetLecturerId,
-                                 @RequestBody LecturerParam lecturerParam) {
+                                 @RequestBody LecturerParam lecturerParam) throws SQLException, LecturerServiceException {
         // TODO authentication not implemented yet
-        try {
-            lecturerService.update(targetLecturerId, lecturerParam.getName(), lecturerParam.getPhotoUrl(), lecturerParam.getIntroduction());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (LecturerServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        lecturerService.update(targetLecturerId, lecturerParam.getName(), lecturerParam.getPhotoUrl(), lecturerParam.getIntroduction());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

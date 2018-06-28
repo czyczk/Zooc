@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 @RestController
@@ -24,16 +25,11 @@ public class CourseController {
      * @return Success: New course ID; Bad request: 400; Internal: 500
      */
     @PostMapping("/enterprise/{id}/course")
-    public ResponseEntity create(@PathVariable("id") String enterpriseId,
-                                 @RequestBody CourseParam courseParam) {
+    public ResponseEntity<Long> create(@PathVariable("id") String enterpriseId,
+                                 @RequestBody CourseParam courseParam) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
-        try {
-            long courseId = courseService.insert(enterpriseId, courseParam.getName(), courseParam.getDetail(), courseParam.getImgUrl(), courseParam.getCategoryId(), new Date(), courseParam.getPrice());
-            return ResponseEntity.ok(courseId);
-        } catch (CourseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        long courseId = courseService.insert(enterpriseId, courseParam.getName(), courseParam.getDetail(), courseParam.getImgUrl(), courseParam.getCategoryId(), new Date(), courseParam.getPrice());
+        return ResponseEntity.ok(courseId);
     }
 
     /**
@@ -42,27 +38,17 @@ public class CourseController {
      * @return Success: Course detail; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping("/course/detail/{id}")
-    public ResponseEntity getDetailById(@PathVariable("id") String courseId) {
+    public ResponseEntity<CourseDetail> getDetailById(@PathVariable("id") String courseId) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
-        try {
-            CourseDetail result = courseService.getVoById(courseId);
-            return ResponseEntity.ok(result);
-        } catch (CourseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        CourseDetail result = courseService.getVoById(courseId);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/course/{id}")
     public ResponseEntity update(@PathVariable("id") String targetCourseId,
-                                 @RequestBody CourseParam courseParam) {
+                                 @RequestBody CourseParam courseParam) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
-        try {
-            courseService.update(targetCourseId, courseParam.getName(), courseParam.getDetail(), courseParam.getImgUrl(), courseParam.getCategoryId(), courseParam.getReleaseTime(), courseParam.getPrice(), courseParam.getStatus());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (CourseServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        courseService.update(targetCourseId, courseParam.getName(), courseParam.getDetail(), courseParam.getImgUrl(), courseParam.getCategoryId(), courseParam.getReleaseTime(), courseParam.getPrice(), courseParam.getStatus());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -2,9 +2,11 @@ package com.zzzz.service;
 
 import com.zzzz.po.User;
 
+import java.sql.SQLException;
+
 public interface UserService {
-    void insert(String username, String password, String email, String mobile, String avatarUrl) throws UserServiceException;
-    User getById(String userId) throws UserServiceException;
+    void insert(String username, String password, String email, String mobile, String avatarUrl) throws UserServiceException, SQLException;
+    User getById(String userId) throws UserServiceException, SQLException;
 
     /**
      * Update a user. A field should be left null if no modification is to be made.
@@ -21,7 +23,7 @@ public interface UserService {
                 String password,
                 String email,
                 String mobile,
-                String avatarUrl) throws UserServiceException;
+                String avatarUrl) throws UserServiceException, SQLException;
 
     /**
      * Log in by the user's email. Check the validity of this login activity
@@ -31,7 +33,7 @@ public interface UserService {
      * @return The ID of the user
      * @throws UserServiceException An exception is thrown if the login is not successful.
      */
-    long logInByEmail(String email, String password) throws UserServiceException;
+    long logInByEmail(String email, String password) throws UserServiceException, SQLException;
 
     /**
      * Log in by the user's mobile. Check the validity of this login activity

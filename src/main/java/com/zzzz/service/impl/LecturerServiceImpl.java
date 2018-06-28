@@ -29,8 +29,8 @@ public class LecturerServiceImpl implements LecturerService {
     private ParameterChecker<LecturerServiceException> checker = new ParameterChecker<>();
 
     @Override
-    @Transactional(rollbackFor = LecturerServiceException.class)
-    public long insert(String enterpriseId, String name, String photoUrl, String introduction) throws LecturerServiceException {
+    @Transactional(rollbackFor = { LecturerServiceException.class, SQLException.class })
+    public long insert(String enterpriseId, String name, String photoUrl, String introduction) throws LecturerServiceException, SQLException {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(enterpriseId, new LecturerServiceException(EMPTY_ENTERPRISE_ID));
         checker.rejectIfNullOrEmpty(name, new LecturerServiceException(EMPTY_NAME));
@@ -39,104 +39,84 @@ public class LecturerServiceImpl implements LecturerService {
 
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new LecturerServiceException(INVALID_ENTERPRISE_ID));
 
-        try {
-            // Check if the enterprise exists
-            boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
-            if (!isExisting)
-                throw new LecturerServiceException(ENTERPRISE_NOT_EXISTING);
+        // Check if the enterprise exists
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new LecturerServiceException(ENTERPRISE_NOT_EXISTING);
 
-            // Insert
-            Lecturer lecturer = new Lecturer();
-            lecturer.setEnterpriseId(enterpriseIdLong);
-            lecturer.setName(name);
-            lecturer.setPhotoUrl(photoUrl);
-            lecturer.setIntroduction(introduction);
-            lecturerDao.insert(lecturer);
+        // Insert
+        Lecturer lecturer = new Lecturer();
+        lecturer.setEnterpriseId(enterpriseIdLong);
+        lecturer.setName(name);
+        lecturer.setPhotoUrl(photoUrl);
+        lecturer.setIntroduction(introduction);
+        lecturerDao.insert(lecturer);
 
-            // Fetch the last ID
-            long lastId = generalDao.getLastInsertId();
-            return lastId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new LecturerServiceException(INTERNAL_ERROR);
-        }
+        // Fetch the last ID
+        long lastId = generalDao.getLastInsertId();
+        return lastId;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkExistenceById(String lecturerId) throws LecturerServiceException {
+    public boolean checkExistenceById(String lecturerId) throws LecturerServiceException, SQLException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(lecturerId, new LecturerServiceException(EMPTY_LECTURER_ID));
         long lecturerIdLong = checker.parseUnsignedLong(lecturerId, new LecturerServiceException(INVALID_LECTURER_ID));
 
         // Query
-        try {
-            return lecturerDao.checkExistenceById(lecturerIdLong);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new LecturerServiceException(INTERNAL_ERROR);
-        }
+        return lecturerDao.checkExistenceById(lecturerIdLong);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Lecturer getById(String lecturerId) throws LecturerServiceException {
+    public Lecturer getById(String lecturerId) throws LecturerServiceException, SQLException {
         Lecturer result;
 
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(lecturerId, new LecturerServiceException(EMPTY_LECTURER_ID));
         long lecturerIdLong = checker.parseUnsignedLong(lecturerId, new LecturerServiceException(INVALID_LECTURER_ID));
 
-        try {
-            result = lecturerDao.getById(lecturerIdLong);
-            // Check if the lecturer exists
-            if (result == null)
-                throw new LecturerServiceException(LECTURER_NOT_EXISTING);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new LecturerServiceException(INTERNAL_ERROR);
-        }
+        result = lecturerDao.getById(lecturerIdLong);
+        // Check if the lecturer exists
+        if (result == null)
+            throw new LecturerServiceException(LECTURER_NOT_EXISTING);
         return result;
     }
 
     @Override
-    @Transactional(rollbackFor = LecturerServiceException.class)
-    public void update(String targetLecturerId, String name, String photoUrl, String introduction) throws LecturerServiceException {
+    @Transactional(rollbackFor = { LecturerServiceException.class, SQLException.class })
+    public void update(String targetLecturerId, String name, String photoUrl, String introduction) throws LecturerServiceException, SQLException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(targetLecturerId, new LecturerServiceException(EMPTY_LECTURER_ID));
         long lecturerIdLong = checker.parseUnsignedLong(targetLecturerId, new LecturerServiceException(INVALID_LECTURER_ID));
 
-        try {
-            // Fetch the old one
-            Lecturer lecturer = lecturerDao.getById(lecturerIdLong);
-            if (lecturer == null)
-                throw new LecturerServiceException(LECTURER_NOT_EXISTING);
+        // Fetch the old one
+        Lecturer lecturer = lecturerDao.getById(lecturerIdLong);
+        if (lecturer == null)
+            throw new LecturerServiceException(LECTURER_NOT_EXISTING);
 
-            // Check if the parameters are valid
-            if (name != null) {
-                if (name.isEmpty())
-                    throw new LecturerServiceException(EMPTY_NAME);
-                else
-                    lecturer.setName(name);
-            }
-            if (photoUrl != null) {
-                if (photoUrl.isEmpty())
-                    throw new LecturerServiceException(EMPTY_PHOTO_URL);
-                else
-                    lecturer.setPhotoUrl(photoUrl);
-            }
-            if (introduction != null) {
-                if (introduction.isEmpty())
-                    throw new LecturerServiceException(EMPTY_INTRODUCTION);
-                else
-                    lecturer.setIntroduction(introduction);
-            }
-
-            // Update
-            lecturerDao.update(lecturer);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new LecturerServiceException(INTERNAL_ERROR);
+        // Check if the parameters are valid
+        if (name != null) {
+            if (name.isEmpty())
+                throw new LecturerServiceException(EMPTY_NAME);
+            else
+                lecturer.setName(name);
         }
+        if (photoUrl != null) {
+            if (photoUrl.isEmpty())
+                throw new LecturerServiceException(EMPTY_PHOTO_URL);
+            else
+                lecturer.setPhotoUrl(photoUrl);
+        }
+        if (introduction != null) {
+            if (introduction.isEmpty())
+                throw new LecturerServiceException(EMPTY_INTRODUCTION);
+            else
+                lecturer.setIntroduction(introduction);
+        }
+
+        // Update
+        lecturerDao.update(lecturer);
     }
 }

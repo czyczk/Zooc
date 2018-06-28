@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/api/v1")
 public class BranchController {
@@ -22,16 +24,11 @@ public class BranchController {
      * @return Success: Branch ID; Bad request: 400; Internal: 500
      */
     @PostMapping(value = "/course/{id}/branch")
-    public ResponseEntity create(@PathVariable("id") String enterpriseId,
-                                 @RequestBody BranchParam branchParam) {
+    public ResponseEntity<Long> create(@PathVariable("id") String enterpriseId,
+                                 @RequestBody BranchParam branchParam) throws BranchServiceException, SQLException {
         // TODO authentication not implemented yet
-        try {
-            long branchId = branchService.insert(enterpriseId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
-            return ResponseEntity.ok(branchId);
-        } catch (BranchServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        long branchId = branchService.insert(enterpriseId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
+        return ResponseEntity.ok(branchId);
     }
 
     /**
@@ -40,15 +37,10 @@ public class BranchController {
      * @return Success: Branch; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping(value = "/branch/{id}")
-    public ResponseEntity getById(@PathVariable("id") String branchId) {
+    public ResponseEntity<Branch> getById(@PathVariable("id") String branchId) throws BranchServiceException, SQLException {
         // TODO authentication not implemented yet
-        try {
-            Branch branch = branchService.getById(branchId);
-            return ResponseEntity.ok(branch);
-        } catch (BranchServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        Branch branch = branchService.getById(branchId);
+        return ResponseEntity.ok(branch);
     }
 
     /**
@@ -59,14 +51,9 @@ public class BranchController {
      */
     @PutMapping(value = "/branch/{id}")
     public ResponseEntity update(@PathVariable("id") String targetBranchId,
-                                 @RequestBody BranchParam branchParam) {
+                                 @RequestBody BranchParam branchParam) throws BranchServiceException, SQLException {
         // TODO authentication not implemented yet
-        try {
-            branchService.update(targetBranchId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (BranchServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        branchService.update(targetBranchId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

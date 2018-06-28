@@ -2,6 +2,8 @@ package com.zzzz.service;
 
 import com.zzzz.po.Branch;
 
+import java.sql.SQLException;
+
 public interface BranchService {
     /**
      * Insert a new branch
@@ -19,11 +21,11 @@ public interface BranchService {
                 String address,
                 String latitude,
                 String longitude,
-                String telephone) throws BranchServiceException;
+                String telephone) throws BranchServiceException, SQLException;
 
-    boolean checkExistenceById(String branchId) throws BranchServiceException;
+    boolean checkExistenceById(String branchId) throws BranchServiceException, SQLException;
 
-    Branch getById(String branchId) throws BranchServiceException;
+    Branch getById(String branchId) throws BranchServiceException, SQLException;
 
     /**
      * Update a branch. A field will be left unchanged if the parameter is null.
@@ -40,7 +42,7 @@ public interface BranchService {
                 String address,
                 String latitude,
                 String longitude,
-                String telephone) throws BranchServiceException;
+                String telephone) throws BranchServiceException, SQLException;
 
     // TODO deletions can cascade
 }

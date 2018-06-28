@@ -2,9 +2,8 @@ package com.zzzz.service;
 
 import org.springframework.http.HttpStatus;
 
-public class LecturerServiceException extends Exception {
+public class LecturerServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
-        INTERNAL_ERROR("内部错误。", HttpStatus.INTERNAL_SERVER_ERROR),
         EMPTY_LECTURER_ID("讲师编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_ENTERPRISE_ID("企业编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_NAME("名称为空。", HttpStatus.BAD_REQUEST),
@@ -32,12 +31,11 @@ public class LecturerServiceException extends Exception {
         }
     }
 
-    private ExceptionTypeEnum exceptionTypeEnum;
-    public ExceptionTypeEnum getExceptionTypeEnum() {
-        return exceptionTypeEnum;
+    public LecturerServiceException(String message, HttpStatus status) {
+        super(message, status);
     }
 
     public LecturerServiceException(ExceptionTypeEnum exceptionTypeEnum) {
-        this.exceptionTypeEnum = exceptionTypeEnum;
+        this(exceptionTypeEnum.message, exceptionTypeEnum.status);
     }
 }

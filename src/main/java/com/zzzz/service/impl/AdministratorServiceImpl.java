@@ -41,8 +41,8 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     @Override
-    @Transactional(rollbackFor = AdministratorServiceException.class)
-    public long createSystemAccount(String username, String password) throws AdministratorServiceException {
+    @Transactional(rollbackFor = { AdministratorServiceException.class, SQLException.class })
+    public long createSystemAccount(String username, String password) throws AdministratorServiceException, SQLException {
         // Check if the parameters are empty
         checker.rejectIfNullOrEmpty(username, new AdministratorServiceException(EMPTY_USERNAME));
         checker.rejectIfNullOrEmpty(password, new AdministratorServiceException(EMPTY_PASSWORD));
@@ -52,21 +52,16 @@ public class AdministratorServiceImpl implements AdministratorService {
         administrator.setUsername(username);
         administrator.setPassword(password);
 
-        try {
-            // Insert
-            administratorDao.insert(administrator);
-            // Fetch the ID of the last inserted item
-            long lastId = generalDao.getLastInsertId();
-            return lastId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new AdministratorServiceException(INTERNAL_ERROR);
-        }
+        // Insert
+        administratorDao.insert(administrator);
+        // Fetch the ID of the last inserted item
+        long lastId = generalDao.getLastInsertId();
+        return lastId;
     }
 
     @Override
-    @Transactional(rollbackFor = AdministratorServiceException.class)
-    public long createEnterpriseAccount(String username, String password) throws AdministratorServiceException {
+    @Transactional(rollbackFor = { AdministratorServiceException.class, SQLException.class })
+    public long createEnterpriseAccount(String username, String password) throws AdministratorServiceException, SQLException {
         // Check if the parameters are empty
         checker.rejectIfNullOrEmpty(username, new AdministratorServiceException(EMPTY_USERNAME));
         checker.rejectIfNullOrEmpty(password, new AdministratorServiceException(EMPTY_PASSWORD));
@@ -76,20 +71,15 @@ public class AdministratorServiceImpl implements AdministratorService {
         administrator.setUsername(username);
         administrator.setPassword(password);
 
-        try {
-            // Insert a new enterprise with the default template
-            Enterprise enterprise = createEnterpriseTemplate();
-            // Fetch the ID of the last inserted item (enterprise)
-            long lastId = generalDao.getLastInsertId();
-            administrator.setEnterpriseId(lastId);
-            // Insert the new administrator
-            administratorDao.insert(administrator);
-            // Fetch the ID of the last inserted item
-            lastId = generalDao.getLastInsertId();
-            return lastId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new AdministratorServiceException(INTERNAL_ERROR);
-        }
+        // Insert a new enterprise with the default template
+        Enterprise enterprise = createEnterpriseTemplate();
+        // Fetch the ID of the last inserted item (enterprise)
+        long lastId = generalDao.getLastInsertId();
+        administrator.setEnterpriseId(lastId);
+        // Insert the new administrator
+        administratorDao.insert(administrator);
+        // Fetch the ID of the last inserted item
+        lastId = generalDao.getLastInsertId();
+        return lastId;
     }
 }

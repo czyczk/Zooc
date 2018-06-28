@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/api/v1/administrator")
 public class AdministratorController {
@@ -21,7 +23,7 @@ public class AdministratorController {
      * @return Success: Administrator ID; Bad request: 400; Internal: 500
      */
     @RequestMapping(value = "/system", method = RequestMethod.POST)
-    public ResponseEntity createSystemAccount(String username, String password) {
+    public ResponseEntity<Long> createSystemAccount(String username, String password) throws SQLException, AdministratorServiceException {
         return createAccount(username, password);
     }
 
@@ -32,19 +34,14 @@ public class AdministratorController {
      * @return Success: Administrator ID; Bad request: 400; Internal: 500
      */
     @RequestMapping(value = "/enterprise", method = RequestMethod.POST)
-    public ResponseEntity createEnterpriseAccount(String username, String password) {
+    public ResponseEntity<Long> createEnterpriseAccount(String username, String password) throws SQLException, AdministratorServiceException {
         return createAccount(username, password);
     }
 
-    private ResponseEntity createAccount(String username, String password) {
+    private ResponseEntity<Long> createAccount(String username, String password) throws SQLException, AdministratorServiceException {
         // TODO
         // Authentication not implemented yet.
-        try {
-            long administratorId = administratorService.createSystemAccount(username, password);
-            return ResponseEntity.ok(administratorId);
-        } catch (AdministratorServiceException e) {
-            return ResponseEntity.status(e.getExceptionTypeEnum().getStatus())
-                    .body(e.getExceptionTypeEnum().getMessage());
-        }
+        long administratorId = administratorService.createSystemAccount(username, password);
+        return ResponseEntity.ok(administratorId);
     }
 }

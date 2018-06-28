@@ -3,6 +3,7 @@ package com.zzzz.service;
 import com.zzzz.po.Course;
 import com.zzzz.vo.CourseDetail;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 public interface CourseService {
@@ -24,11 +25,11 @@ public interface CourseService {
                 String imgUrl,
                 String categoryId,
                 Date releaseTime,
-                String price) throws CourseServiceException;
+                String price) throws CourseServiceException, SQLException;
 
-    Course getById(String courseId) throws CourseServiceException;
+    Course getById(String courseId) throws CourseServiceException, SQLException;
 
-    CourseDetail getVoById(String courseId) throws CourseServiceException;
+    CourseDetail getVoById(String courseId) throws CourseServiceException, SQLException;
 
     /**
      * Update a course. A field will be left unchanged if the corresponding parameter is null.
@@ -49,5 +50,5 @@ public interface CourseService {
                 String categoryId,
                 String releaseTime,
                 String price,
-                String status) throws CourseServiceException;
+                String status) throws CourseServiceException, SQLException;
 }
