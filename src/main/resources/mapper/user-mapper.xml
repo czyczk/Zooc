@@ -19,7 +19,7 @@
   <select id="checkExistenceByEmail" parameterType="java.lang.String" resultType="boolean">
     select count(*)
     from user
-    where user_id=#{email}
+    where email=#{email}
   </select>
   <select id="checkExistenceByMobile" parameterType="java.lang.String" resultType="boolean">
     select count(*)
