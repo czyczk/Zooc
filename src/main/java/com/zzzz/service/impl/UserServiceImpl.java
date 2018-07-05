@@ -49,6 +49,8 @@ public class UserServiceImpl implements UserService {
             checker.rejectMobileIfInvalid(mobile, new UserServiceException(INVALID_MOBILE));
             // Check if the mobile is occupied
             boolean isOccupied = userDao.checkExistenceByMobile(mobile);
+            if (isOccupied)
+                throw new UserServiceException(MOBILE_OCCUPIED);
         }
 
         // Insert
