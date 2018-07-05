@@ -58,6 +58,16 @@ public class BranchController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    /**
+     * Get a list containing items meeting the requirements.
+     * @param enterpriseId The ID of the enterprise to which the branch belong
+     * @param targetPage Target page
+     * @param pageSize Page size
+     * @param branchId Branch ID (Optional)
+     * @param nameContaining Name containing (Optional)
+     * @param addressContaining Address containing (Optional)
+     * @return Success: list; Bad request: 400; Not found: 404; Internal: 500
+     */
     @GetMapping(value = "/enterprise/{id}/list")
     public ResponseEntity<ListResult<Branch>> list(@PathVariable("id") String enterpriseId,
                                                    String targetPage,
