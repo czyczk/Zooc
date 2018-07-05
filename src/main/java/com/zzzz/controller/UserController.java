@@ -67,7 +67,7 @@ public class UserController {
      * and `userId: long` respectively.
      * @param req HttpServletRequest
      * @param userParam email, password
-     * @return Success: user without its password; Bad request: 400; User not found: 404; Incorrect password: 401
+     * @return Success: user without its password; Bad request: 400; User not found: 404; Incorrect password: 401; Internal: 500
      */
     @PostMapping(value = "/login/email")
     public ResponseEntity<User> logInByEmail(HttpServletRequest req,

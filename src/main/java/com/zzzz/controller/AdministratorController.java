@@ -48,7 +48,7 @@ public class AdministratorController {
     /**
      * Log in an administrator account.
      * @param administratorParam administratorId, password
-     * @return Success: Administrator without its password; Bad request: 400; Not found: 404; Internal: 500
+     * @return Success: Administrator without its password; Bad request: 400; Incorrect password: 401; Administrator not found: 404; Internal: 500
      */
     @PostMapping(value = "/login")
     public ResponseEntity<Administrator> logIn(HttpServletRequest req,
