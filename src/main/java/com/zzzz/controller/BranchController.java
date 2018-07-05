@@ -61,7 +61,7 @@ public class BranchController {
     /**
      * Get a list containing items meeting the requirements.
      * @param enterpriseId The ID of the enterprise to which the branch belong
-     * @param usePagination Use pagination or not: boolean
+     * @param usePagination Use pagination or not (`false` by default)
      * @param targetPage Target page (Required when using pagination)
      * @param pageSize Page size (Required when using pagination)
      * @param branchId Branch ID (Optional)
