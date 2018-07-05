@@ -39,6 +39,20 @@ public class ParameterChecker<T extends Exception> {
     }
 
     /**
+     * Parse a parameter to a positive long.
+     * @param parameter Parameter
+     * @param possibleException The exception to be thrown when the parameter is invalid.
+     * @return The parsed number.
+     * @throws T An exception is thrown if the parameter is invalid.
+     */
+    public long parsePositiveLong(String parameter, T possibleException) throws T {
+        long result = parseUnsignedLong(parameter, possibleException);
+        if (result == 0)
+            throw possibleException;
+        return result;
+    }
+
+    /**
      * Parse a parameter to a BigDecimal.
      * @param parameter Parameter
      * @param possibleException The exception to be thrown when the parameter is invalid.

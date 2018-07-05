@@ -1,11 +1,29 @@
 package com.zzzz.dto;
 
 public class BranchParam {
+    private String branchId;
+    private String enterpriseId;
     private String name;
     private String address;
     private String latitude;
     private String longitude;
     private String telephone;
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(String enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
 
     public String getName() {
         return name;

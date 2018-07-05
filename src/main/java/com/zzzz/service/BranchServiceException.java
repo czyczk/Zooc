@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class BranchServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
+        EMPTY_TARGET_PAGE("目标页码为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_PAGE_SIZE("页大小为空。", HttpStatus.BAD_REQUEST),
         EMPTY_ENTERPRISE_ID("企业编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_BRANCH_ID("分部编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_NAME("名称为空。", HttpStatus.BAD_REQUEST),
@@ -11,6 +13,8 @@ public class BranchServiceException extends ServiceException {
         EMPTY_LATITUDE("纬度为空。", HttpStatus.BAD_REQUEST),
         EMPTY_LONGITUDE("经度为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TELEPHONE("电话为空。", HttpStatus.BAD_REQUEST),
+        INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_PAGE_SIZE("不合法的页大小。", HttpStatus.BAD_REQUEST),
         INVALID_ENTERPRISE_ID("企业编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_BRANCH_ID("分部编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TELEPHONE("电话不合法。", HttpStatus.BAD_REQUEST),

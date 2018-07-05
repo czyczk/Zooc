@@ -1,6 +1,8 @@
 package com.zzzz.service;
 
+import com.zzzz.dto.BranchParam;
 import com.zzzz.po.Branch;
+import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 
@@ -43,6 +45,23 @@ public interface BranchService {
                 String latitude,
                 String longitude,
                 String telephone) throws BranchServiceException, SQLException;
+
+    /**
+     * @param targetPage Target page
+     * @param pageSize Page size
+     * @param enterpriseId Enterprise ID
+     * @param branchId Branch ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param addressContaining Address containing (optional)
+     * @return List containing items meeting the requirements
+     * @throws BranchServiceException An exception is thrown if the query is not successful.
+     */
+    ListResult<Branch> list(String targetPage,
+                            String pageSize,
+                            String enterpriseId,
+                            String branchId,
+                            String nameContaining,
+                            String addressContaining) throws BranchServiceException, SQLException;
 
     // TODO deletions can cascade
 }

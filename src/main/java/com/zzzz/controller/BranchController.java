@@ -4,6 +4,7 @@ import com.zzzz.dto.BranchParam;
 import com.zzzz.po.Branch;
 import com.zzzz.service.BranchService;
 import com.zzzz.service.BranchServiceException;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +56,17 @@ public class BranchController {
         // TODO authentication not implemented yet
         branchService.update(targetBranchId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping(value = "/enterprise/{id}/list")
+    public ResponseEntity<ListResult<Branch>> list(@PathVariable("id") String enterpriseId,
+                                                   String targetPage,
+                                                   String pageSize,
+                                                   String branchId,
+                                                   String nameContaining,
+                                                   String addressContaining) throws BranchServiceException, SQLException {
+        // TODO authentication not implemented yet
+        ListResult<Branch> result = branchService.list(targetPage, pageSize, enterpriseId, branchId, nameContaining, addressContaining);
+        return ResponseEntity.ok(result);
     }
 }

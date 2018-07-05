@@ -28,4 +28,37 @@
       longitude=#{longitude},
       telephone=#{telephone}
   </update>
+  <select id="count" parameterType="map" resultType="long">
+    select count(*)
+    from branch
+    <where>
+      and enterprise_id=#{enterpriseId}
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="nameContaining != null">
+        and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="addressContaining != null">
+        and address like '%' ${addressContaining} '%'
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="Branch">
+    select <include refid="all_columns" />
+    from branch
+    <where>
+      and enterprise_id=#{enterpriseId}
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="nameContaining != null">
+        and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="addressContaining != null">
+        and address like '%' ${addressContaining} '%'
+      </if>
+    </where>
+    limit #{starting}, #{pageSize}
+  </select>
 </mapper>
