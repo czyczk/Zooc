@@ -66,15 +66,13 @@ public class UserController {
      * will also be stored in the session with attributes `isLoggedIn: boolean`
      * and `userId: long` respectively.
      * @param req HttpServletRequest
-     * @param email Email
-     * @param password Password
+     * @param userParam email, password
      * @return Success: userId; User not found: 404; Incorrect password: 401
      */
     @PostMapping(value = "/login/email")
     public ResponseEntity logInByEmail(HttpServletRequest req,
-                                       String email,
-                                       String password) throws UserServiceException, SQLException {
-        long userId = userService.logInByEmail(email, password);
+                                       @RequestBody UserParam userParam) throws UserServiceException, SQLException {
+        long userId = userService.logInByEmail(userParam.getEmail(), userParam.getPassword());
         HttpSession session = req.getSession();
         session.setAttribute("isLoggedIn", true);
         session.setAttribute("userId", userId);
