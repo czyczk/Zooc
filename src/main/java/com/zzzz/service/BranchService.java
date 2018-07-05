@@ -47,8 +47,9 @@ public interface BranchService {
                 String telephone) throws BranchServiceException, SQLException;
 
     /**
-     * @param targetPage Target page
-     * @param pageSize Page size
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
      * @param enterpriseId Enterprise ID
      * @param branchId Branch ID (optional)
      * @param nameContaining Name containing (optional)
@@ -56,7 +57,8 @@ public interface BranchService {
      * @return List containing items meeting the requirements
      * @throws BranchServiceException An exception is thrown if the query is not successful.
      */
-    ListResult<Branch> list(String targetPage,
+    ListResult<Branch> list(String usePagination,
+                            String targetPage,
                             String pageSize,
                             String enterpriseId,
                             String branchId,

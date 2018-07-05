@@ -27,16 +27,18 @@ public interface BranchDao {
 
     /**
      * Query all items meeting the requirements.
-     * @param starting Starting index
-     * @param pageSize Page size
+     * @param usePagination Use pagination or not
+     * @param starting Starting index (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
      * @param enterpriseId The ID of the enterprise to which the branch belong
      * @param branchId The target branch ID (optional)
      * @param nameContaining Name containing (optional)
      * @param addressContaining Address containing (optional)
      * @return A list containing all items meeting the requirements.
      */
-    List<Branch> list(@Param("starting") long starting,
-                      @Param("pageSize") long pageSize,
+    List<Branch> list(@Param("usePagination") boolean usePagination,
+                      @Param("starting") Long starting,
+                      @Param("pageSize") Long pageSize,
                       @Param("enterpriseId") long enterpriseId,
                       @Param("branchId") Long branchId,
                       @Param("nameContaining") String nameContaining,

@@ -3,32 +3,32 @@ package com.zzzz.vo;
 import java.util.List;
 
 public class ListResult<E> {
-    private long targetPage;
-    private long pageSize;
-    private long totalNumPages;
+    private Long targetPage;
+    private Long pageSize;
+    private Long totalNumPages;
     private List<E> list;
 
-    public long getTargetPage() {
+    public Long getTargetPage() {
         return targetPage;
     }
 
-    public void setTargetPage(long targetPage) {
+    public void setTargetPage(Long targetPage) {
         this.targetPage = targetPage;
     }
 
-    public long getPageSize() {
+    public Long getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(long pageSize) {
+    public void setPageSize(Long pageSize) {
         this.pageSize = pageSize;
     }
 
-    public long getTotalNumPages() {
+    public Long getTotalNumPages() {
         return totalNumPages;
     }
 
-    public void setTotalNumPages(long totalNumPages) {
+    public void setTotalNumPages(Long totalNumPages) {
         this.totalNumPages = totalNumPages;
     }
 

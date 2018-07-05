@@ -59,6 +59,8 @@
         and address like '%' ${addressContaining} '%'
       </if>
     </where>
-    limit #{starting}, #{pageSize}
+    <if test="usePagination == true">
+      limit #{starting}, #{pageSize}
+    </if>
   </select>
 </mapper>

@@ -140,17 +140,24 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     @Transactional(readOnly = true)
-    public ListResult<Branch> list(String targetPage, String pageSize, String enterpriseId, String branchId, String nameContaining, String addressContaining) throws BranchServiceException, SQLException {
+    public ListResult<Branch> list(String usePagination, String targetPage, String pageSize, String enterpriseId, String branchId, String nameContaining, String addressContaining) throws BranchServiceException, SQLException {
         ListResult<Branch> result = new ListResult<>();
 
         // Check if the parameters are valid
-        checker.rejectIfNullOrEmpty(targetPage, new BranchServiceException(EMPTY_TARGET_PAGE));
-        checker.rejectIfNullOrEmpty(pageSize, new BranchServiceException(EMPTY_PAGE_SIZE));
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new BranchServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new BranchServiceException(EMPTY_PAGE_SIZE));
+        }
         checker.rejectIfNullOrEmpty(enterpriseId, new BranchServiceException(EMPTY_ENTERPRISE_ID));
 
         // Required fields
-        long targetPageLong = checker.parsePositiveLong(targetPage, new BranchServiceException(INVALID_TARGET_PAGE));
-        long pageSizeLong = checker.parsePositiveLong(pageSize, new BranchServiceException(INVALID_PAGE_SIZE));
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new BranchServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new BranchServiceException(INVALID_PAGE_SIZE));
+        }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new BranchServiceException(INVALID_ENTERPRISE_ID));
         boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
@@ -166,22 +173,28 @@ public class BranchServiceImpl implements BranchService {
             addressContaining = null;
 
         // Get the number of total pages
-        long totalNumItems = branchDao.countTotal(enterpriseIdLong, branchIdLong, nameContaining, addressContaining);
-        long totalNumPages = totalNumItems / pageSizeLong;
-        if (totalNumItems % pageSizeLong != 0)
-            totalNumPages++;
+        Long totalNumItems;
+        Long totalNumPages;
+        if (usePaginationBool) {
+            totalNumItems = branchDao.countTotal(enterpriseIdLong, branchIdLong, nameContaining, addressContaining);
+            totalNumPages = totalNumItems / pageSizeLong;
+            if (totalNumItems % pageSizeLong != 0)
+                totalNumPages++;
+            result.setTotalNumPages(totalNumPages);
+            result.setTargetPage(targetPageLong);
+            result.setPageSize(pageSizeLong);
 
-        result.setTotalNumPages(totalNumPages);
-        result.setTargetPage(targetPageLong);
-        result.setPageSize(pageSizeLong);
+            // If the target page exceeds the total number of pages,
+            // return a list result with an empty list
+            if (targetPageLong > totalNumPages)
+                return result;
+        }
 
-        // If the target page exceeds the total number of pages,
-        // return a list result with an empty list
-        if (targetPageLong > totalNumPages)
-            return result;
-
-        long starting = (targetPageLong - 1) * pageSizeLong;
-        List<Branch> list = branchDao.list(starting, pageSizeLong, enterpriseIdLong, branchIdLong, nameContaining, addressContaining);
+        Long starting = null;
+        if (usePaginationBool) {
+            starting = (targetPageLong - 1) * pageSizeLong;
+        }
+        List<Branch> list = branchDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, branchIdLong, nameContaining, addressContaining);
         result.setList(list);
         return result;
     }
