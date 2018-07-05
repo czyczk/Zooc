@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public long logInByEmail(String email, String password) throws UserServiceException, SQLException {
+    public User logInByEmail(String email, String password) throws UserServiceException, SQLException {
         // Check if the email and the password are not empty
         checker.rejectIfNullOrEmpty(email, new UserServiceException(EMPTY_EMAIL));
         checker.rejectIfNullOrEmpty(password, new UserServiceException(EMPTY_PASSWORD));
@@ -138,12 +138,13 @@ public class UserServiceImpl implements UserService {
         if (!user.getPassword().equals(password))
             throw new UserServiceException(INCORRECT_PASSWORD);
 
-        return user.getUserId();
+        user.setPassword(null);
+        return user;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public long logInByMobile(String mobile, String validationCode) throws UserServiceException {
+    public User logInByMobile(String mobile, String validationCode) throws UserServiceException {
         // TODO not implemented yet
         throw new UnsupportedOperationException();
     }

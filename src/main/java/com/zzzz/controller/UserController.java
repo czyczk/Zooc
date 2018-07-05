@@ -67,15 +67,15 @@ public class UserController {
      * and `userId: long` respectively.
      * @param req HttpServletRequest
      * @param userParam email, password
-     * @return Success: userId; User not found: 404; Incorrect password: 401
+     * @return Success: user without its password; Bad request: 400; User not found: 404; Incorrect password: 401
      */
     @PostMapping(value = "/login/email")
-    public ResponseEntity logInByEmail(HttpServletRequest req,
+    public ResponseEntity<User> logInByEmail(HttpServletRequest req,
                                        @RequestBody UserParam userParam) throws UserServiceException, SQLException {
-        long userId = userService.logInByEmail(userParam.getEmail(), userParam.getPassword());
+        User user = userService.logInByEmail(userParam.getEmail(), userParam.getPassword());
         HttpSession session = req.getSession();
         session.setAttribute("isLoggedIn", true);
-        session.setAttribute("userId", userId);
-        return ResponseEntity.ok(userId);
+        session.setAttribute("userId", user.getUserId());
+        return ResponseEntity.ok(user);
     }
 }

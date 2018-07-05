@@ -27,21 +27,21 @@ public interface UserService {
 
     /**
      * Log in by the user's email. Check the validity of this login activity
-     * and return the ID of the user if the login is successful.
+     * and return the user without its password if the login is successful.
      * @param email Email address
      * @param password Password
-     * @return The ID of the user
+     * @return The user without its password
      * @throws UserServiceException An exception is thrown if the login is not successful.
      */
-    long logInByEmail(String email, String password) throws UserServiceException, SQLException;
+    User logInByEmail(String email, String password) throws UserServiceException, SQLException;
 
     /**
      * Log in by the user's mobile. Check the validity of this login activity
-     * and return the ID of the user if the login is successful.
+     * and return the user without its password if the login is successful.
      * @param mobile Mobile number
      * @param verificationCode Verification code
-     * @return The ID of the user
+     * @return The user without its password
      * @throws UserServiceException An exception is thrown if the login is not successful.
      */
-    long logInByMobile(String mobile, String verificationCode) throws UserServiceException;
+    User logInByMobile(String mobile, String verificationCode) throws UserServiceException;
 }
