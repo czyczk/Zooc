@@ -7,7 +7,7 @@
     insert into enterprise(name, img_url, introduction, video_url, detail)
     values(#{name}, #{imgUrl}, #{introduction}, #{videoUrl}, #{detail})
   </insert>
-  <select id="checkExistenceById" parameterType="boolean">
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
     select count(*)
     from enterprise
     where enterprise_id=#{enterpriseId}
