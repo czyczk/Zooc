@@ -82,4 +82,26 @@ public class AdministratorServiceImpl implements AdministratorService {
         lastId = generalDao.getLastInsertId();
         return lastId;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Administrator logIn(String administratorId, String password) throws AdministratorServiceException, SQLException {
+        // Check if the parameters are empty
+        checker.rejectIfNullOrEmpty(administratorId, new AdministratorServiceException(EMPTY_ADMINISTRATOR_ID));
+        checker.rejectIfNullOrEmpty(password, new AdministratorServiceException(EMPTY_PASSWORD));
+        long administratorIdLong = checker.parseUnsignedLong(administratorId, new AdministratorServiceException(INVALID_ADMINISTRATOR_ID));
+
+        // Check if the administrator exists
+        Administrator administrator = administratorDao.getById(administratorIdLong);
+        if (administrator == null)
+            throw new AdministratorServiceException(ADMINISTRATOR_NOT_EXISTING);
+
+        // Check if the password is correct
+        if (!password.equals(administrator.getPassword()))
+            throw new AdministratorServiceException(INCORRECT_PASSWORD);
+
+        // Hide the password
+        administrator.setPassword(null);
+        return administrator;
+    }
 }
