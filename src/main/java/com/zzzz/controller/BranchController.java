@@ -68,7 +68,7 @@ public class BranchController {
      * @param addressContaining Address containing (Optional)
      * @return Success: list; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping(value = "/enterprise/{id}/list")
+    @GetMapping(value = "/enterprise/{id}/branch/list")
     public ResponseEntity<ListResult<Branch>> list(@PathVariable("id") String enterpriseId,
                                                    String targetPage,
                                                    String pageSize,
