@@ -48,5 +48,6 @@
       email=#{email},
       mobile=#{mobile},
       avatar_url=#{avatarUrl}
+    where user_id=#{userId}
   </update>
 </mapper>

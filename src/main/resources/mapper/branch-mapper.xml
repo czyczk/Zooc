@@ -27,6 +27,7 @@
       latitude=#{latitude},
       longitude=#{longitude},
       telephone=#{telephone}
+    where branch_id=#{branchId}
   </update>
   <select id="count" parameterType="map" resultType="long">
     select count(*)

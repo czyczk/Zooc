@@ -25,5 +25,6 @@
   <update id="update" parameterType="CourseCategory">
     update course_category set
       name=#{name}
+    where category_id=#{categoryId}
   </update>
 </mapper>

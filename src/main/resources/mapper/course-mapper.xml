@@ -44,5 +44,6 @@
       release_time=#{releaseTime},
       price=#{price},
       status=#{status}
+    where course_id=#{courseId}
   </update>
 </mapper>

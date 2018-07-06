@@ -41,5 +41,6 @@
       lecturer_id=#{lecturerId},
       release_time=#{releaseTime},
       status=#{status}
+    where trial_id=#{trialId}
   </update>
 </mapper>
