@@ -68,8 +68,10 @@ public class CourseServiceImpl implements CourseService {
         course.setCategoryId(categoryIdLong);
         course.setReleaseTime(releaseTime);
         course.setPrice(priceBd);
+        // TODO a course is currently AVAILABLE by default before the reviewing modules are implemented
+        course.setStatus(CourseStatusEnum.AVAILABLE);
         courseDao.insert(course);
-        // Fetch the lsat ID
+        // Fetch the last ID
         long courseId = generalDao.getLastInsertId();
         return courseId;
     }
