@@ -44,6 +44,12 @@ public class CourseController {
         return ResponseEntity.ok(result);
     }
 
+    /**
+     * Update a course. Don't pass in fields meant to be left unchanged.
+     * @param targetCourseId Target course ID
+     * @param courseParam name, detail, imgUrl, categoryId, releaseTime, price, status
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
     @PutMapping("/course/{id}")
     public ResponseEntity update(@PathVariable("id") String targetCourseId,
                                  @RequestBody CourseParam courseParam) throws SQLException, CourseServiceException {
