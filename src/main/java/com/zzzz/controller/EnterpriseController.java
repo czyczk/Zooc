@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/enterprise")
 public class EnterpriseController {
     @Autowired
     private EnterpriseService enterpriseService;
