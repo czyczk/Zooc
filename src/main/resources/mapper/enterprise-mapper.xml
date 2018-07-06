@@ -36,5 +36,6 @@
       introduction=#{introduction},
       video_url=#{videoUrl},
       detail=#{detail}
+    where enterprise_id=#{enterpriseId}
   </update>
 </mapper>

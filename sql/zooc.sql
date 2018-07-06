@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-06-27 10:07:53
+Date: 2018-07-06 10:31:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -255,7 +255,7 @@ CREATE TABLE `trial_reservation` (
   `trial_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
   `message` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` enum('PENDING','CANCELED','AVAILABLE','USED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PENDING',
+  `status` enum('PENDING','CANCELED','AVAILABLE','USED','EXPIRED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`reservation_id`),
   KEY `fk_trial_reservation` (`user_id`),
   KEY `fk_trial_reservation_trial_id` (`trial_id`),
