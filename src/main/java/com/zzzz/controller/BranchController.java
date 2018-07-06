@@ -24,7 +24,7 @@ public class BranchController {
      * @param branchParam name, address, latitude, longitude, telephone
      * @return Success: Branch ID; Bad request: 400; Internal: 500
      */
-    @PostMapping(value = "/course/{id}/branch")
+    @PostMapping(value = "/enterprise/{id}/branch")
     public ResponseEntity<Long> create(@PathVariable("id") String enterpriseId,
                                  @RequestBody BranchParam branchParam) throws BranchServiceException, SQLException {
         // TODO authentication not implemented yet
