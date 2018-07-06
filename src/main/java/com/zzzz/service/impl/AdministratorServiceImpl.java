@@ -85,13 +85,48 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Override
     @Transactional(readOnly = true)
+    public Administrator getById(String administratorId) throws AdministratorServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(administratorId, new AdministratorServiceException(EMPTY_ADMINISTRATOR_ID));
+        long administratorIdLong = checker.parseUnsignedLong(administratorId, new AdministratorServiceException(INVALID_ADMINISTRATOR_ID));
+
+        // Fetch the administrator and check if the administrator exists
+        Administrator administrator = administratorDao.getById(administratorIdLong);
+        if (administrator == null)
+            throw new AdministratorServiceException(ADMINISTRATOR_NOT_EXISTING);
+        return administrator;
+    }
+
+    @Override
+    @Transactional(rollbackFor = { AdministratorServiceException.class, SQLException.class })
+    public void update(String targetAdministratorId, String username, String password) throws AdministratorServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(targetAdministratorId, new AdministratorServiceException(EMPTY_ADMINISTRATOR_ID));
+        long targetAdministratorIdLong = checker.parseUnsignedLong(targetAdministratorId, new AdministratorServiceException(INVALID_ADMINISTRATOR_ID));
+
+        // Fetch the original administrator and check if it exists
+        Administrator administrator = administratorDao.getById(targetAdministratorIdLong);
+        if (administrator == null)
+            throw new AdministratorServiceException(ADMINISTRATOR_NOT_EXISTING);
+        // Update fields if not null
+        if (username != null)
+            administrator.setUsername(username);
+        // TODO password validity checker
+        if (password != null)
+            administrator.setPassword(password);
+        // Update
+        administratorDao.update(administrator);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Administrator logIn(String administratorId, String password) throws AdministratorServiceException, SQLException {
         // Check if the parameters are empty
         checker.rejectIfNullOrEmpty(administratorId, new AdministratorServiceException(EMPTY_ADMINISTRATOR_ID));
         checker.rejectIfNullOrEmpty(password, new AdministratorServiceException(EMPTY_PASSWORD));
         long administratorIdLong = checker.parseUnsignedLong(administratorId, new AdministratorServiceException(INVALID_ADMINISTRATOR_ID));
 
-        // Check if the administrator exists
+        // Fetch the administrator and check if the administrator exists
         Administrator administrator = administratorDao.getById(administratorIdLong);
         if (administrator == null)
             throw new AdministratorServiceException(ADMINISTRATOR_NOT_EXISTING);

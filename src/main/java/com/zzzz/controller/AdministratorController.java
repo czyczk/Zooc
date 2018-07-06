@@ -39,10 +39,36 @@ public class AdministratorController {
     }
 
     private ResponseEntity<Long> createAccount(String username, String password) throws SQLException, AdministratorServiceException {
-        // TODO
-        // Authentication not implemented yet.
+        // TODO Authentication not implemented yet.
         long administratorId = administratorService.createSystemAccount(username, password);
         return ResponseEntity.ok(administratorId);
+    }
+
+
+    /**
+     * Get an administrator by its ID.
+     * @param administratorId Administrator ID
+     * @return Success: Administrator; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Administrator> getById(@PathVariable("id") String administratorId) throws AdministratorServiceException, SQLException {
+        // TODO Authentication not implemented yet.
+        Administrator result = administratorService.getById(administratorId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Update an administrator. Don't pass in parameters meant to be left unchanged.
+     * @param targetAdministratorId Target administrator ID
+     * @param administratorParam username, password
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable("id") String targetAdministratorId,
+                                 @RequestBody AdministratorParam administratorParam) throws AdministratorServiceException, SQLException {
+        // TODO Authentication not implemented yet.
+        administratorService.update(targetAdministratorId, administratorParam.getUsername(), administratorParam.getPassword());
+        return ResponseEntity.noContent().build();
     }
 
     /**

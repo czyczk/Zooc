@@ -24,6 +24,21 @@ public interface AdministratorService {
     long createEnterpriseAccount(String username, String password) throws AdministratorServiceException, SQLException;
 
     /**
+     * Get an administrator by its ID.
+     * @param administratorId Administrator ID
+     * @return Administrator
+     */
+    Administrator getById(String administratorId) throws AdministratorServiceException, SQLException;
+
+    /**
+     * Update an administrator. Fields will be left unchanged if the corresponding parameters are null.
+     * @param targetAdministratorId Target administrator ID
+     * @param username New username
+     * @param password New password
+     */
+    void update(String targetAdministratorId, String username, String password) throws AdministratorServiceException, SQLException;
+
+    /**
      * Log in an administrator account by its ID and password.
      * The administrator without its password will be returned as a result if the login is successful,
      * or an exception is thrown.
