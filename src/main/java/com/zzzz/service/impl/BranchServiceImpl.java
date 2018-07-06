@@ -59,6 +59,7 @@ public class BranchServiceImpl implements BranchService {
         branch.setAddress(address);
         branch.setLatitude(latitudeBd);
         branch.setLongitude(longitudeBd);
+        branch.setTelephone(telephone);
         branchDao.insert(branch);
 
         // Fetch the last ID
