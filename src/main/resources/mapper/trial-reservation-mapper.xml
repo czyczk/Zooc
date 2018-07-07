@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.TrialReservationDao">
+  <insert id="insert" parameterType="TrialReservation">
+    insert into trial_reservation(user_id, trial_id, time, message, status)
+    values(#{userId}, #{trialId}, #{time}, #{message}, #{status})
+  </insert>
+  <select id="getById" parameterType="long" resultType="TrialReservation">
+    select reservation_id, user_id, time, message, status
+    from trial_reservation
+    where reservation_id=#{reservationId}
+  </select>
+  <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.TrialReservationDetail">
+    select res.reservation_id, res.user_id, res.trial_id, tr.name 'trial_name', res.message, res.status
+    from trial_reservation res join trial tr on res.trial_id = tr.trial_id
+    where reservation_id=#{reservationId}
+  </select>
+  <update id="update" parameterType="TrialReservation">
+    update trial_reservation set
+      status=#{status}
+    where reservation_id=#{reservationId}
+  </update>
+</mapper>
