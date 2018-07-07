@@ -14,7 +14,7 @@ public class BranchServiceException extends ServiceException {
         EMPTY_LONGITUDE("经度为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TELEPHONE("电话为空。", HttpStatus.BAD_REQUEST),
         INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
-        INVALID_PAGE_SIZE("不合法的页大小。", HttpStatus.BAD_REQUEST),
+        INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
         INVALID_ENTERPRISE_ID("企业编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_BRANCH_ID("分部编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TELEPHONE("电话不合法。", HttpStatus.BAD_REQUEST),
