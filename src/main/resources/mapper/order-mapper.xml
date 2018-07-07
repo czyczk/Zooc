@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.OrderDao">
+  <insert id="insert" parameterType="Order">
+    insert into `order`(user_id, course_id, time, status)
+    values(#{userId}, #{courseId}, #{time}, #{status})
+  </insert>
+  <select id="getById" parameterType="long" resultType="Order">
+    select order_id, user_id, course_id, time, status
+    from `order`
+    where order_id=#{orderId}
+  </select>
+  <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.OrderDetail">
+    select o.order_id, o.user_id, o.course_id, c.name 'course_name', o.time, o.status
+    from `order` o join course c on o.course_id = c.course_id
+    where order_id=#{orderId}
+  </select>
+  <update id="update" parameterType="Order">
+    update `order` set
+      status=#{status}
+    where order_id=#{orderId}
+  </update>
+</mapper>
