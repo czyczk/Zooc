@@ -18,12 +18,21 @@ import static com.zzzz.service.TrialServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class TrialServiceImpl implements TrialService {
-    @Autowired private GeneralDao generalDao;
-    @Autowired private TrialDao trialDao;
-    @Autowired private CourseCategoryDao categoryDao;
-    @Autowired private BranchDao branchDao;
-    @Autowired private LecturerDao lecturerDao;
-    private ParameterChecker<TrialServiceException> checker = new ParameterChecker<>();
+    private final GeneralDao generalDao;
+    private final TrialDao trialDao;
+    private final CourseCategoryDao categoryDao;
+    private final BranchDao branchDao;
+    private final LecturerDao lecturerDao;
+    private final ParameterChecker<TrialServiceException> checker = new ParameterChecker<>();
+
+    @Autowired
+    public TrialServiceImpl(GeneralDao generalDao, TrialDao trialDao, CourseCategoryDao categoryDao, BranchDao branchDao, LecturerDao lecturerDao) {
+        this.generalDao = generalDao;
+        this.trialDao = trialDao;
+        this.categoryDao = categoryDao;
+        this.branchDao = branchDao;
+        this.lecturerDao = lecturerDao;
+    }
 
     @Override
     @Transactional(rollbackFor = { TrialServiceException.class, SQLException.class })
@@ -33,6 +42,8 @@ public class TrialServiceImpl implements TrialService {
         checker.rejectIfNullOrEmpty(imgUrl, new TrialServiceException(EMPTY_IMG_URL));
         checker.rejectIfNullOrEmpty(categoryId, new TrialServiceException(EMPTY_CATEGORY_ID));
         checker.rejectIfNullOrEmpty(lecturerId, new TrialServiceException(EMPTY_LECTURER_ID));
+        if (releaseTime == null)
+            throw new TrialServiceException(EMPTY_RELEASE_TIME);
         long categoryIdLong = checker.parseUnsignedLong(categoryId, new TrialServiceException(INVALID_CATEGORY_ID));
         long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
         long lecturerIdLong = checker.parseUnsignedLong(lecturerId, new TrialServiceException(INVALID_LECTURER_ID));
