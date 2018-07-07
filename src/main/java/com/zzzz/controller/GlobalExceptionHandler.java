@@ -32,6 +32,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUnsupportedOperationException() {
         // Log the error
         logger.error("该操作尚未实现。");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("该操作尚未实现。");
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("该操作尚未实现。");
     }
 }
