@@ -49,7 +49,7 @@ public class RefundServiceImpl implements RefundService {
 
         // A refund can only be issued when the order is `AVAILABLE`
         if (order.getStatus() != OrderStatusEnum.AVAILABLE)
-            throw new RefundServiceException(INCORRECT_ORDER_STATUS);
+            throw new RefundServiceException(UNABLE_TO_APPLY_FOR_REFUND);
 
         // Set the order to `REFUND_REQUESTED`
         order.setStatus(OrderStatusEnum.REFUND_REQUESTED);
@@ -113,6 +113,10 @@ public class RefundServiceImpl implements RefundService {
         Order order = orderDao.getById(refund.getOrderId());
         if (order == null)
             throw new RefundServiceException(ORDER_NOT_EXISTING);
+
+        // The order status must be `REFUND_REQUESTED`
+        if (order.getStatus() != OrderStatusEnum.REFUND_REQUESTED)
+            throw new RefundServiceException(UNABLE_TO_CANCEL_REFUND);
 
         // Set the order back to `AVAILABLE`
         order.setStatus(OrderStatusEnum.AVAILABLE);
