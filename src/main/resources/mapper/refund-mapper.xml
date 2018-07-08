@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.RefundDao">
+  <insert id="insert" parameterType="Refund">
+    insert into refund(order_id, time, reason)
+    values(#{orderId}, #{time}, #{reason})
+  </insert>
+  <select id="getById" parameterType="long" resultType="Refund">
+    select refund_id, order_id, time, reason
+    from refund
+    where refund_id=#{refundId}
+  </select>
+  <update id="update" parameterType="Refund">
+    update refund set
+      reason=#{reason}
+    where refund_id=#{refundId}
+  </update>
+  <delete id="delete" parameterType="long">
+    delete from refund
+    where refund_id=#{refundId}
+  </delete>
+</mapper>
