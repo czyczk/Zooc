@@ -2,21 +2,21 @@ package com.zzzz.service;
 
 import org.springframework.http.HttpStatus;
 
-public class TrialReservationServiceException extends ServiceException {
+public class OrderServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
-        EMPTY_RESERVATION_ID("预约编号为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_ORDER_ID("订单编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_USER_ID("用户编号为空。", HttpStatus.BAD_REQUEST),
-        EMPTY_TRIAL_ID("试听课程编号为空。", HttpStatus.BAD_REQUEST),
-        EMPTY_TIME("预约时间为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_COURSE_ID("课程编号为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_TIME("下单时间为空。", HttpStatus.BAD_REQUEST),
         EMPTY_STATUS("状态为空。", HttpStatus.BAD_REQUEST),
-        INVALID_RESERVATION_ID("预约编号不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_ORDER_ID("订单编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_USER_ID("用户编号不合法。", HttpStatus.BAD_REQUEST),
-        INVALID_TRIAL_ID("试听课程编号不合法。", HttpStatus.BAD_REQUEST),
-        INVALID_TIME("预约时间不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_COURSE_ID("课程编号不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_TIME("下单时间不合法。", HttpStatus.BAD_REQUEST),
         INVALID_STATUS("状态不合法。", HttpStatus.BAD_REQUEST),
-        RESERVATION_NOT_EXISTING("该预约不存在。", HttpStatus.NOT_FOUND),
+        ORDER_NOT_EXISTING("该订单不存在。", HttpStatus.NOT_FOUND),
         USER_NOT_EXISTING("该用户不存在。", HttpStatus.NOT_FOUND),
-        TRIAL_NOT_EXISTING("该试听课程不存在。", HttpStatus.NOT_FOUND)
+        COURSE_NOT_EXISTING("该课程不存在。", HttpStatus.NOT_FOUND)
         ;
 
         private String message;
@@ -35,11 +35,11 @@ public class TrialReservationServiceException extends ServiceException {
         }
     }
 
-    public TrialReservationServiceException(String message, HttpStatus status) {
+    public OrderServiceException(String message, HttpStatus status) {
         super(message, status);
     }
 
-    public TrialReservationServiceException(ExceptionTypeEnum exceptionTypeEnum) {
+    public OrderServiceException(ExceptionTypeEnum exceptionTypeEnum) {
         this(exceptionTypeEnum.message, exceptionTypeEnum.status);
     }
 }
