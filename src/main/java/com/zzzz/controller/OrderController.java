@@ -86,8 +86,6 @@ public class OrderController {
      * Cancel a refund. Open for only the purchaser.
      * @param refundId The ID of the refund request to be canceled
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
-     * @throws SQLException
-     * @throws RefundServiceException
      */
     @DeleteMapping("/refund/{id}")
     public ResponseEntity cancelRefund(@PathVariable("id") String refundId) throws SQLException, RefundServiceException {
