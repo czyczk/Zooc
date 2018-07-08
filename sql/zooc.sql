@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-06 10:31:05
+Date: 2018-07-08 22:49:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -218,7 +218,7 @@ CREATE TABLE `refund` (
   `time` datetime NOT NULL,
   `reason` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`refund_id`),
-  KEY `fk_refund_order_id` (`order_id`),
+  UNIQUE KEY `unique_refund_order_id` (`order_id`),
   CONSTRAINT `fk_refund_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
