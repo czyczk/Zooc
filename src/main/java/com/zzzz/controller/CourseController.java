@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -65,7 +66,7 @@ public class CourseController {
 
     /**
      * Get a list containing all items meeting the requirements.
-     * @param enterpriseId The ID of the enterprise to which the course belongs
+     * @param enterpriseId The ID of the enterprise to which the courses belong
      * @param usePagination Use pagination or not (`false` by default)
      * @param targetPage Target page (required when using pagination)
      * @param pageSize Page size (required when using pagination)
@@ -85,6 +86,21 @@ public class CourseController {
                                                          String status) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
         ListResult<CourseDetail> result = courseService.list(usePagination, targetPage, pageSize, enterpriseId, courseId, nameContaining, categoryId, priceMin, priceMax, status);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get a list of the most recent N available courses of the enterprise.
+     * The actual number of items can be less than the N specified.
+     * @param enterpriseId The ID of the enterprise to which the courses belong
+     * @param n The number of most recent items to list (positive integer)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/course/recent")
+    public ResponseEntity<List<CourseDetail>> listRecent(@PathVariable("id") String enterpriseId,
+                                                               String n) throws SQLException, CourseServiceException {
+        // TODO authentication not implemented yet
+        List<CourseDetail> result = courseService.listLatest(enterpriseId, n);
         return ResponseEntity.ok(result);
     }
 }

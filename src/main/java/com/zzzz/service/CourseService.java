@@ -6,6 +6,7 @@ import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public interface CourseService {
     /**
@@ -58,7 +59,7 @@ public interface CourseService {
      * @param usePagination Use pagination or not
      * @param targetPage Target page (required when using pagination)
      * @param pageSize Page size (required when using pagination)
-     * @param enterpriseId The ID of the enterprise to which the course belongs
+     * @param enterpriseId The ID of the enterprise to which the courses belong
      * @param courseId Course ID (optional)
      * @param nameContaining Name containing (optional)
      * @param categoryId Category ID (optional)
@@ -78,4 +79,14 @@ public interface CourseService {
                                   String priceMin,
                                   String priceMax,
                                   String status) throws CourseServiceException, SQLException;
+
+    /**
+     * List the latest N available courses of the enterprise.
+     * The actual number of result can be less than the N specified.
+     * @param enterpriseId The ID of the enterprise to which the courses belong
+     * @param n The number of items to list
+     * @return The latest N available courses
+     * @throws CourseServiceException An exception is thrown if the query is not successful.
+     */
+    List<CourseDetail> listLatest(String enterpriseId, String n) throws CourseServiceException, SQLException;
 }

@@ -16,6 +16,7 @@ public class CourseServiceException extends ServiceException {
         EMPTY_PRICE("价格为空。", HttpStatus.BAD_REQUEST),
         INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
         INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_LATEST_NUMBER("最新条数不合法。", HttpStatus.BAD_REQUEST),
         INVALID_ENTERPRISE_ID("企业编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_COURSE_ID("课程编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_CATEGORY_ID("课程类别编号不合法。", HttpStatus.BAD_REQUEST),

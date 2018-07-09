@@ -98,4 +98,12 @@
       limit #{starting}, #{pageSize}
     </if>
   </select>
+  <select id="listLatest" parameterMap="map" resultType="com.zzzz.vo.CourseDetail">
+    select distinct course_id, name, img_url, category_id, category_name, release_time, price
+    from view_course_detail
+    where enterprise_id=#{enterpriseId}
+      and status='AVAILABLE'
+    order by release_time desc
+    limit 0, #{n}
+  </select>
 </mapper>

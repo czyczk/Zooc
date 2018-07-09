@@ -41,7 +41,7 @@ public interface CourseDao {
      * @param usePagination Use pagination or not
      * @param starting Starting index (required when using pagination)
      * @param pageSize Page size (required when using pagination)
-     * @param enterpriseId The ID of the enterprise to which the course belongs
+     * @param enterpriseId The ID of the enterprise to which the courses belong
      * @param courseId Course ID (optional)
      * @param nameContaining Name containing (optional)
      * @param categoryId Category ID (optional)
@@ -61,4 +61,15 @@ public interface CourseDao {
                             @Param("priceMin") BigDecimal priceMin,
                             @Param("priceMax") BigDecimal priceMax,
                             @Param("status") CourseStatusEnum status) throws SQLException;
+
+    /**
+     * Query a list containing the latest N items.
+     * The actual number of items can be less than the N specified.
+     * @param enterpriseId The ID of the enterprise to which the courses belong
+     * @param n The number of items to list
+     * @return A list containing the latest N items
+     * @throws SQLException An exception is thrown if the query is not successful.
+     */
+    List<CourseDetail> listLatest(@Param("enterpriseId") long enterpriseId,
+                                  @Param("n") int n) throws SQLException;
 }

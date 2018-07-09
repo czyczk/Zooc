@@ -240,4 +240,21 @@ public class CourseServiceImpl implements CourseService {
         result.setList(list);
         return result;
     }
+
+    @Override
+    public List<CourseDetail> listLatest(String enterpriseId, String n) throws CourseServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(enterpriseId, new CourseServiceException(EMPTY_ENTERPRISE_ID));
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CourseServiceException(INVALID_ENTERPRISE_ID));
+        int nInt = checker.parsePositiveInt(n, new CourseServiceException(INVALID_LATEST_NUMBER));
+
+        // Check if the enterprise exists
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new CourseServiceException(ENTERPRISE_NOT_EXISTING);
+
+        // Get the most recent N items
+        List<CourseDetail> result = courseDao.listLatest(enterpriseIdLong, nInt);
+        return result;
+    }
 }
