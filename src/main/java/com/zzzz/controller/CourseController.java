@@ -90,14 +90,14 @@ public class CourseController {
     }
 
     /**
-     * Get a list of the most recent N available courses of the enterprise.
+     * Get a list of the latest N available courses of the enterprise.
      * The actual number of items can be less than the N specified.
      * @param enterpriseId The ID of the enterprise to which the courses belong
-     * @param n The number of most recent items to list (positive integer)
+     * @param n The number of the latest items to list (positive integer)
      * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping("/enterprise/{id}/course/recent")
-    public ResponseEntity<List<CourseDetail>> listRecent(@PathVariable("id") String enterpriseId,
+    @GetMapping("/enterprise/{id}/course/latest")
+    public ResponseEntity<List<CourseDetail>> listLatest(@PathVariable("id") String enterpriseId,
                                                                String n) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
         List<CourseDetail> result = courseService.listLatest(enterpriseId, n);
