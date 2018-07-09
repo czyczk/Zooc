@@ -6,6 +6,7 @@ public class Lecturer {
     private String name;
     private String photoUrl;
     private String introduction;
+    private boolean isDisabled;
 
     public Long getLecturerId() {
         return lecturerId;
@@ -47,6 +48,14 @@ public class Lecturer {
         this.introduction = introduction;
     }
 
+    public boolean isDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Lecturer{");
@@ -55,6 +64,7 @@ public class Lecturer {
         sb.append(", name='").append(name).append('\'');
         sb.append(", photoUrl='").append(photoUrl).append('\'');
         sb.append(", introduction='").append(introduction).append('\'');
+        sb.append(", isDisabled=").append(isDisabled);
         sb.append('}');
         return sb.toString();
     }

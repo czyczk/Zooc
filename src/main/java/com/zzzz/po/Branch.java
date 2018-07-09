@@ -10,6 +10,7 @@ public class Branch {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String telephone;
+    private boolean isDisabled;
 
     public Long getBranchId() {
         return branchId;
@@ -67,6 +68,14 @@ public class Branch {
         this.telephone = telephone;
     }
 
+    public boolean isDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Branch{");
@@ -77,6 +86,7 @@ public class Branch {
         sb.append(", latitude=").append(latitude);
         sb.append(", longitude=").append(longitude);
         sb.append(", telephone='").append(telephone).append('\'');
+        sb.append(", isDisabled=").append(isDisabled);
         sb.append('}');
         return sb.toString();
     }

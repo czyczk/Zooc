@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.LecturerDao">
   <sql id="all_columns">
-    lecturer_id, enterprise_id, name, photo_url, introduction
+    lecturer_id, enterprise_id, name, photo_url, introduction, is_disabled
   </sql>
   <insert id="insert" parameterType="Lecturer">
     insert into lecturer(enterprise_id, name, photo_url, introduction)
@@ -12,12 +12,12 @@
   </insert>
   <select id="checkExistenceById" parameterType="long" resultType="boolean">
     select count(*)
-    from lecturer
+    from view_available_lecturer
     where lecturer_id=#{lecturerId}
   </select>
   <select id="getById" parameterType="long" resultType="Lecturer">
     select <include refid="all_columns" />
-    from lecturer
+    from view_available_lecturer
     where lecturer_id=#{lecturerId}
   </select>
   <update id="update" parameterType="Lecturer">
