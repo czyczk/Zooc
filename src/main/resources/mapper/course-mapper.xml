@@ -30,20 +30,7 @@
       lecturer_id 'course_offerings.lecturer_id',
       lecturer_name 'course_offerings.lecturer_name'
     from view_course_detail
-
-    select crs.course_id, crs.name, crs.detail, crs.img_url,
-      crs.category_id, cat.name 'category_name',
-      crs.release_time, crs.price, crs.status,
-      crsofr.course_offering_id 'course_offerings.course_offering_id',
-      crsofr.branch_id 'course_offerings.branch_id',
-      br.name 'course_offerings.branch_name',
-      crsofr.lecturer_id 'course_offerings.lecturer_id',
-      lec.lecturer_id 'course_offerings.lecturer_name'
-    from course crs join course_category cat on crs.category_id = cat.category_id
-      join course_offering crsofr on crsofr.course_id = crs.course_id
-      join branch br on crsofr.branch_id = br.branch_id
-      join lecturer lec on crsofr.lecturer_id = lec.lecturer_id
-    where crs.course_id=#{courseId}
+    where course_id=#{courseId}
   </select>
   <update id="update" parameterType="Course">
     update course set
