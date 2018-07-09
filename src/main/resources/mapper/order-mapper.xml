@@ -22,4 +22,53 @@
       status=#{status}
     where order_id=#{orderId}
   </update>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from (select o.order_id, o.user_id, o.course_id, c.name 'course_name',
+                 o.time, o.status
+          from `order` o join course c on o.course_id = c.course_id
+          <where>
+            <if test="orderId != null">
+              and order_id=#{orderId}
+            </if>
+            <if test="userId != null">
+              and user_id=#{userId}
+            </if>
+            <if test="courseId != null">
+              and course_id=#{courseId}
+            </if>
+            <if test="courseNameContaining != null">
+              and course_name like '%' ${courseNameContaining} '%'
+            </if>
+            <if test="status != null">
+              and status=#{status}
+            </if>
+          </where>
+    ) order_detail
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
+    select o.order_id, o.user_id, o.course_id, c.name 'course_name',
+    o.time, o.status
+    from `order` o join course c on o.course_id = c.course_id
+    <where>
+      <if test="orderId != null">
+        and order_id=#{orderId}
+      </if>
+      <if test="userId != null">
+        and user_id=#{userId}
+      </if>
+      <if test="courseId != null">
+        and course_id=#{courseId}
+      </if>
+      <if test="courseNameContaining != null">
+        and course_name like '%' ${courseNameContaining} '%'
+      </if>
+      <if test="status != null">
+        and status=#{status}
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
 </mapper>
