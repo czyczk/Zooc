@@ -136,7 +136,23 @@ public class BranchServiceImpl implements BranchService {
 
         // Update
         branchDao.update(branch);
+    }
 
+    @Override
+    @Transactional(rollbackFor = { BranchServiceException.class, SQLException.class })
+    public void disable(String branchId) throws BranchServiceException, SQLException {
+        // Check if the parameter is valid
+        checker.rejectIfNullOrEmpty(branchId, new BranchServiceException(EMPTY_BRANCH_ID));
+        long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
+
+        // Fetch the branch and check if it exists
+        Branch branch = branchDao.getById(branchIdLong);
+        if (branch == null)
+            throw new BranchServiceException(BRANCH_NOT_EXISTING);
+
+        // Set the branch to disabled
+        branch.setDisabled(true);
+        branchDao.update(branch);
     }
 
     @Override

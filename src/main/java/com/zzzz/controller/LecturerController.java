@@ -5,7 +5,6 @@ import com.zzzz.po.Lecturer;
 import com.zzzz.service.LecturerService;
 import com.zzzz.service.LecturerServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,12 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/v1")
 public class LecturerController {
+    private final LecturerService lecturerService;
+
     @Autowired
-    private LecturerService lecturerService;
+    public LecturerController(LecturerService lecturerService) {
+        this.lecturerService = lecturerService;
+    }
 
     /**
      * Create a new lecturer.
@@ -54,6 +57,13 @@ public class LecturerController {
                                  @RequestBody LecturerParam lecturerParam) throws SQLException, LecturerServiceException {
         // TODO authentication not implemented yet
         lecturerService.update(targetLecturerId, lecturerParam.getName(), lecturerParam.getPhotoUrl(), lecturerParam.getIntroduction());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/lecturer/{id}")
+    public ResponseEntity delete(@PathVariable("id") String lecturerId) throws SQLException, LecturerServiceException {
+        // TODO authentication not implemented yet
+        lecturerService.disable(lecturerId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -17,16 +17,17 @@ import static com.zzzz.service.LecturerServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class LecturerServiceImpl implements LecturerService {
-    @Autowired
-    private GeneralDao generalDao;
-
-    @Autowired
-    private LecturerDao lecturerDao;
-
-    @Autowired
-    private EnterpriseDao enterpriseDao;
-
+    private final GeneralDao generalDao;
+    private final LecturerDao lecturerDao;
+    private final EnterpriseDao enterpriseDao;
     private ParameterChecker<LecturerServiceException> checker = new ParameterChecker<>();
+
+    @Autowired
+    public LecturerServiceImpl(GeneralDao generalDao, LecturerDao lecturerDao, EnterpriseDao enterpriseDao) {
+        this.generalDao = generalDao;
+        this.lecturerDao = lecturerDao;
+        this.enterpriseDao = enterpriseDao;
+    }
 
     @Override
     @Transactional(rollbackFor = { LecturerServiceException.class, SQLException.class })
@@ -117,6 +118,23 @@ public class LecturerServiceImpl implements LecturerService {
         }
 
         // Update
+        lecturerDao.update(lecturer);
+    }
+
+    @Override
+    @Transactional(rollbackFor = { LecturerServiceException.class, SQLException.class })
+    public void disable(String lecturerId) throws LecturerServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(lecturerId, new LecturerServiceException(EMPTY_LECTURER_ID));
+        long lecturerIdLong = checker.parseUnsignedLong(lecturerId, new LecturerServiceException(INVALID_LECTURER_ID));
+
+        // Get the lecturer and check if it exists
+        Lecturer lecturer = lecturerDao.getById(lecturerIdLong);
+        if (lecturer == null)
+            throw new LecturerServiceException(LECTURER_NOT_EXISTING);
+
+        // Set the lecturer disabled
+        lecturer.setDisabled(true);
         lecturerDao.update(lecturer);
     }
 }

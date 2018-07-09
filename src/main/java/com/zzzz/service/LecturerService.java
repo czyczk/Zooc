@@ -29,4 +29,11 @@ public interface LecturerService {
      * @throws LecturerServiceException An exception is thrown if the update is unsuccessful.
      */
     void update(String targetLecturerId, String name, String photoUrl, String introduction) throws LecturerServiceException, SQLException;
+
+    /**
+     * Disable a lecturer. The lecturer will be invisible from now on.
+     * @param lecturerId Lecturer ID
+     * @throws LecturerServiceException An exception is thrown if the operation is unsuccessful.
+     */
+    void disable(String lecturerId) throws LecturerServiceException, SQLException;
 }

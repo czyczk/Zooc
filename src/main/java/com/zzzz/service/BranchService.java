@@ -47,6 +47,13 @@ public interface BranchService {
                 String telephone) throws BranchServiceException, SQLException;
 
     /**
+     * Disable a branch. The branch will be invisible from now on.
+     * @param branchId Branch ID
+     * @throws BranchServiceException An exception will be thrown if the operation is not successful.
+     */
+    void disable(String branchId) throws BranchServiceException, SQLException;
+
+    /**
      * @param usePagination Use pagination or not
      * @param targetPage Target page (required when using pagination)
      * @param pageSize Page size (required when using pagination)

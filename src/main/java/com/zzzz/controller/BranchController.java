@@ -6,7 +6,6 @@ import com.zzzz.service.BranchService;
 import com.zzzz.service.BranchServiceException;
 import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +14,12 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/v1")
 public class BranchController {
+    private final BranchService branchService;
+
     @Autowired
-    private BranchService branchService;
+    public BranchController(BranchService branchService) {
+        this.branchService = branchService;
+    }
 
     /**
      * Create a new branch. The ID of the new branch is returned.
@@ -55,7 +58,19 @@ public class BranchController {
                                  @RequestBody BranchParam branchParam) throws BranchServiceException, SQLException {
         // TODO authentication not implemented yet
         branchService.update(targetBranchId, branchParam.getName(), branchParam.getAddress(), branchParam.getLatitude(), branchParam.getLongitude(), branchParam.getTelephone());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Delete a branch. The branch will be disabled and no more interactions can be made to it.
+     * @param branchId Branch ID
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @DeleteMapping(value = "/branch/{id}")
+    public ResponseEntity delete(@PathVariable("id") String branchId) throws BranchServiceException, SQLException {
+        // TODO authentication not implemented yet
+        branchService.disable(branchId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
