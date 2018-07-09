@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-08 22:49:38
+Date: 2018-07-09 10:01:34
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -43,10 +43,11 @@ CREATE TABLE `branch` (
   `latitude` decimal(11,8) NOT NULL,
   `longitude` decimal(11,8) NOT NULL,
   `telephone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `is_disabled` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`branch_id`),
   UNIQUE KEY `unique_branch_pk` (`branch_id`),
   KEY `fk_branch_enterprise_id` (`enterprise_id`) USING BTREE,
-  CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -65,11 +66,11 @@ CREATE TABLE `course` (
   `status` enum('AVAILABLE','OFF','IN_REVIEW') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'AVAILABLE',
   PRIMARY KEY (`course_id`),
   UNIQUE KEY `unique_course_pk` (`course_id`),
-  KEY `fk_course_category_id` (`category_id`),
   KEY `idx_suit_available_course_by_category` (`status`,`category_id`) USING BTREE,
+  KEY `fk_course_category_id` (`category_id`),
   KEY `fk_course_enterprise_id` (`enterprise_id`),
-  CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -96,9 +97,9 @@ CREATE TABLE `course_offering` (
   KEY `fk_course_offering` (`course_id`),
   KEY `fk_course_offering_branch_id` (`branch_id`),
   KEY `fk_course_offering_lecturer_id` (`lecturer_id`),
-  CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -126,9 +127,10 @@ CREATE TABLE `lecturer` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `photo_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `is_disabled` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
-  CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -238,11 +240,11 @@ CREATE TABLE `trial` (
   `status` enum('AVAILABLE','OFF','IN_REVIEW') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'IN_REVIEW',
   PRIMARY KEY (`trial_id`),
   KEY `fk_trial_branch_id` (`branch_id`),
-  KEY `fk_trial_lecturer_id` (`lecturer_id`),
   KEY `fk_trial_category_id` (`category_id`),
-  CONSTRAINT `fk_trial_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_trial_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_trial_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_trial_lecturer_id` (`lecturer_id`),
+  CONSTRAINT `fk_trial_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_trial_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_trial_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -259,8 +261,8 @@ CREATE TABLE `trial_reservation` (
   PRIMARY KEY (`reservation_id`),
   KEY `fk_trial_reservation` (`user_id`),
   KEY `fk_trial_reservation_trial_id` (`trial_id`),
-  CONSTRAINT `fk_trial_reservation` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_trial_reservation_trial_id` FOREIGN KEY (`trial_id`) REFERENCES `trial` (`trial_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_trial_reservation` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_trial_reservation_trial_id` FOREIGN KEY (`trial_id`) REFERENCES `trial` (`trial_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
@@ -280,8 +282,20 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
+-- View structure for view_available_branch
+-- ----------------------------
+DROP VIEW IF EXISTS `view_available_branch`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_branch` AS select `branch`.`branch_id` AS `branch_id`,`branch`.`enterprise_id` AS `enterprise_id`,`branch`.`name` AS `name`,`branch`.`address` AS `address`,`branch`.`latitude` AS `latitude`,`branch`.`longitude` AS `longitude`,`branch`.`telephone` AS `telephone` from `branch` where (`branch`.`is_disabled` = 0x00) ;
+
+-- ----------------------------
 -- View structure for view_available_course
 -- ----------------------------
 DROP VIEW IF EXISTS `view_available_course`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_course` AS select `course`.`course_id` AS `course_id`,`course`.`enterprise_id` AS `enterprise_id`,`course`.`name` AS `name`,`course`.`detail` AS `detail`,`course`.`img_url` AS `img_url`,`course`.`category_id` AS `category_id`,`course`.`release_time` AS `release_time`,`course`.`price` AS `price`,`course`.`status` AS `status` from `course` where (`course`.`status` = 'AVAILABLE') ;
+
+-- ----------------------------
+-- View structure for view_available_lecturer
+-- ----------------------------
+DROP VIEW IF EXISTS `view_available_lecturer`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_lecturer` AS select `lecturer`.`lecturer_id` AS `lecturer_id`,`lecturer`.`enterprise_id` AS `enterprise_id`,`lecturer`.`name` AS `name`,`lecturer`.`photo_url` AS `photo_url`,`lecturer`.`introduction` AS `introduction` from `lecturer` where (`lecturer`.`is_disabled` = 0) ;
 SET FOREIGN_KEY_CHECKS=1;
