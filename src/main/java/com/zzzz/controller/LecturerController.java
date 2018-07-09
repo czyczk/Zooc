@@ -64,8 +64,6 @@ public class LecturerController {
      * Delete a lecturer. The lecturer will be disabled and no interactions can be made to it.
      * @param lecturerId Lecturer ID
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
-     * @throws SQLException
-     * @throws LecturerServiceException
      */
     @DeleteMapping(value = "/lecturer/{id}")
     public ResponseEntity delete(@PathVariable("id") String lecturerId) throws SQLException, LecturerServiceException {
