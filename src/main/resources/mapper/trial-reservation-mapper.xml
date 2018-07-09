@@ -22,4 +22,53 @@
       status=#{status}
     where reservation_id=#{reservationId}
   </update>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from (select res.reservation_id, res.user_id, res.trial_id, tr.name 'trial_name',
+                 res.message, res.status
+          from trial_reservation res join trial tr on res.trial_id = tr.trial_id
+          <where>
+            <if test="reservationId != null">
+              and reservation_id=#{reservationId}
+            </if>
+            <if test="userId != null">
+              and user_id=#{userId}
+            </if>
+            <if test="trialId != null">
+              and res.trial_id=#{trialId}
+            </if>
+            <if test="trialNameContaining != null">
+              and tr.name like '%' ${trialNameContaining} '%'
+            </if>
+            <if test="status != null">
+              and res.status=#{status}
+            </if>
+          </where>
+    ) reservation_detail
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.TrialReservationDetail">
+    select res.reservation_id, res.user_id, res.trial_id, tr.name 'trial_name',
+    res.message, res.status
+    from trial_reservation res join trial tr on res.trial_id = tr.trial_id
+    <where>
+      <if test="reservationId != null">
+        and reservation_id=#{reservationId}
+      </if>
+      <if test="userId != null">
+        and user_id=#{userId}
+      </if>
+      <if test="trialId != null">
+        and trial_id=#{trialId}
+      </if>
+      <if test="trialNameContaining != null">
+        and trial_name like '%' ${trialNameContaining} '%'
+      </if>
+      <if test="status != null">
+        and status=#{status}
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
 </mapper>
