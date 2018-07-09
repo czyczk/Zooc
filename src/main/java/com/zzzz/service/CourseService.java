@@ -2,6 +2,7 @@ package com.zzzz.service;
 
 import com.zzzz.po.Course;
 import com.zzzz.vo.CourseDetail;
+import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -51,4 +52,30 @@ public interface CourseService {
                 String releaseTime,
                 String price,
                 String status) throws CourseServiceException, SQLException;
+
+    /**
+     * Fetch all items meeting the requirements.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param enterpriseId The ID of the enterprise to which the course belongs
+     * @param courseId Course ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param categoryId Category ID (optional)
+     * @param priceMin Lower bound of the price range (optional)
+     * @param priceMax Upper bound of the price range (optional)
+     * @param status Status (optional)
+     * @return A list containing all items meeting the requirements
+     * @throws CourseServiceException An exception is thrown if the query is not successful.
+     */
+    ListResult<CourseDetail> list(String usePagination,
+                                  String targetPage,
+                                  String pageSize,
+                                  String enterpriseId,
+                                  String courseId,
+                                  String nameContaining,
+                                  String categoryId,
+                                  String priceMin,
+                                  String priceMax,
+                                  String status) throws CourseServiceException, SQLException;
 }

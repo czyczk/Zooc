@@ -4,6 +4,7 @@ import com.zzzz.dto.CourseParam;
 import com.zzzz.service.CourseService;
 import com.zzzz.service.CourseServiceException;
 import com.zzzz.vo.CourseDetail;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,12 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/v1")
 public class CourseController {
+    private final CourseService courseService;
+
     @Autowired
-    private CourseService courseService;
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
     /**
      * Create a new course.
@@ -56,5 +61,30 @@ public class CourseController {
         // TODO authentication not implemented yet
         courseService.update(targetCourseId, courseParam.getName(), courseParam.getDetail(), courseParam.getImgUrl(), courseParam.getCategoryId(), courseParam.getReleaseTime(), courseParam.getPrice(), courseParam.getStatus());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * Get a list containing all items meeting the requirements.
+     * @param enterpriseId The ID of the enterprise to which the course belongs
+     * @param usePagination Use pagination or not (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param courseId Course ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param categoryId Category ID (optional)
+     * @param priceMin Lower bound of the price range (optional)
+     * @param priceMax Upper bound of the price range (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/course/list")
+    public ResponseEntity<ListResult<CourseDetail>> list(@PathVariable("id") String enterpriseId,
+                                                         String usePagination, String targetPage, String pageSize,
+                                                         String courseId, String nameContaining, String categoryId,
+                                                         String priceMin, String priceMax,
+                                                         String status) throws SQLException, CourseServiceException {
+        // TODO authentication not implemented yet
+        ListResult<CourseDetail> result = courseService.list(usePagination, targetPage, pageSize, enterpriseId, courseId, nameContaining, categoryId, priceMin, priceMax, status);
+        return ResponseEntity.ok(result);
     }
 }

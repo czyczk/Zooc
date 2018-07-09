@@ -10,6 +10,7 @@ import com.zzzz.service.CourseService;
 import com.zzzz.service.CourseServiceException;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.CourseDetail;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,24 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import static com.zzzz.service.CourseServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-    @Autowired
-    private CourseDao courseDao;
+    private final CourseDao courseDao;
+    private final EnterpriseDao enterpriseDao;
+    private final CourseCategoryDao courseCategoryDao;
+    private final GeneralDao generalDao;
+    private final ParameterChecker<CourseServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    private EnterpriseDao enterpriseDao;
-
-    @Autowired
-    private CourseCategoryDao courseCategoryDao;
-
-    @Autowired
-    private GeneralDao generalDao;
-
-    private ParameterChecker<CourseServiceException> checker = new ParameterChecker<>();
+    public CourseServiceImpl(CourseDao courseDao, EnterpriseDao enterpriseDao, CourseCategoryDao courseCategoryDao, GeneralDao generalDao) {
+        this.courseDao = courseDao;
+        this.enterpriseDao = enterpriseDao;
+        this.courseCategoryDao = courseCategoryDao;
+        this.generalDao = generalDao;
+    }
 
     @Override
     @Transactional(rollbackFor = { CourseServiceException.class, SQLException.class })
@@ -157,5 +159,85 @@ public class CourseServiceImpl implements CourseService {
         }
         // Update
         courseDao.update(course);
+    }
+
+    @Override
+    @Transactional(rollbackFor = { CourseServiceException.class, SQLException.class })
+    public ListResult<CourseDetail> list(String usePagination, String targetPage, String pageSize, String enterpriseId, String courseId, String nameContaining, String categoryId, String priceMin, String priceMax, String status) throws CourseServiceException, SQLException {
+        ListResult<CourseDetail> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new CourseServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new CourseServiceException(EMPTY_PAGE_SIZE));
+        }
+        checker.rejectIfNullOrEmpty(enterpriseId, new CourseServiceException(EMPTY_ENTERPRISE_ID));
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new CourseServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new CourseServiceException(INVALID_PAGE_SIZE));
+        }
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CourseServiceException(INVALID_ENTERPRISE_ID));
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new CourseServiceException(ENTERPRISE_NOT_EXISTING);
+
+        // Optional fields
+        Long courseIdLong = null;
+        if (courseId != null && !courseId.isEmpty())
+            courseIdLong = checker.parseUnsignedLong(courseId, new CourseServiceException(INVALID_COURSE_ID));
+        if (nameContaining != null && nameContaining.isEmpty())
+            nameContaining = null;
+        Long categoryIdLong = null;
+        if (categoryId != null && !categoryId.isEmpty())
+            categoryIdLong = checker.parseUnsignedLong(categoryId, new CourseServiceException(INVALID_CATEGORY_ID));
+        BigDecimal priceMinBd = null;
+        BigDecimal priceMaxBd = null;
+        if (priceMin != null && !priceMin.isEmpty())
+            priceMinBd = checker.parseUnsignedBigDecimal(priceMin, new CourseServiceException(INVALID_PRICE_RANGE));
+        if (priceMax != null && !priceMax.isEmpty())
+            priceMaxBd = checker.parseUnsignedBigDecimal(priceMax, new CourseServiceException(INVALID_PRICE_RANGE));
+        CourseStatusEnum statusEnum = null;
+        if (status != null) {
+            if (status.isEmpty())
+                status = null;
+            else {
+                try {
+                    statusEnum = CourseStatusEnum.valueOf(status);
+                } catch (IllegalArgumentException e) {
+                    throw new CourseServiceException(INVALID_STATUS);
+                }
+            }
+        }
+
+        // Get the number of total pages
+        Long totalNumItems;
+        Long totalNumPages;
+        if (usePaginationBool) {
+            totalNumItems = courseDao.countTotal(enterpriseIdLong, courseIdLong, nameContaining, categoryIdLong, priceMinBd, priceMaxBd, statusEnum);
+            totalNumPages = totalNumItems / pageSizeLong;
+            if (totalNumItems % pageSizeLong != 0)
+                totalNumPages++;
+            result.setTotalNumPages(totalNumPages);
+            result.setTargetPage(targetPageLong);
+            result.setPageSize(pageSizeLong);
+
+            // If the target page exceeds the total number of pages,
+            // return a list result with an empty list
+            if (targetPageLong > totalNumPages)
+                return result;
+        }
+
+        Long starting = null;
+        if (usePaginationBool) {
+            starting = (targetPageLong - 1) * pageSizeLong;
+        }
+        List<CourseDetail> list = courseDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, courseIdLong, nameContaining, categoryIdLong, priceMinBd, priceMaxBd, statusEnum);
+        result.setList(list);
+        return result;
     }
 }

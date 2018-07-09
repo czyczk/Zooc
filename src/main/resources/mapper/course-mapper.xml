@@ -43,4 +43,59 @@
       status=#{status}
     where course_id=#{courseId}
   </update>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from (select distinct course_id, name, img_url, category_id, category_name, release_time, price
+          from view_course_detail
+          <where>
+            and enterprise_id=#{enterpriseId}
+            <if test="courseId != null">
+              and courseId=#{courseId}
+            </if>
+            <if test="nameContaining != null">
+              and name like '%' ${nameContaining} '%'
+            </if>
+            <if test="category_id != null">
+              and category_id=#{categoryId}
+            </if>
+            <if test="priceMin != null">
+              and price > #{priceMin}
+            </if>
+            <if test="priceMax != null">
+              and price &lt; #{priceMax}
+            </if>
+            <if test="status != null">
+              and status=#{status}
+            </if>
+          </where>
+    ) c
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.CourseDetail">
+    select distinct course_id, name, img_url, category_id, category_name, release_time, price
+    from view_course_detail
+    <where>
+      and enterprise_id=#{enterpriseId}
+      <if test="courseId != null">
+        and courseId=#{courseId}
+      </if>
+      <if test="nameContaining != null">
+        and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="category_id != null">
+        and category_id=#{categoryId}
+      </if>
+      <if test="priceMin != null">
+        and price > #{priceMin}
+      </if>
+      <if test="priceMax != null">
+        and price &lt; #{priceMax}
+      </if>
+      <if test="status != null">
+        and status=#{status}
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
 </mapper>
