@@ -21,14 +21,12 @@
     where trial_id=#{trialId}
   </select>
   <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.TrialDetail">
-    select tr.trial_id, tr.name, tr.detail, tr.img_url,
-      tr.category_id, cat.name 'category_name',
-      tr.branch_id, br.name 'branch_name',
-      tr.lecturer_id, lec.name 'lecturer_name',
-      tr.release_time, tr.status
-    from trial tr join course_category cat on tr.category_id = cat.category_id
-      join branch br on tr.branch_id = br.branch_id
-      join lecturer lec on tr.lecturer_id = lec.lecturer_id
+    select trial_id, name, detail, img_url,
+      category_id, category_name,
+      branch_id, branch_name,
+      lecturer_id, lecturer_name,
+      release_time, status
+    from view_trial_detail
     where trial_id=#{trialId}
   </select>
   <update id="update" parameterType="Trial">
@@ -43,4 +41,71 @@
       status=#{status}
     where trial_id=#{trialId}
   </update>
+  <delete id="delete" parameterType="long">
+    delete from trial
+    where trial_id=#{trialId}
+  </delete>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count (*)
+    from trial
+    <where>
+      and branch_id=#{branchId}
+      <if test="trialId != null">
+        and trial_id=#{trialId}
+      </if>
+      <if test="nameContaining != null">
+        and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="categoryId != null">
+        and category_id=#{categoryId}
+      </if>
+      <if test="lecturerNameContaining != null">
+        and lecturer_name like '%' ${lecturerNameContaining} '%'
+      </if>
+      <if test="status != null">
+        and status=#{status}
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.TrialDetail">
+    select trial_id, name, img_url,
+      category_id, category_name,
+      branch_id, branch_name,
+      lecturer_id, lecturer_name,
+      release_time, status
+    from view_trial_detail
+    <where>
+      and branch_id=#{branchId}
+      <if test="trialId != null">
+        and trial_id=#{trialId}
+      </if>
+      <if test="nameContaining != null">
+        and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="categoryId != null">
+        and category_id=#{categoryId}
+      </if>
+      <if test="lecturerNameContaining != null">
+        and lecturer_name like '%' ${lecturerNameContaining} '%'
+      </if>
+      <if test="status != null">
+        and status=#{status}
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+  <select id="listLatest" parameterType="map" resultType="com.zzzz.vo.TrialDetail">
+    select trial_id, name, img_url,
+    category_id, category_name,
+    branch_id, branch_name,
+    lecturer_id, lecturer_name,
+    release_time, status
+    from view_trial_detail
+    where branch_id=#{branchId}
+      and status='AVAILABLE'
+    order by release_time desc
+    limit 0, #{n}
+  </select>
 </mapper>

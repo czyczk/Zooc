@@ -6,6 +6,7 @@ import com.zzzz.po.TrialStatusEnum;
 import com.zzzz.service.TrialService;
 import com.zzzz.service.TrialServiceException;
 import com.zzzz.service.util.ParameterChecker;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import static com.zzzz.service.TrialServiceException.ExceptionTypeEnum.*;
 
@@ -167,5 +169,99 @@ public class TrialServiceImpl implements TrialService {
 
         // Update
         trialDao.update(trial);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ListResult<TrialDetail> list(String usePagination, String targetPage, String pageSize, String branchId, String trialId, String nameContaining, String categoryId, String lecturerNameContaining, String status) throws TrialServiceException, SQLException {
+        ListResult<TrialDetail> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new TrialServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new TrialServiceException(EMPTY_PAGE_SIZE));
+        }
+        checker.rejectIfNullOrEmpty(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new TrialServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new TrialServiceException(INVALID_PAGE_SIZE));
+        }
+        long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
+        boolean isExisting = branchDao.checkExistenceById(branchIdLong);
+        if (!isExisting)
+            throw new TrialServiceException(BRANCH_NOT_EXISTING);
+
+        // Optional fields
+        Long trialIdLong = null;
+        if (trialId != null && !trialId.isEmpty())
+            trialIdLong = checker.parseUnsignedLong(trialId, new TrialServiceException(INVALID_TRIAL_ID));
+        if (nameContaining != null && nameContaining.isEmpty())
+            nameContaining = null;
+        Long categoryIdLong = null;
+        if (categoryId != null && !categoryId.isEmpty())
+            categoryIdLong = checker.parseUnsignedLong(categoryId, new TrialServiceException(INVALID_CATEGORY_ID));
+        if (lecturerNameContaining != null && lecturerNameContaining.isEmpty())
+            lecturerNameContaining = null;
+        TrialStatusEnum statusEnum = null;
+        if (status != null) {
+            if (status.isEmpty())
+                status = null;
+            else {
+                try {
+                    statusEnum = TrialStatusEnum.valueOf(status);
+                } catch (IllegalArgumentException e) {
+                    throw new TrialServiceException(INVALID_STATUS);
+                }
+            }
+        }
+
+        // Get the number of total pages
+        Long totalNumItems;
+        Long totalNumPages;
+        if (usePaginationBool) {
+            totalNumItems = trialDao.countTotal(branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+            totalNumPages = totalNumItems / pageSizeLong;
+            if (totalNumItems % pageSizeLong != 0)
+                totalNumPages++;
+            result.setTotalNumPages(totalNumPages);
+            result.setTargetPage(targetPageLong);
+            result.setPageSize(pageSizeLong);
+
+            // If the target page exceeds the total number of pages,
+            // return a list result with an empty list
+            if (targetPageLong > totalNumPages)
+                return result;
+        }
+
+        Long starting = null;
+        if (usePaginationBool) {
+            starting = (targetPageLong - 1) * pageSizeLong;
+        }
+        List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+        result.setList(list);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrialDetail> listLatest(String branchId, String n) throws TrialServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
+        long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
+        int nInt = checker.parsePositiveInt(n, new TrialServiceException(INVALID_LATEST_NUMBER));
+
+        // Check if the branch exists
+        boolean isExisting = branchDao.checkExistenceById(branchIdLong);
+        if (!isExisting)
+            throw new TrialServiceException(BRANCH_NOT_EXISTING);
+
+        // Get the most recent N items
+        List<TrialDetail> result = trialDao.listLatest(branchIdLong, nInt);
+        return result;
     }
 }

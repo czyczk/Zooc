@@ -3,6 +3,7 @@ package com.zzzz.controller;
 import com.zzzz.dto.TrialParam;
 import com.zzzz.service.TrialService;
 import com.zzzz.service.TrialServiceException;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 public class TrialController {
-    @Autowired private TrialService trialService;
+    private final TrialService trialService;
+
+    @Autowired
+    public TrialController(TrialService trialService) {
+        this.trialService = trialService;
+    }
 
     /**
      * Create new trial.
@@ -25,6 +32,7 @@ public class TrialController {
     @PostMapping("/branch/{id}/trial")
     public ResponseEntity<Long> create(@PathVariable("id") String branchId,
                                        @RequestBody TrialParam trialParam) throws TrialServiceException, SQLException {
+        // TODO authentication not implemented yet
         long lastId = trialService.insert(trialParam.getName(), trialParam.getDetail(),
                 trialParam.getImgUrl(), trialParam.getCategoryId(), branchId,
                 trialParam.getLecturerId(), new Date());
@@ -38,6 +46,7 @@ public class TrialController {
      */
     @GetMapping("/trial/detail/{id}")
     public ResponseEntity<TrialDetail> getDetailById(@PathVariable("id") String trialId) throws TrialServiceException, SQLException {
+        // TODO authentication not implemented yet
         TrialDetail result = trialService.getVoById(trialId);
         return ResponseEntity.ok(result);
     }
@@ -51,6 +60,7 @@ public class TrialController {
     @PutMapping("/trial/{id}")
     public ResponseEntity update(@PathVariable("id") String targetTrialId,
                                  @RequestBody TrialParam trialParam) throws TrialServiceException, SQLException {
+        // TODO authentication not implemented yet
         trialService.update(targetTrialId,
                 trialParam.getName(),
                 trialParam.getDetail(),
@@ -61,5 +71,49 @@ public class TrialController {
                 trialParam.getReleaseTime(),
                 trialParam.getStatus());
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get a list of trials meeting the requirements
+     * @param branchId The ID of the branch to which the trials belong
+     * @param usePagination Use pagination (`false`) by default
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param trialId Trial ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param categoryId Category ID (optional)
+     * @param lecturerNameContaining Lecturer name containing (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/branch/{id}/trial/list")
+    public ResponseEntity<ListResult<TrialDetail>> list(@PathVariable("id") String branchId,
+                                                        String usePagination,
+                                                        String targetPage,
+                                                        String pageSize,
+                                                        String trialId,
+                                                        String nameContaining,
+                                                        String categoryId,
+                                                        String lecturerNameContaining,
+                                                        String status) throws TrialServiceException, SQLException {
+        // TODO authentication not implemented yet
+        ListResult<TrialDetail> result = trialService.list(usePagination, targetPage, pageSize,
+                branchId, trialId, nameContaining, categoryId, lecturerNameContaining, status);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get a list of N latest available trials of the branch.
+     * The actual number of items can be less than the N specified.
+     * @param branchId The ID of the branch to which the trials belong
+     * @param n The number of items to list
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/branch/{id}/trial/latest")
+    public ResponseEntity<List<TrialDetail>> list(@PathVariable("id") String branchId,
+                                                  String n) throws TrialServiceException, SQLException {
+        // TODO authentication not implemented yet
+        List<TrialDetail> result = trialService.listLatest(branchId, n);
+        return ResponseEntity.ok(result);
     }
 }

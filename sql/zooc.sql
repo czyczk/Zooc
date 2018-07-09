@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-09 11:37:30
+Date: 2018-07-09 21:58:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -304,4 +304,10 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- ----------------------------
 DROP VIEW IF EXISTS `view_course_detail`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_course_detail` AS select `course`.`course_id` AS `course_id`,`course`.`enterprise_id` AS `enterprise_id`,`course`.`name` AS `name`,`course`.`detail` AS `detail`,`course`.`img_url` AS `img_url`,`course`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`course`.`release_time` AS `release_time`,`course`.`price` AS `price`,`course`.`status` AS `status`,`course_offering`.`course_offering_id` AS `course_offering_id`,`course_offering`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`course_offering`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name` from ((((`course` join `course_category` on((`course`.`category_id` = `course_category`.`category_id`))) join `course_offering` on((`course_offering`.`course_id` = `course`.`course_id`))) join `branch` on((`course_offering`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`course_offering`.`lecturer_id` = `lecturer`.`lecturer_id`))) ;
+
+-- ----------------------------
+-- View structure for view_trial_detail
+-- ----------------------------
+DROP VIEW IF EXISTS `view_trial_detail`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_trial_detail` AS select `trial`.`trial_id` AS `trial_id`,`trial`.`name` AS `name`,`trial`.`detail` AS `detail`,`trial`.`img_url` AS `img_url`,`trial`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`trial`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`trial`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name`,`trial`.`release_time` AS `release_time`,`trial`.`status` AS `status` from (((`trial` join `course_category` on((`trial`.`category_id` = `course_category`.`category_id`))) join `branch` on((`trial`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`trial`.`lecturer_id` = `lecturer`.`lecturer_id`))) ;
 SET FOREIGN_KEY_CHECKS=1;

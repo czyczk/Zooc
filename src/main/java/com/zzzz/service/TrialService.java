@@ -1,9 +1,11 @@
 package com.zzzz.service;
 
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialDetail;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public interface TrialService {
     /**
@@ -51,4 +53,39 @@ public interface TrialService {
                 String lecturerId,
                 String releaseTime,
                 String status) throws TrialServiceException, SQLException;
+
+    /**
+     * Get a list of trials meeting the requirements.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param branchId The ID of the branch to which the trials belong
+     * @param trialId Trial ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param categoryId Category ID (optional)
+     * @param lecturerNameContaining Lecturer name containing (optional)
+     * @param status Status (optional)
+     * @return A list of trials meeting the requirements
+     * @throws TrialServiceException An exception is thrown if the query is not successful.
+     */
+    ListResult<TrialDetail> list(String usePagination,
+                                 String targetPage,
+                                 String pageSize,
+                                 String branchId,
+                                 String trialId,
+                                 String nameContaining,
+                                 String categoryId,
+                                 String lecturerNameContaining,
+                                 String status) throws TrialServiceException, SQLException;
+
+    /**
+     * Get a list of N latest trials of a branch.
+     * The actual number of items can be less than the N specified.
+     * @param branchId The ID of the branch to which the trials belong
+     * @param n The number of latest trials to list
+     * @return A list of N latest trials of the branch
+     * @throws TrialServiceException An exception is thrown if the query is not successful.
+     */
+    List<TrialDetail> listLatest(String branchId,
+                                 String n) throws TrialServiceException, SQLException;
 }

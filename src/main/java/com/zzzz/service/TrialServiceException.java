@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class TrialServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
+        EMPTY_TARGET_PAGE("目标页码为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_PAGE_SIZE("页大小为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TRIAL_ID("试听编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_NAME("名称为空。", HttpStatus.BAD_REQUEST),
         EMPTY_DETAIL("详情为空。", HttpStatus.BAD_REQUEST),
@@ -13,6 +15,9 @@ public class TrialServiceException extends ServiceException {
         EMPTY_LECTURER_ID("讲师编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_RELEASE_TIME("发布时间为空。", HttpStatus.BAD_REQUEST),
         EMPTY_STATUS("状态为空。", HttpStatus.BAD_REQUEST),
+        INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_LATEST_NUMBER("最新条数不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TRIAL_ID("试听编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_CATEGORY_ID("课程类型编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_BRANCH_ID("分部编号不合法。", HttpStatus.BAD_REQUEST),
