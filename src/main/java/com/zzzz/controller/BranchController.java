@@ -75,14 +75,14 @@ public class BranchController {
 
     /**
      * Get a list containing items meeting the requirements.
-     * @param enterpriseId The ID of the enterprise to which the branch belong
+     * @param enterpriseId The ID of the enterprise to which the branch belongs
      * @param usePagination Use pagination or not (`false` by default)
-     * @param targetPage Target page (Required when using pagination)
-     * @param pageSize Page size (Required when using pagination)
-     * @param branchId Branch ID (Optional)
-     * @param nameContaining Name containing (Optional)
-     * @param addressContaining Address containing (Optional)
-     * @return Success: list; Bad request: 400; Not found: 404; Internal: 500
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param branchId Branch ID (optional)
+     * @param nameContaining Name containing (optional)
+     * @param addressContaining Address containing (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping(value = "/enterprise/{id}/branch/list")
     public ResponseEntity<ListResult<Branch>> list(@PathVariable("id") String enterpriseId,

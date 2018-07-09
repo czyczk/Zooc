@@ -27,4 +27,33 @@
       introduction=#{introduction}
     where lecturer_id=#{lecturerId}
   </update>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from view_available_lecturer
+    <where>
+      and enterprise_id=#{enterpriseId}
+      <if test="lecturerId != null">
+        and lecturer_id=#{lecturerId}
+      </if>
+      <if test="name != null">
+        and name=#{name}
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="Lecturer">
+    select <include refid="all_columns" />
+    from view_available_lecturer
+    <where>
+      and enterprise_id=#{enterpriseId}
+      <if test="lecturerId != null">
+        and lecturer_id=#{lecturerId}
+      </if>
+      <if test="name != null">
+        and name=#{name}
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
 </mapper>

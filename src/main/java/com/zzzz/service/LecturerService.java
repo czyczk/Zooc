@@ -1,6 +1,7 @@
 package com.zzzz.service;
 
 import com.zzzz.po.Lecturer;
+import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 
@@ -36,4 +37,22 @@ public interface LecturerService {
      * @throws LecturerServiceException An exception is thrown if the operation is unsuccessful.
      */
     void disable(String lecturerId) throws LecturerServiceException, SQLException;
+
+    /**
+     * Get all items meeting the requirements.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param enterpriseId The ID of the enterprise to which the lecturer belongs
+     * @param lecturerId Lecturer ID (optional)
+     * @param name Name (optional)
+     * @return All items meeting the requirements
+     * @throws LecturerServiceException An exception is thrown if the query is unsuccessful.
+     */
+    ListResult<Lecturer> list(String usePagination,
+                              String targetPage,
+                              String pageSize,
+                              String enterpriseId,
+                              String lecturerId,
+                              String name) throws LecturerServiceException, SQLException;
 }

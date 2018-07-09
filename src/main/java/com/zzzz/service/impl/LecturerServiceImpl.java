@@ -7,11 +7,13 @@ import com.zzzz.po.Lecturer;
 import com.zzzz.service.LecturerService;
 import com.zzzz.service.LecturerServiceException;
 import com.zzzz.service.util.ParameterChecker;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.zzzz.service.LecturerServiceException.ExceptionTypeEnum.*;
 
@@ -136,5 +138,64 @@ public class LecturerServiceImpl implements LecturerService {
         // Set the lecturer disabled
         lecturer.setDisabled(true);
         lecturerDao.update(lecturer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ListResult<Lecturer> list(String usePagination, String targetPage, String pageSize, String enterpriseId, String lecturerId, String name) throws LecturerServiceException, SQLException {
+        ListResult<Lecturer> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new LecturerServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new LecturerServiceException(EMPTY_PAGE_SIZE));
+        }
+        checker.rejectIfNullOrEmpty(enterpriseId, new LecturerServiceException(EMPTY_ENTERPRISE_ID));
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new LecturerServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new LecturerServiceException(INVALID_PAGE_SIZE));
+        }
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new LecturerServiceException(INVALID_ENTERPRISE_ID));
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new LecturerServiceException(ENTERPRISE_NOT_EXISTING);
+
+        // Optional fields
+        Long lecturerIdLong = null;
+        if (lecturerId != null && !lecturerId.isEmpty())
+            lecturerIdLong = checker.parseUnsignedLong(lecturerId, new LecturerServiceException(INVALID_LECTURER_ID));
+        if (name != null && name.isEmpty())
+            name = null;
+
+        // Get the number of total pages
+        Long totalNumItems;
+        Long totalNumPages;
+        if (usePaginationBool) {
+            totalNumItems = lecturerDao.countTotal(enterpriseIdLong, lecturerIdLong, name);
+            totalNumPages = totalNumItems / pageSizeLong;
+            if (totalNumItems % pageSizeLong != 0)
+                totalNumPages++;
+            result.setTotalNumPages(totalNumPages);
+            result.setTargetPage(targetPageLong);
+            result.setPageSize(pageSizeLong);
+
+            // If the target page exceeds the total number of pages,
+            // return a list result with an empty list
+            if (targetPageLong > totalNumPages)
+                return result;
+        }
+
+        Long starting = null;
+        if (usePaginationBool) {
+            starting = (targetPageLong - 1) * pageSizeLong;
+        }
+        List<Lecturer> list = lecturerDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, lecturerIdLong, name);
+        result.setList(list);
+        return result;
     }
 }

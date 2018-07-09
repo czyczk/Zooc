@@ -4,6 +4,7 @@ import com.zzzz.dto.LecturerParam;
 import com.zzzz.po.Lecturer;
 import com.zzzz.service.LecturerService;
 import com.zzzz.service.LecturerServiceException;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,5 +71,27 @@ public class LecturerController {
         // TODO authentication not implemented yet
         lecturerService.disable(lecturerId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get a list containing items meeting the requirements.
+     * @param enterpriseId The ID of the enterprise to which the lecturer belongs
+     * @param usePagination Use pagination or not (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param lecturerId Lecturer ID (optional)
+     * @param name Name (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping(value = "/enterprise/{id}/lecturer/list")
+    public ResponseEntity<ListResult<Lecturer>> list(@PathVariable("id") String enterpriseId,
+                                                     String usePagination,
+                                                     String targetPage,
+                                                     String pageSize,
+                                                     String lecturerId,
+                                                     String name) throws LecturerServiceException, SQLException {
+        // TODO authentication not implemented yet
+        ListResult<Lecturer> result = lecturerService.list(usePagination, targetPage, pageSize, enterpriseId, lecturerId, name);
+        return ResponseEntity.ok(result);
     }
 }

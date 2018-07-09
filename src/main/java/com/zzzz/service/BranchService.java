@@ -71,6 +71,4 @@ public interface BranchService {
                             String branchId,
                             String nameContaining,
                             String addressContaining) throws BranchServiceException, SQLException;
-
-    // TODO deletions can cascade
 }
