@@ -162,7 +162,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    @Transactional(rollbackFor = { CourseServiceException.class, SQLException.class })
+    @Transactional(readOnly = true)
     public ListResult<CourseDetail> list(String usePagination, String targetPage, String pageSize, String enterpriseId, String courseId, String nameContaining, String categoryId, String priceMin, String priceMax, String status) throws CourseServiceException, SQLException {
         ListResult<CourseDetail> result = new ListResult<>();
 
@@ -242,6 +242,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CourseDetail> listLatest(String enterpriseId, String n) throws CourseServiceException, SQLException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(enterpriseId, new CourseServiceException(EMPTY_ENTERPRISE_ID));

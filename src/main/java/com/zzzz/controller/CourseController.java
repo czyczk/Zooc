@@ -98,7 +98,7 @@ public class CourseController {
      */
     @GetMapping("/enterprise/{id}/course/latest")
     public ResponseEntity<List<CourseDetail>> listLatest(@PathVariable("id") String enterpriseId,
-                                                               String n) throws SQLException, CourseServiceException {
+                                                         String n) throws SQLException, CourseServiceException {
         // TODO authentication not implemented yet
         List<CourseDetail> result = courseService.listLatest(enterpriseId, n);
         return ResponseEntity.ok(result);

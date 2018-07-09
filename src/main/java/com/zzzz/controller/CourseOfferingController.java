@@ -13,8 +13,12 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/v1")
 public class CourseOfferingController {
+    private final CourseOfferingService courseOfferingService;
+
     @Autowired
-    private CourseOfferingService courseOfferingService;
+    public CourseOfferingController(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
 
     /**
      * Create a new offering for a course.
@@ -61,5 +65,15 @@ public class CourseOfferingController {
         return ResponseEntity.noContent().build();
     }
 
-
+    /**
+     * Delete a course offering.
+     * @param courseOfferingId Course offering ID
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @DeleteMapping("/offering/{id}")
+    public ResponseEntity delete(@PathVariable("id") String courseOfferingId) throws CourseOfferingServiceException, SQLException {
+        // TODO authentication not implemented yet
+        courseOfferingService.delete(courseOfferingId);
+        return ResponseEntity.noContent().build();
+    }
 }

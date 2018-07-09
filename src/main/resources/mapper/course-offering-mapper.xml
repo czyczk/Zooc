@@ -27,4 +27,8 @@
       lecturer_id=#{lecturerId}
     where course_offering_id=#{courseOfferingId}
   </update>
+  <delete id="delete" parameterType="long">
+    delete from course_offering
+    where course_offering_id=#{courseOfferingId}
+  </delete>
 </mapper>

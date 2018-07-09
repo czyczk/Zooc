@@ -9,4 +9,5 @@ public interface CourseOfferingDao {
     boolean checkExistenceById(long courseOfferingId) throws SQLException;
     CourseOffering getById(long courseOfferingId) throws SQLException;
     int update(CourseOffering courseOffering) throws SQLException;
+    int delete(long courseOfferingId) throws SQLException;
 }

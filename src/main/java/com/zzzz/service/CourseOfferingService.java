@@ -32,4 +32,10 @@ public interface CourseOfferingService {
                 String branchId,
                 String lecturerId) throws CourseOfferingServiceException, SQLException;
 
+    /**
+     * Delete a course offering.
+     * @param courseOfferingId Course offering ID
+     * @throws CourseOfferingServiceException An exception is thrown if the deletion is unsuccessful.
+     */
+    void delete(String courseOfferingId) throws CourseOfferingServiceException, SQLException;
 }

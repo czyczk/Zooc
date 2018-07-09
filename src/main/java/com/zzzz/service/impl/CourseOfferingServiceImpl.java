@@ -15,22 +15,21 @@ import static com.zzzz.service.CourseOfferingServiceException.ExceptionTypeEnum.
 
 @Service
 public class CourseOfferingServiceImpl implements CourseOfferingService {
-    @Autowired
-    private GeneralDao generalDao;
+    private final GeneralDao generalDao;
+    private final CourseOfferingDao courseOfferingDao;
+    private final CourseDao courseDao;
+    private final BranchDao branchDao;
+    private final LecturerDao lecturerDao;
+    private final ParameterChecker<CourseOfferingServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    private CourseOfferingDao courseOfferingDao;
-
-    @Autowired
-    private CourseDao courseDao;
-
-    @Autowired
-    private BranchDao branchDao;
-
-    @Autowired
-    private LecturerDao lecturerDao;
-
-    private ParameterChecker<CourseOfferingServiceException> checker = new ParameterChecker<>();
+    public CourseOfferingServiceImpl(GeneralDao generalDao, CourseOfferingDao courseOfferingDao, CourseDao courseDao, BranchDao branchDao, LecturerDao lecturerDao) {
+        this.generalDao = generalDao;
+        this.courseOfferingDao = courseOfferingDao;
+        this.courseDao = courseDao;
+        this.branchDao = branchDao;
+        this.lecturerDao = lecturerDao;
+    }
 
     @Override
     @Transactional(rollbackFor = { CourseOfferingServiceException.class, SQLException.class })
@@ -120,5 +119,21 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
         // Update the offering
         courseOfferingDao.update(offering);
+    }
+
+    @Override
+    @Transactional(rollbackFor = { CourseOfferingServiceException.class, SQLException.class })
+    public void delete(String courseOfferingId) throws CourseOfferingServiceException, SQLException {
+        // Check if the ID is valid
+        checker.rejectIfNullOrEmpty(courseOfferingId, new CourseOfferingServiceException(EMPTY_COURSE_OFFERING_ID));
+        long courseOfferingIdLong = checker.parseUnsignedLong(courseOfferingId, new CourseOfferingServiceException(INVALID_COURSE_OFFERING_ID));
+
+        // Check if the offering exists
+        boolean isExisting = courseOfferingDao.checkExistenceById(courseOfferingIdLong);
+        if (!isExisting)
+            throw new CourseOfferingServiceException(COURSE_OFFERING_NOT_EXISTING);
+
+        // Delete
+        courseOfferingDao.delete(courseOfferingIdLong);
     }
 }
