@@ -14,7 +14,7 @@ public interface BranchDao {
 
     /**
      * Count the total number of items meeting the requirements.
-     * @param enterpriseId The ID of the enterprise to which the branch belong
+     * @param enterpriseId The ID of the enterprise to which the branch belongs
      * @param branchId The target branch ID (optional)
      * @param nameContaining Name containing (optional)
      * @param addressContaining Address containing (optional)
@@ -30,7 +30,7 @@ public interface BranchDao {
      * @param usePagination Use pagination or not
      * @param starting Starting index (required when using pagination)
      * @param pageSize Page size (required when using pagination)
-     * @param enterpriseId The ID of the enterprise to which the branch belong
+     * @param enterpriseId The ID of the enterprise to which the branch belongs
      * @param branchId The target branch ID (optional)
      * @param nameContaining Name containing (optional)
      * @param addressContaining Address containing (optional)
@@ -43,7 +43,4 @@ public interface BranchDao {
                       @Param("branchId") Long branchId,
                       @Param("nameContaining") String nameContaining,
                       @Param("addressContaining") String addressContaining) throws SQLException;
-
-    // TODO
-    // Cascade when deleted. Implemented later.
 }
