@@ -27,7 +27,7 @@ public class LecturerController {
      * @param lecturerParam name, photoUrl, introduction
      * @return Success: Lecturer ID; Bad request: 400; Internal: 500
      */
-    @PostMapping(value ="/course/{id}/lecturer")
+    @PostMapping(value ="/enterprise/{id}/lecturer")
     public ResponseEntity create(@PathVariable("id") String enterpriseId,
                                  @RequestBody LecturerParam lecturerParam) throws SQLException, LecturerServiceException {
         // TODO authentication not implemented yet
