@@ -203,15 +203,11 @@ public class CourseServiceImpl implements CourseService {
         if (priceMax != null && !priceMax.isEmpty())
             priceMaxBd = checker.parseUnsignedBigDecimal(priceMax, new CourseServiceException(INVALID_PRICE_RANGE));
         CourseStatusEnum statusEnum = null;
-        if (status != null) {
-            if (status.isEmpty())
-                status = null;
-            else {
-                try {
-                    statusEnum = CourseStatusEnum.valueOf(status);
-                } catch (IllegalArgumentException e) {
-                    throw new CourseServiceException(INVALID_STATUS);
-                }
+        if (status != null && !status.isEmpty()) {
+            try {
+                statusEnum = CourseStatusEnum.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new CourseServiceException(INVALID_STATUS);
             }
         }
 

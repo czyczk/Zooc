@@ -50,12 +50,12 @@
           <where>
             and enterprise_id=#{enterpriseId}
             <if test="courseId != null">
-              and courseId=#{courseId}
+              and course_id=#{courseId}
             </if>
             <if test="nameContaining != null">
               and name like '%' ${nameContaining} '%'
             </if>
-            <if test="category_id != null">
+            <if test="categoryId != null">
               and category_id=#{categoryId}
             </if>
             <if test="priceMin != null">
@@ -71,17 +71,17 @@
     ) c
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.CourseDetail">
-    select distinct course_id, name, img_url, category_id, category_name, release_time, price
+    select distinct course_id, name, img_url, category_id, category_name, release_time, price, status
     from view_course_detail
     <where>
       and enterprise_id=#{enterpriseId}
       <if test="courseId != null">
-        and courseId=#{courseId}
+        and course_id=#{courseId}
       </if>
       <if test="nameContaining != null">
         and name like '%' ${nameContaining} '%'
       </if>
-      <if test="category_id != null">
+      <if test="categoryId != null">
         and category_id=#{categoryId}
       </if>
       <if test="priceMin != null">
@@ -99,7 +99,7 @@
     </if>
   </select>
   <select id="listLatest" parameterType="map" resultType="com.zzzz.vo.CourseDetail">
-    select distinct course_id, name, img_url, category_id, category_name, release_time, price
+    select distinct course_id, name, img_url, category_id, category_name, release_time, price, status
     from view_course_detail
     where enterprise_id=#{enterpriseId}
       and status='AVAILABLE'
