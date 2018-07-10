@@ -2,6 +2,7 @@ package com.zzzz.service;
 
 import com.zzzz.po.CourseOffering;
 import com.zzzz.vo.CourseOfferingDetail;
+import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 
@@ -53,4 +54,26 @@ public interface CourseOfferingService {
      * @throws CourseOfferingServiceException An exception is thrown if the deletion is unsuccessful.
      */
     void delete(String courseOfferingId) throws CourseOfferingServiceException, SQLException;
+
+    /**
+     * Get a list of course offerings meeting the requirements.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param courseId The ID of the course to which the offering belong
+     * @param courseOfferingId Course offering ID (optional)
+     * @param branchId Branch ID (optional)
+     * @param branchNameContaining Branch name containing (optional)
+     * @param lecturerId Lecturer ID (optional)
+     * @param lecturerNameContaining Lecturer name containing (optional)
+     * @return A list containing course offerings meeting the requirements
+     * @throws CourseOfferingServiceException An exception is thrown if the query is unsuccessful.
+     */
+    ListResult<CourseOfferingDetail> list(String usePagination,
+                                          String targetPage, String pageSize,
+                                          String courseId,
+                                          String courseOfferingId,
+                                          String branchId, String branchNameContaining,
+                                          String lecturerId, String lecturerNameContaining)
+            throws CourseOfferingServiceException, SQLException;
 }
