@@ -5,6 +5,7 @@ import com.zzzz.po.CourseOffering;
 import com.zzzz.service.CourseOfferingService;
 import com.zzzz.service.CourseOfferingServiceException;
 import com.zzzz.service.util.ParameterChecker;
+import com.zzzz.vo.CourseOfferingDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +80,21 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
         if (offering == null)
             throw new CourseOfferingServiceException(COURSE_OFFERING_NOT_EXISTING);
         return offering;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CourseOfferingDetail getVoById(String courseOfferingId) throws CourseOfferingServiceException, SQLException {
+        // TODO authentication not implemented yet
+
+        // Check if the parameters are valid
+        checker.rejectIfNullOrEmpty(courseOfferingId, new CourseOfferingServiceException(EMPTY_COURSE_OFFERING_ID));
+        long courseOfferingIdLong = checker.parseUnsignedLong(courseOfferingId, new CourseOfferingServiceException(INVALID_COURSE_OFFERING_ID));
+
+        CourseOfferingDetail result = courseOfferingDao.getVoById(courseOfferingIdLong);
+        if (result == null)
+            throw new CourseOfferingServiceException(COURSE_OFFERING_NOT_EXISTING);
+        return result;
     }
 
     @Override

@@ -20,6 +20,11 @@
     from course_offering
     where course_offering_id=#{courseOfferingId}
   </select>
+  <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.CourseOfferingDetail">
+    select course_offering_id, branch_id, branch_name, lecturer_id, lecturer_name
+    from view_course_offering_detail
+    where course_offering_id=#{courseOfferingId}
+  </select>
   <update id="update" parameterType="CourseOffering">
     update course_offering set
       course_id=#{courseId},
@@ -31,4 +36,51 @@
     delete from course_offering
     where course_offering_id=#{courseOfferingId}
   </delete>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from view_course_offering_detail
+    <where>
+      and course_id=#{courseId}
+      <if test="courseOfferingId != null">
+        and course_offering_id=#{courseOfferingId}
+      </if>
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="branchNameContaining != null">
+        and branch_name like '%' ${branchNameContaining} '%'
+      </if>
+      <if test="lecturerId != null">
+        and lecturer_id=#{lecturerId}
+      </if>
+      <if test="lecturerNameContaining != null">
+        and lecturer_name_containing like '%' ${lecturerNameContaining} '%'
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.CourseOfferingDetail">
+    select course_offering_id, branch_id, branch_name, lecturer_id, lecturer_name
+    from view_course_offering_detail
+    <where>
+      and course_id=#{courseId}
+      <if test="courseOfferingId != null">
+        and course_offering_id=#{courseOfferingId}
+      </if>
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="branchNameContaining != null">
+        and branch_name like '%' ${branchNameContaining} '%'
+      </if>
+      <if test="lecturerId != null">
+        and lecturer_id=#{lecturerId}
+      </if>
+      <if test="lecturerNameContaining != null">
+        and lecturer_name_containing like '%' ${lecturerNameContaining} '%'
+      </if>
+    </where>
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
 </mapper>

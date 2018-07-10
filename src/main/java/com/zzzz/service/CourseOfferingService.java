@@ -1,6 +1,7 @@
 package com.zzzz.service;
 
 import com.zzzz.po.CourseOffering;
+import com.zzzz.vo.CourseOfferingDetail;
 
 import java.sql.SQLException;
 
@@ -17,7 +18,21 @@ public interface CourseOfferingService {
                 String branchId,
                 String lecturerId) throws CourseOfferingServiceException, SQLException;
 
+    /**
+     * Get a course offering by its ID.
+     * @param courseOfferingId Course offering ID
+     * @return The course offering
+     * @throws CourseOfferingServiceException An exception is thrown if the query is unsuccessful.
+     */
     CourseOffering getById(String courseOfferingId) throws CourseOfferingServiceException, SQLException;
+
+    /**
+     * Get the detail (VO) of a course offering by its ID.
+     * @param courseOfferingId Course offering ID
+     * @return The detail (VO) of the course offering
+     * @throws CourseOfferingServiceException An exception is thrown if the query is unsuccessful.
+     */
+    CourseOfferingDetail getVoById(String courseOfferingId) throws CourseOfferingServiceException, SQLException;
 
     /**
      * Update a course offering. A field will be left unchanged if the corresponding parameter is null.

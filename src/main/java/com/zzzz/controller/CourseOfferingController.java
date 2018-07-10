@@ -4,6 +4,7 @@ import com.zzzz.dto.CourseOfferingParam;
 import com.zzzz.po.CourseOffering;
 import com.zzzz.service.CourseOfferingService;
 import com.zzzz.service.CourseOfferingServiceException;
+import com.zzzz.vo.CourseOfferingDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,19 @@ public class CourseOfferingController {
         // TODO authentication not implemented yet
 
         CourseOffering result = courseOfferingService.getById(courseOfferingId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get the detail of a course offering by its ID.
+     * @param courseOfferingId Course offering ID
+     * @return Success: Course offering detail; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/offering/detail/{id}")
+    public ResponseEntity<CourseOfferingDetail> getDetailById(@PathVariable("id") String courseOfferingId) throws CourseOfferingServiceException, SQLException {
+        // TODO authentication not implemented yet
+
+        CourseOfferingDetail result = courseOfferingService.getVoById(courseOfferingId);
         return ResponseEntity.ok(result);
     }
 
