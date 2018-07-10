@@ -5,6 +5,7 @@ import com.zzzz.po.CourseOffering;
 import com.zzzz.service.CourseOfferingService;
 import com.zzzz.service.CourseOfferingServiceException;
 import com.zzzz.vo.CourseOfferingDetail;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,5 +90,31 @@ public class CourseOfferingController {
         // TODO authentication not implemented yet
         courseOfferingService.delete(courseOfferingId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get a list containing course offerings meeting the requirements.
+     * @param courseId The ID of the course to which the offerings belong
+     * @param usePagination Use pagination
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param courseOfferingId Course offering ID (optional)
+     * @param branchId Branch ID (optional)
+     * @param branchNameContaining Branch name containing (optional)
+     * @param lecturerId Lecturer ID (optional)
+     * @param lecturerNameContaining Lecturer name containing (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/course/{id}/offering/list")
+    public ResponseEntity<ListResult<CourseOfferingDetail>> list(@PathVariable("id") String courseId,
+                                                                 String usePagination,
+                                                                 String targetPage,
+                                                                 String pageSize,
+                                                                 String courseOfferingId,
+                                                                 String branchId, String branchNameContaining,
+                                                                 String lecturerId, String lecturerNameContaining) throws CourseOfferingServiceException, SQLException {
+        // TODO authentication not implemented yet
+        ListResult<CourseOfferingDetail> result = courseOfferingService.list(usePagination, targetPage, pageSize, courseId, courseOfferingId, branchId, branchNameContaining, lecturerId, lecturerNameContaining);
+        return ResponseEntity.ok(result);
     }
 }
