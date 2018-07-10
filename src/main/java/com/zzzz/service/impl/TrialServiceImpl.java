@@ -5,6 +5,7 @@ import com.zzzz.po.Trial;
 import com.zzzz.po.TrialStatusEnum;
 import com.zzzz.service.TrialService;
 import com.zzzz.service.TrialServiceException;
+import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialDetail;
@@ -220,28 +221,18 @@ public class TrialServiceImpl implements TrialService {
             }
         }
 
-        // Get the number of total pages
-        Long totalNumItems;
-        Long totalNumPages;
+        // Process pagination info
+        Long starting = null;
         if (usePaginationBool) {
-            totalNumItems = trialDao.countTotal(branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
-            totalNumPages = totalNumItems / pageSizeLong;
-            if (totalNumItems % pageSizeLong != 0)
-                totalNumPages++;
-            result.setTotalNumPages(totalNumPages);
-            result.setTargetPage(targetPageLong);
-            result.setPageSize(pageSizeLong);
+            long totalNumItems = trialDao.countTotal(branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
-            // If the target page exceeds the total number of pages,
+            // If the starting index exceeds the total number of items,
             // return a list result with an empty list
-            if (targetPageLong > totalNumPages)
+            if (starting == -1)
                 return result;
         }
 
-        Long starting = null;
-        if (usePaginationBool) {
-            starting = (targetPageLong - 1) * pageSizeLong;
-        }
         List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
         result.setList(list);
         return result;

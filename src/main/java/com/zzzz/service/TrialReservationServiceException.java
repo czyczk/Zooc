@@ -4,11 +4,15 @@ import org.springframework.http.HttpStatus;
 
 public class TrialReservationServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
+        EMPTY_TARGET_PAGE("目标页码为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_PAGE_SIZE("页大小为空。", HttpStatus.BAD_REQUEST),
         EMPTY_RESERVATION_ID("预约编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_USER_ID("用户编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TRIAL_ID("试听课程编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TIME("预约时间为空。", HttpStatus.BAD_REQUEST),
         EMPTY_STATUS("状态为空。", HttpStatus.BAD_REQUEST),
+        INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
         INVALID_RESERVATION_ID("预约编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_USER_ID("用户编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TRIAL_ID("试听课程编号不合法。", HttpStatus.BAD_REQUEST),

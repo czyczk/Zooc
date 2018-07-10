@@ -8,7 +8,9 @@ import com.zzzz.po.TrialReservation;
 import com.zzzz.po.TrialReservationStatusEnum;
 import com.zzzz.service.TrialReservationService;
 import com.zzzz.service.TrialReservationServiceException;
+import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialReservationDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import static com.zzzz.service.TrialReservationServiceException.ExceptionTypeEnum.*;
 
@@ -122,5 +125,66 @@ public class TrialReservationServiceImpl implements TrialReservationService {
 
         // Update
         trialReservationDao.update(reservation);
+    }
+
+    @Override
+    public ListResult<TrialReservationDetail> list(String usePagination, String targetPage, String pageSize, String reservationId, String userId, String trialId, String trialNameContaining, String status) throws SQLException, TrialReservationServiceException {
+        ListResult<TrialReservationDetail> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new TrialReservationServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new TrialReservationServiceException(EMPTY_PAGE_SIZE));
+        }
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new TrialReservationServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new TrialReservationServiceException(INVALID_PAGE_SIZE));
+        }
+
+        // Optional fields
+        Long reservationIdLong = null;
+        if (reservationId != null && !reservationId.isEmpty())
+            reservationIdLong = checker.parseUnsignedLong(reservationId, new TrialReservationServiceException(INVALID_RESERVATION_ID));
+        Long userIdLong = null;
+        if (userId != null && !userId.isEmpty())
+            userIdLong = checker.parseUnsignedLong(userId, new TrialReservationServiceException(INVALID_USER_ID));
+        Long trialIdLong = null;
+        if (trialId != null && !trialId.isEmpty())
+            trialIdLong = checker.parseUnsignedLong(trialId, new TrialReservationServiceException(INVALID_TRIAL_ID));
+        if (trialNameContaining != null && trialNameContaining.isEmpty())
+            trialNameContaining = null;
+        TrialReservationStatusEnum statusEnum = null;
+        if (status != null) {
+            if (status.isEmpty())
+                status = null;
+            else {
+                try {
+                    statusEnum = TrialReservationStatusEnum.valueOf(status);
+                } catch (IllegalArgumentException e) {
+                    throw new TrialReservationServiceException(INVALID_STATUS);
+                }
+            }
+        }
+
+        // Process pagination info
+        Long starting = null;
+        if (usePaginationBool) {
+            long totalNumItems = trialReservationDao.countTotal(reservationIdLong, userIdLong, trialIdLong, trialNameContaining, statusEnum);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
+
+            // If the starting index exceeds the total number of items,
+            // return a list result with an empty list
+            if (starting == -1)
+                return result;
+        }
+
+        List<TrialReservationDetail> list = trialReservationDao.list(usePaginationBool, starting, pageSizeLong, reservationIdLong, userIdLong, trialIdLong, trialNameContaining, statusEnum);
+        result.setList(list);
+        return result;
     }
 }

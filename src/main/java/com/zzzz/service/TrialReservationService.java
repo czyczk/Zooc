@@ -1,6 +1,7 @@
 package com.zzzz.service;
 
 import com.zzzz.po.TrialReservation;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialReservationDetail;
 
 import java.sql.SQLException;
@@ -42,4 +43,23 @@ public interface TrialReservationService {
      * @throws TrialReservationServiceException An exception is thrown if the update is unsuccessful.
      */
     void update(String targetReservationId, String status) throws SQLException, TrialReservationServiceException;
+
+    /**
+     * Get a list containing trial reservations meeting the requirements.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param reservationId Reservation ID (optional)
+     * @param userId User ID (optional)
+     * @param trialId Trial ID (optional)
+     * @param trialNameContaining Trial name containing (optional)
+     * @param status Status (optional)
+     * @return A list of all trial reservations meeting the requirements
+     * @throws TrialReservationServiceException An exception is thrown if the query is unsuccessful.
+     */
+    ListResult<TrialReservationDetail> list(String usePagination, String targetPage, String pageSize,
+                                            String reservationId,
+                                            String userId,
+                                            String trialId, String trialNameContaining,
+                                            String status) throws SQLException, TrialReservationServiceException;
 }
