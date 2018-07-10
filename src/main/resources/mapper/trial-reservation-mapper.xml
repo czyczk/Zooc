@@ -67,6 +67,7 @@
         and status=#{status}
       </if>
     </where>
+    order by release_time desc
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>

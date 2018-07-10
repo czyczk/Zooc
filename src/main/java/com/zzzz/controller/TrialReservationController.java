@@ -3,6 +3,7 @@ package com.zzzz.controller;
 import com.zzzz.dto.TrialReservationParam;
 import com.zzzz.service.TrialReservationService;
 import com.zzzz.service.TrialReservationServiceException;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.TrialReservationDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +64,15 @@ public class TrialReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    
+    @GetMapping("/user/{id}/reservation/list")
+    public ResponseEntity<ListResult<TrialReservationDetail>> getUserHistory(@PathVariable("id") String userId,
+                                                                             String usePagination,
+                                                                             String targetPage, String pageSize,
+                                                                             String reservationId,
+                                                                             String trialId, String trialNameContaining,
+                                                                             String status) throws SQLException, TrialReservationServiceException {
+        // TODO authentication not implemented yet
+        ListResult<TrialReservationDetail> result = trialReservationService.list(usePagination, targetPage, pageSize, reservationId, userId, trialId, trialNameContaining, status);
+        return ResponseEntity.ok(result);
+    }
 }
