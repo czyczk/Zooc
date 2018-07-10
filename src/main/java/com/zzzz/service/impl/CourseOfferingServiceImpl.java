@@ -4,13 +4,16 @@ import com.zzzz.dao.*;
 import com.zzzz.po.CourseOffering;
 import com.zzzz.service.CourseOfferingService;
 import com.zzzz.service.CourseOfferingServiceException;
+import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.CourseOfferingDetail;
+import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.zzzz.service.CourseOfferingServiceException.ExceptionTypeEnum.*;
 
@@ -151,5 +154,62 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
         // Delete
         courseOfferingDao.delete(courseOfferingIdLong);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ListResult<CourseOfferingDetail> list(String usePagination, String targetPage, String pageSize, String courseId, String courseOfferingId, String branchId, String branchNameContaining, String lecturerId, String lecturerNameContaining) throws CourseOfferingServiceException, SQLException {
+        ListResult<CourseOfferingDetail> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new CourseOfferingServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new CourseOfferingServiceException(EMPTY_PAGE_SIZE));
+        }
+        checker.rejectIfNullOrEmpty(courseId, new CourseOfferingServiceException(EMPTY_COURSE_ID));
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new CourseOfferingServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new CourseOfferingServiceException(INVALID_PAGE_SIZE));
+        }
+        long courseIdLong = checker.parseUnsignedLong(courseId, new CourseOfferingServiceException(INVALID_COURSE_ID));
+        boolean isExisting = courseDao.checkExistenceById(courseIdLong);
+        if (!isExisting)
+            throw new CourseOfferingServiceException(COURSE_NOT_EXISTING);
+
+        // Optional fields
+        Long courseOfferingIdLong = null;
+        if (courseId != null && !courseId.isEmpty())
+            courseOfferingIdLong = checker.parseUnsignedLong(courseOfferingId, new CourseOfferingServiceException(INVALID_COURSE_OFFERING_ID));
+        Long branchIdLong = null;
+        if (branchId != null && !branchId.isEmpty())
+            branchIdLong = checker.parseUnsignedLong(branchId, new CourseOfferingServiceException(INVALID_BRANCH_ID));
+        if (branchNameContaining != null && branchNameContaining.isEmpty())
+            branchNameContaining = null;
+        Long lecturerIdLong = null;
+        if (lecturerId != null && !lecturerId.isEmpty())
+            lecturerIdLong = checker.parseUnsignedLong(lecturerId, new CourseOfferingServiceException(INVALID_LECTURER_ID));
+        if (lecturerNameContaining != null && lecturerNameContaining.isEmpty())
+            lecturerNameContaining = null;
+
+        // Process pagination info
+        Long starting = null;
+        if (usePaginationBool) {
+            long totalNumItems = courseOfferingDao.countTotal(courseIdLong, courseOfferingIdLong, branchIdLong, branchNameContaining, lecturerIdLong, lecturerNameContaining);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
+
+            // If the starting index exceeds the total number of items,
+            // return a list result with an empty list
+            if (starting == -1)
+                return result;
+        }
+
+        List<CourseOfferingDetail> list = courseOfferingDao.list(usePaginationBool, starting, pageSizeLong, courseIdLong, courseOfferingIdLong, branchIdLong, branchNameContaining, lecturerIdLong, lecturerNameContaining);
+        result.setList(list);
+        return result;
     }
 }

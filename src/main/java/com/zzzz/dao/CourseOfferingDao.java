@@ -47,7 +47,7 @@ public interface CourseOfferingDao {
      * @return A list containing course offerings meeting the requirements
      * @throws SQLException An exception is thrown if the query is not successful.
      */
-    List<CourseOffering> list(@Param("usePagination") boolean usePagination,
+    List<CourseOfferingDetail> list(@Param("usePagination") boolean usePagination,
                               @Param("starting") Long starting,
                               @Param("pageSize") Long pageSize,
                               @Param("courseId") long courseId,

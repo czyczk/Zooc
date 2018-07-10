@@ -4,10 +4,14 @@ import org.springframework.http.HttpStatus;
 
 public class CourseOfferingServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
+        EMPTY_TARGET_PAGE("目标页码为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_PAGE_SIZE("页大小为空。", HttpStatus.BAD_REQUEST),
         EMPTY_COURSE_OFFERING_ID("课程课堂编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_COURSE_ID("课程编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_BRANCH_ID("分部编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_LECTURER_ID("讲师编号为空。", HttpStatus.BAD_REQUEST),
+        INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
         INVALID_COURSE_OFFERING_ID("课程课堂编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_COURSE_ID("课程编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_BRANCH_ID("分部编号不合法。", HttpStatus.BAD_REQUEST),
