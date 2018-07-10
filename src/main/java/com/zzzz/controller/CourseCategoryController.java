@@ -30,6 +30,7 @@ public class CourseCategoryController {
      */
     @PostMapping
     public ResponseEntity<Long> create(String name) throws CourseCategoryServiceException, SQLException {
+        // TODO authentication not implemented yet
         Long lastId = courseCategoryService.insert(name);
         return ResponseEntity.ok(lastId);
     }
