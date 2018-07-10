@@ -6,6 +6,7 @@ import com.zzzz.dao.LecturerDao;
 import com.zzzz.po.Lecturer;
 import com.zzzz.service.LecturerService;
 import com.zzzz.service.LecturerServiceException;
+import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.ListResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,28 +173,18 @@ public class LecturerServiceImpl implements LecturerService {
         if (name != null && name.isEmpty())
             name = null;
 
-        // Get the number of total pages
-        Long totalNumItems;
-        Long totalNumPages;
+        // Process pagination info
+        Long starting = null;
         if (usePaginationBool) {
-            totalNumItems = lecturerDao.countTotal(enterpriseIdLong, lecturerIdLong, name);
-            totalNumPages = totalNumItems / pageSizeLong;
-            if (totalNumItems % pageSizeLong != 0)
-                totalNumPages++;
-            result.setTotalNumPages(totalNumPages);
-            result.setTargetPage(targetPageLong);
-            result.setPageSize(pageSizeLong);
+            long totalNumItems = lecturerDao.countTotal(enterpriseIdLong, lecturerIdLong, name);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
-            // If the target page exceeds the total number of pages,
+            // If the starting index exceeds the total number of items,
             // return a list result with an empty list
-            if (targetPageLong > totalNumPages)
+            if (starting == -1)
                 return result;
         }
 
-        Long starting = null;
-        if (usePaginationBool) {
-            starting = (targetPageLong - 1) * pageSizeLong;
-        }
         List<Lecturer> list = lecturerDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, lecturerIdLong, name);
         result.setList(list);
         return result;

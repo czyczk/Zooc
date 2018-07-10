@@ -8,6 +8,7 @@ import com.zzzz.po.Course;
 import com.zzzz.po.CourseStatusEnum;
 import com.zzzz.service.CourseService;
 import com.zzzz.service.CourseServiceException;
+import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.CourseDetail;
 import com.zzzz.vo.ListResult;
@@ -214,28 +215,18 @@ public class CourseServiceImpl implements CourseService {
             }
         }
 
-        // Get the number of total pages
-        Long totalNumItems;
-        Long totalNumPages;
+        // Process pagination info
+        Long starting = null;
         if (usePaginationBool) {
-            totalNumItems = courseDao.countTotal(enterpriseIdLong, courseIdLong, nameContaining, categoryIdLong, priceMinBd, priceMaxBd, statusEnum);
-            totalNumPages = totalNumItems / pageSizeLong;
-            if (totalNumItems % pageSizeLong != 0)
-                totalNumPages++;
-            result.setTotalNumPages(totalNumPages);
-            result.setTargetPage(targetPageLong);
-            result.setPageSize(pageSizeLong);
+            long totalNumItems = courseDao.countTotal(enterpriseIdLong, courseIdLong, nameContaining, categoryIdLong, priceMinBd, priceMaxBd, statusEnum);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
-            // If the target page exceeds the total number of pages,
+            // If the starting index exceeds the total number of items,
             // return a list result with an empty list
-            if (targetPageLong > totalNumPages)
+            if (starting == -1)
                 return result;
         }
 
-        Long starting = null;
-        if (usePaginationBool) {
-            starting = (targetPageLong - 1) * pageSizeLong;
-        }
         List<CourseDetail> list = courseDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, courseIdLong, nameContaining, categoryIdLong, priceMinBd, priceMaxBd, statusEnum);
         result.setList(list);
         return result;

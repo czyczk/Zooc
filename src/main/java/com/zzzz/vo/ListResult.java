@@ -5,7 +5,7 @@ import java.util.List;
 public class ListResult<E> {
     private Long targetPage;
     private Long pageSize;
-    private Long totalNumPages;
+    private Long total;
     private List<E> list;
 
     public Long getTargetPage() {
@@ -24,12 +24,12 @@ public class ListResult<E> {
         this.pageSize = pageSize;
     }
 
-    public Long getTotalNumPages() {
-        return totalNumPages;
+    public Long getTotal() {
+        return total;
     }
 
-    public void setTotalNumPages(Long totalNumPages) {
-        this.totalNumPages = totalNumPages;
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
     public List<E> getList() {
