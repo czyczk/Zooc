@@ -3,6 +3,7 @@ package com.zzzz.dao;
 import com.zzzz.po.CourseCategory;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface CourseCategoryDao {
     int insert(CourseCategory courseCategory) throws SQLException;
@@ -10,6 +11,5 @@ public interface CourseCategoryDao {
     boolean checkExistenceByName(String name) throws SQLException;
     CourseCategory getById(long categoryId) throws SQLException;
     int update(CourseCategory courseCategory) throws SQLException;
-
-    // Cascade when deleted. Implemented later.
+    List<CourseCategory> list() throws SQLException;
 }

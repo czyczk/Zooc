@@ -27,4 +27,8 @@
       name=#{name}
     where category_id=#{categoryId}
   </update>
+  <select id="list" resultType="CourseCategory">
+    select category_id, name
+    from course_category
+  </select>
 </mapper>
