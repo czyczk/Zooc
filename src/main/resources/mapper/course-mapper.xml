@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzzz.dao.COurseDao">
+<mapper namespace="com.zzzz.dao.CourseDao">
   <sql id="all_columns">
     course_id, enterprise_id, name, detail, img_url, category_id, release_time, price, status
   </sql>
