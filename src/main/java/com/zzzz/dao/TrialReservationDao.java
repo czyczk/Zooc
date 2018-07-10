@@ -24,6 +24,7 @@ public interface TrialReservationDao {
      * Count the number of trial reservations meeting the requirements.
      * @param reservationId Reservation ID (optional)
      * @param userId User ID (optional)
+     * @param enterpriseId Enterprise ID (optional)
      * @param trialId Trial ID (optional)
      * @param trialNameContaining Trial name containing (optional)
      * @param status Status (optional)
@@ -32,6 +33,7 @@ public interface TrialReservationDao {
      */
     long countTotal(@Param("reservationId") Long reservationId,
                     @Param("userId") Long userId,
+                    @Param("enterpriseId") Long enterpriseId,
                     @Param("trialId") Long trialId,
                     @Param("trialNameContaining") String trialNameContaining,
                     @Param("status")TrialReservationStatusEnum status) throws SQLException;
@@ -43,6 +45,7 @@ public interface TrialReservationDao {
      * @param pageSize Page size (required when using pagination)
      * @param reservationId Reservation ID (optional)
      * @param userId User ID (optional)
+     * @param enterpriseId Enterprise ID (optional)
      * @param trialId Trial ID (optional)
      * @param trialNameContaining Trial name containing (optional)
      * @param status Status (optional)
@@ -54,6 +57,7 @@ public interface TrialReservationDao {
                                       @Param("pageSize") Long pageSize,
                                       @Param("reservationId") Long reservationId,
                                       @Param("userId") Long userId,
+                                      @Param("enterpriseId") Long enterpriseId,
                                       @Param("trialId") Long trialId,
                                       @Param("trialNameContaining") String trialNameContaining,
                                       @Param("status")TrialReservationStatusEnum status) throws SQLException;

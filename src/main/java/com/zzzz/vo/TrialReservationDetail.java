@@ -6,6 +6,8 @@ import java.util.Date;
 
 public class TrialReservationDetail {
     private long reservationId;
+    private long userId;
+    private long enterpriseId;
     private long trialId;
     private String trialName;
     private Date time;
@@ -18,6 +20,22 @@ public class TrialReservationDetail {
 
     public void setReservationId(long reservationId) {
         this.reservationId = reservationId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
     public long getTrialId() {

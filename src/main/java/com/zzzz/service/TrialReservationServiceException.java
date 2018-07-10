@@ -15,11 +15,13 @@ public class TrialReservationServiceException extends ServiceException {
         INVALID_PAGE_SIZE("页大小不合法。", HttpStatus.BAD_REQUEST),
         INVALID_RESERVATION_ID("预约编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_USER_ID("用户编号不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_ENTERPRISE_ID("企业编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TRIAL_ID("试听课程编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TIME("预约时间不合法。", HttpStatus.BAD_REQUEST),
         INVALID_STATUS("状态不合法。", HttpStatus.BAD_REQUEST),
         RESERVATION_NOT_EXISTING("该预约不存在。", HttpStatus.NOT_FOUND),
         USER_NOT_EXISTING("该用户不存在。", HttpStatus.NOT_FOUND),
+        ENTERPRISE_NOT_EXISTING("该企业不存在。", HttpStatus.NOT_FOUND),
         TRIAL_NOT_EXISTING("该试听课程不存在。", HttpStatus.NOT_FOUND)
         ;
 

@@ -1,9 +1,6 @@
 package com.zzzz.service.impl;
 
-import com.zzzz.dao.GeneralDao;
-import com.zzzz.dao.TrialDao;
-import com.zzzz.dao.TrialReservationDao;
-import com.zzzz.dao.UserDao;
+import com.zzzz.dao.*;
 import com.zzzz.po.TrialReservation;
 import com.zzzz.po.TrialReservationStatusEnum;
 import com.zzzz.service.TrialReservationService;
@@ -27,14 +24,16 @@ public class TrialReservationServiceImpl implements TrialReservationService {
     private final GeneralDao generalDao;
     private final TrialReservationDao trialReservationDao;
     private final UserDao userDao;
+    private final EnterpriseDao enterpriseDao;
     private final TrialDao trialDao;
     private final ParameterChecker<TrialReservationServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public TrialReservationServiceImpl(GeneralDao generalDao, TrialReservationDao trialReservationDao, UserDao userDao, TrialDao trialDao) {
+    public TrialReservationServiceImpl(GeneralDao generalDao, TrialReservationDao trialReservationDao, UserDao userDao, EnterpriseDao enterpriseDao, TrialDao trialDao) {
         this.generalDao = generalDao;
         this.trialReservationDao = trialReservationDao;
         this.userDao = userDao;
+        this.enterpriseDao = enterpriseDao;
         this.trialDao = trialDao;
     }
 
@@ -128,7 +127,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
     }
 
     @Override
-    public ListResult<TrialReservationDetail> list(String usePagination, String targetPage, String pageSize, String reservationId, String userId, String trialId, String trialNameContaining, String status) throws SQLException, TrialReservationServiceException {
+    public ListResult<TrialReservationDetail> list(String usePagination, String targetPage, String pageSize, String reservationId, String userId, String enterpriseId, String trialId, String trialNameContaining, String status) throws SQLException, TrialReservationServiceException {
         ListResult<TrialReservationDetail> result = new ListResult<>();
 
         // Check if the parameters are valid
@@ -151,30 +150,39 @@ public class TrialReservationServiceImpl implements TrialReservationService {
         if (reservationId != null && !reservationId.isEmpty())
             reservationIdLong = checker.parseUnsignedLong(reservationId, new TrialReservationServiceException(INVALID_RESERVATION_ID));
         Long userIdLong = null;
-        if (userId != null && !userId.isEmpty())
+        if (userId != null && !userId.isEmpty()) {
             userIdLong = checker.parseUnsignedLong(userId, new TrialReservationServiceException(INVALID_USER_ID));
+            // Check if the user exists
+            boolean isExisting = userDao.checkExistenceById(userIdLong);
+            if (!isExisting)
+                throw new TrialReservationServiceException(USER_NOT_EXISTING);
+        }
+        Long enterpriseIdLong = null;
+        if (enterpriseId != null && !enterpriseId.isEmpty()) {
+            enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new TrialReservationServiceException(INVALID_ENTERPRISE_ID));
+            // Check if the enterprise exists
+            boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+            if (!isExisting)
+                throw new TrialReservationServiceException(ENTERPRISE_NOT_EXISTING);
+        }
         Long trialIdLong = null;
         if (trialId != null && !trialId.isEmpty())
             trialIdLong = checker.parseUnsignedLong(trialId, new TrialReservationServiceException(INVALID_TRIAL_ID));
         if (trialNameContaining != null && trialNameContaining.isEmpty())
             trialNameContaining = null;
         TrialReservationStatusEnum statusEnum = null;
-        if (status != null) {
-            if (status.isEmpty())
-                status = null;
-            else {
-                try {
-                    statusEnum = TrialReservationStatusEnum.valueOf(status);
-                } catch (IllegalArgumentException e) {
-                    throw new TrialReservationServiceException(INVALID_STATUS);
-                }
+        if (status != null && !status.isEmpty()) {
+            try {
+                statusEnum = TrialReservationStatusEnum.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new TrialReservationServiceException(INVALID_STATUS);
             }
         }
 
         // Process pagination info
         Long starting = null;
         if (usePaginationBool) {
-            long totalNumItems = trialReservationDao.countTotal(reservationIdLong, userIdLong, trialIdLong, trialNameContaining, statusEnum);
+            long totalNumItems = trialReservationDao.countTotal(reservationIdLong, userIdLong, enterpriseIdLong, trialIdLong, trialNameContaining, statusEnum);
             starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
             // If the starting index exceeds the total number of items,
@@ -183,7 +191,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
                 return result;
         }
 
-        List<TrialReservationDetail> list = trialReservationDao.list(usePaginationBool, starting, pageSizeLong, reservationIdLong, userIdLong, trialIdLong, trialNameContaining, statusEnum);
+        List<TrialReservationDetail> list = trialReservationDao.list(usePaginationBool, starting, pageSizeLong, reservationIdLong, userIdLong, enterpriseIdLong, trialIdLong, trialNameContaining, statusEnum);
         result.setList(list);
         return result;
     }

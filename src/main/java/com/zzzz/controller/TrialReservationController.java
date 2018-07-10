@@ -64,6 +64,18 @@ public class TrialReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Get a list containing trial reservations meeting the requirements.
+     * @param userId The ID of the user to which the trial reservations belong
+     * @param usePagination Use pagination or not (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param reservationId Reservation ID (optional)
+     * @param trialId Trial ID (optional)
+     * @param trialNameContaining Trial name containing (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Internal: 500
+     */
     @GetMapping("/user/{id}/reservation/list")
     public ResponseEntity<ListResult<TrialReservationDetail>> getUserHistory(@PathVariable("id") String userId,
                                                                              String usePagination,
@@ -72,7 +84,33 @@ public class TrialReservationController {
                                                                              String trialId, String trialNameContaining,
                                                                              String status) throws SQLException, TrialReservationServiceException {
         // TODO authentication not implemented yet
-        ListResult<TrialReservationDetail> result = trialReservationService.list(usePagination, targetPage, pageSize, reservationId, userId, trialId, trialNameContaining, status);
+        ListResult<TrialReservationDetail> result = trialReservationService.list(usePagination, targetPage, pageSize, reservationId, userId, null, trialId, trialNameContaining, status);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get a list containing trial reservations meeting the requirements.
+     * @param enterpriseId The ID of the enterprise to which the reservations belong
+     * @param usePagination Use pagination or not (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param reservationId Reservation ID (optional)
+     * @param userId User ID (optional)
+     * @param trialId Trial ID (optional)
+     * @param trialNameContaining Trial name containing (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/reservation/list")
+    public ResponseEntity<ListResult<TrialReservationDetail>> list(@PathVariable("id") String enterpriseId,
+                                                                  String usePagination,
+                                                                  String targetPage, String pageSize,
+                                                                  String reservationId,
+                                                                  String userId,
+                                                                  String trialId, String trialNameContaining,
+                                                                  String status) throws SQLException, TrialReservationServiceException {
+        // TODO authentication not implemented yet
+        ListResult<TrialReservationDetail> result = trialReservationService.list(usePagination, targetPage, pageSize, reservationId, userId, enterpriseId, trialId, trialNameContaining, status);
         return ResponseEntity.ok(result);
     }
 }

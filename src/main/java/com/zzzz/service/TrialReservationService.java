@@ -51,6 +51,7 @@ public interface TrialReservationService {
      * @param pageSize Page size (required when using pagination)
      * @param reservationId Reservation ID (optional)
      * @param userId User ID (optional)
+     * @param enterpriseId Enterprise ID (optional)
      * @param trialId Trial ID (optional)
      * @param trialNameContaining Trial name containing (optional)
      * @param status Status (optional)
@@ -60,6 +61,7 @@ public interface TrialReservationService {
     ListResult<TrialReservationDetail> list(String usePagination, String targetPage, String pageSize,
                                             String reservationId,
                                             String userId,
+                                            String enterpriseId,
                                             String trialId, String trialNameContaining,
                                             String status) throws SQLException, TrialReservationServiceException;
 }
