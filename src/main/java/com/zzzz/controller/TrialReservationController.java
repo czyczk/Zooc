@@ -74,7 +74,7 @@ public class TrialReservationController {
      * @param trialId Trial ID (optional)
      * @param trialNameContaining Trial name containing (optional)
      * @param status Status (optional)
-     * @return Success: List; Bad request: 400; Internal: 500
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping("/user/{id}/reservation/list")
     public ResponseEntity<ListResult<TrialReservationDetail>> getUserHistory(@PathVariable("id") String userId,
@@ -99,7 +99,7 @@ public class TrialReservationController {
      * @param trialId Trial ID (optional)
      * @param trialNameContaining Trial name containing (optional)
      * @param status Status (optional)
-     * @return Success: List; Bad request: 400; Internal: 500
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping("/enterprise/{id}/reservation/list")
     public ResponseEntity<ListResult<TrialReservationDetail>> list(@PathVariable("id") String enterpriseId,
