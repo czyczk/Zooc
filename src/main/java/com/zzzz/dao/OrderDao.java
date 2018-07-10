@@ -25,6 +25,7 @@ public interface OrderDao {
      * Count the number of orders meeting the requirements.
      * @param orderId Order ID (optional)
      * @param userId User ID (optional)
+     * @param enterpriseId Enterprise ID (optional)
      * @param courseId Course ID (optional)
      * @param courseNameContaining Course name containing (optional)
      * @param status Status (optional)
@@ -33,6 +34,7 @@ public interface OrderDao {
      */
     long countTotal(@Param("orderId") Long orderId,
                     @Param("userId") Long userId,
+                    @Param("enterpriseId") Long enterpriseId,
                     @Param("courseId") Long courseId,
                     @Param("courseNameContaining") String courseNameContaining,
                     @Param("status")OrderStatusEnum status) throws SQLException;
@@ -44,6 +46,7 @@ public interface OrderDao {
      * @param pageSize Page size (required when using pagination)
      * @param orderId Order ID (optional)
      * @param userId User ID (optional)
+     * @param enterpriseId Enterprise ID (optional)
      * @param courseId Course ID (optional)
      * @param courseNameContaining Course name containing (optional)
      * @param status Status (optional)
@@ -55,7 +58,8 @@ public interface OrderDao {
                            @Param("pageSize") Long pageSize,
                            @Param("orderId") Long orderId,
                            @Param("userId") Long userId,
+                           @Param("enterpriseId") Long enterpriseId,
                            @Param("courseId") Long courseId,
                            @Param("courseNameContaining") String courseNameContaining,
-                           @Param("status")OrderStatusEnum status) throws SQLException;
+                           @Param("status") OrderStatusEnum status) throws SQLException;
 }

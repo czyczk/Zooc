@@ -24,15 +24,19 @@
   </update>
   <select id="countTotal" parameterType="map" resultType="long">
     select count(*)
-    from (select o.order_id, o.user_id, o.course_id, c.name 'course_name',
+    from (select o.order_id, o.user_id, e.enterprise_id, o.course_id, c.name 'course_name',
                  o.time, o.status
           from `order` o join course c on o.course_id = c.course_id
+               join enterprise e on c.enterprise_id = e.enterprise_id
           <where>
             <if test="orderId != null">
               and order_id=#{orderId}
             </if>
             <if test="userId != null">
               and user_id=#{userId}
+            </if>
+            <if test="enterpriseId != null">
+              and enterprise_id=#{enterpriseId}
             </if>
             <if test="courseId != null">
               and course_id=#{courseId}
@@ -47,15 +51,19 @@
     ) order_detail
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
-    select o.order_id, o.user_id, o.course_id, c.name 'course_name',
+    select o.order_id, o.user_id, e.enterprise_id, o.course_id, c.name 'course_name',
     o.time, o.status
     from `order` o join course c on o.course_id = c.course_id
+         join enterprise e on c.enterprise_id = e.enterprise_id
     <where>
       <if test="orderId != null">
         and order_id=#{orderId}
       </if>
       <if test="userId != null">
         and user_id=#{userId}
+      </if>
+      <if test="enterpriseId != null">
+        and enterprise_id=#{enterpriseId}
       </if>
       <if test="courseId != null">
         and course_id=#{courseId}

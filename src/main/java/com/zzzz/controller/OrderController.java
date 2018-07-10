@@ -6,6 +6,7 @@ import com.zzzz.service.OrderService;
 import com.zzzz.service.OrderServiceException;
 import com.zzzz.service.RefundService;
 import com.zzzz.service.RefundServiceException;
+import com.zzzz.vo.ListResult;
 import com.zzzz.vo.OrderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -92,5 +93,52 @@ public class OrderController {
         // TODO authentication not implemented yet
         refundService.delete(refundId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get the user's order history.
+     * @param userId User ID
+     * @param usePagination Use pagination (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param orderId Order ID (optional)
+     * @param courseId Course ID (optional)
+     * @param courseNameContaining Course name containing (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/user/{id}/order/list")
+    public ResponseEntity<ListResult<OrderDetail>> getUserHistory(@PathVariable("id") String userId,
+                                                                  String usePagination, String targetPage, String pageSize,
+                                                                  String orderId,
+                                                                  String courseId, String courseNameContaining,
+                                                                  String status) throws SQLException, OrderServiceException {
+        // TODO authentication not implemented yet
+        ListResult<OrderDetail> result = orderService.list(usePagination, targetPage, pageSize, orderId, userId, null, courseId, courseNameContaining, status);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get the user's order history.
+     * @param enterpriseId Enterprise ID
+     * @param usePagination Use pagination (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param orderId Order ID (optional)
+     * @param userId User ID (optional)
+     * @param courseId Course ID (optional)
+     * @param courseNameContaining Course name containing (optional)
+     * @param status Status (optional)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/order/list")
+    public ResponseEntity<ListResult<OrderDetail>> list(@PathVariable("id") String enterpriseId,
+                                                        String usePagination, String targetPage, String pageSize,
+                                                        String orderId, String userId,
+                                                        String courseId, String courseNameContaining,
+                                                        String status) throws SQLException, OrderServiceException {
+        // TODO authentication not implemented yet
+        ListResult<OrderDetail> result = orderService.list(usePagination, targetPage, pageSize, orderId, userId, enterpriseId, courseId, courseNameContaining, status);
+        return ResponseEntity.ok(result);
     }
 }

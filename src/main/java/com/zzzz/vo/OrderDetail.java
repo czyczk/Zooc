@@ -7,6 +7,7 @@ import java.util.Date;
 public class OrderDetail {
     private long orderId;
     private long userId;
+    private long enterpriseId;
     private long courseId;
     private String courseName;
     private Date time;
@@ -26,6 +27,14 @@ public class OrderDetail {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(long enterpriseId) {
+        this.enterpriseId = enterpriseId;
     }
 
     public long getCourseId() {
