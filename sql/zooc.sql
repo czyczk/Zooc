@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-09 21:58:46
+Date: 2018-07-10 10:09:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -285,7 +285,7 @@ CREATE TABLE `user` (
 -- View structure for view_available_branch
 -- ----------------------------
 DROP VIEW IF EXISTS `view_available_branch`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_branch` AS select `branch`.`branch_id` AS `branch_id`,`branch`.`enterprise_id` AS `enterprise_id`,`branch`.`name` AS `name`,`branch`.`address` AS `address`,`branch`.`latitude` AS `latitude`,`branch`.`longitude` AS `longitude`,`branch`.`telephone` AS `telephone` from `branch` where (`branch`.`is_disabled` = 0x00) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_branch` AS select `branch`.`branch_id` AS `branch_id`,`branch`.`enterprise_id` AS `enterprise_id`,`branch`.`name` AS `name`,`branch`.`address` AS `address`,`branch`.`latitude` AS `latitude`,`branch`.`longitude` AS `longitude`,`branch`.`telephone` AS `telephone`,`branch`.`is_disabled` AS `is_disabled` from `branch` where (`branch`.`is_disabled` = 0x00) ;
 
 -- ----------------------------
 -- View structure for view_available_course
@@ -297,7 +297,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- View structure for view_available_lecturer
 -- ----------------------------
 DROP VIEW IF EXISTS `view_available_lecturer`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_lecturer` AS select `lecturer`.`lecturer_id` AS `lecturer_id`,`lecturer`.`enterprise_id` AS `enterprise_id`,`lecturer`.`name` AS `name`,`lecturer`.`photo_url` AS `photo_url`,`lecturer`.`introduction` AS `introduction` from `lecturer` where (`lecturer`.`is_disabled` = 0) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_lecturer` AS select `lecturer`.`lecturer_id` AS `lecturer_id`,`lecturer`.`enterprise_id` AS `enterprise_id`,`lecturer`.`name` AS `name`,`lecturer`.`photo_url` AS `photo_url`,`lecturer`.`introduction` AS `introduction`,`lecturer`.`is_disabled` AS `is_disabled` from `lecturer` where (`lecturer`.`is_disabled` = 0) ;
 
 -- ----------------------------
 -- View structure for view_course_detail
