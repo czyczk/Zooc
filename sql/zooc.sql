@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-10 10:26:48
+Date: 2018-07-11 16:00:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,7 @@ CREATE TABLE `administrator` (
   UNIQUE KEY `unique_administrator_pk` (`administrator_id`),
   UNIQUE KEY `unique_administrator_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_administrator_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for branch
@@ -115,7 +115,7 @@ CREATE TABLE `enterprise` (
   `detail` text COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`enterprise_id`),
   UNIQUE KEY `unique_enterprise_pk` (`enterprise_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for lecturer
@@ -303,7 +303,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- View structure for view_course_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_course_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_course_detail` AS select `course`.`course_id` AS `course_id`,`course`.`enterprise_id` AS `enterprise_id`,`course`.`name` AS `name`,`course`.`detail` AS `detail`,`course`.`img_url` AS `img_url`,`course`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`course`.`release_time` AS `release_time`,`course`.`price` AS `price`,`course`.`status` AS `status`,`course_offering`.`course_offering_id` AS `course_offering_id`,`course_offering`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`course_offering`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name` from ((((`course` join `course_category` on((`course`.`category_id` = `course_category`.`category_id`))) join `course_offering` on((`course_offering`.`course_id` = `course`.`course_id`))) join `branch` on((`course_offering`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`course_offering`.`lecturer_id` = `lecturer`.`lecturer_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_course_detail` AS select `course`.`course_id` AS `course_id`,`course`.`enterprise_id` AS `enterprise_id`,`course`.`name` AS `name`,`course`.`detail` AS `detail`,`course`.`img_url` AS `img_url`,`course`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`course`.`release_time` AS `release_time`,`course`.`price` AS `price`,`course`.`status` AS `status` from (`course` join `course_category` on((`course`.`category_id` = `course_category`.`category_id`))) ;
 
 -- ----------------------------
 -- View structure for view_course_offering_detail

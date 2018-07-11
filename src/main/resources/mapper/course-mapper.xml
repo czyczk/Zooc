@@ -23,12 +23,12 @@
   <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.CourseDetail">
     select course_id, name, detail, img_url,
       category_id, category_name,
-      release_time, price, status,
-      course_offering_id 'course_offerings.course_offering_id',
-      branch_id 'course_offerings.branch_id',
-      branch_name 'course_offering.branch_name',
-      lecturer_id 'course_offerings.lecturer_id',
-      lecturer_name 'course_offerings.lecturer_name'
+      release_time, price, status
+#       course_offering_id 'course_offerings.course_offering_id',
+#       branch_id 'course_offerings.branch_id',
+#       branch_name 'course_offering.branch_name',
+#       lecturer_id 'course_offerings.lecturer_id',
+#       lecturer_name 'course_offerings.lecturer_name'
     from view_course_detail
     where course_id=#{courseId}
   </select>
