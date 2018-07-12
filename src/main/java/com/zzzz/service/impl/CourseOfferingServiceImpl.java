@@ -183,7 +183,7 @@ public class CourseOfferingServiceImpl implements CourseOfferingService {
 
         // Optional fields
         Long courseOfferingIdLong = null;
-        if (courseId != null && !courseId.isEmpty())
+        if (courseOfferingId != null && !courseOfferingId.isEmpty())
             courseOfferingIdLong = checker.parseUnsignedLong(courseOfferingId, new CourseOfferingServiceException(INVALID_COURSE_OFFERING_ID));
         Long branchIdLong = null;
         if (branchId != null && !branchId.isEmpty())

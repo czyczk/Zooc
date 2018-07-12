@@ -39,7 +39,7 @@ public class CourseCategoryController {
      * Get a list of all course categories.
      * @return Success: List; Internal: 500
      */
-    @GetMapping("/{id}")
+    @GetMapping("/list")
     public ResponseEntity<List<CourseCategory>> list() throws SQLException {
         return ResponseEntity.ok(courseCategoryService.list());
     }
