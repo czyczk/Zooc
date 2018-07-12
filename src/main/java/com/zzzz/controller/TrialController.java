@@ -102,7 +102,7 @@ public class TrialController {
                                                         String status) throws TrialServiceException, SQLException {
         // TODO authentication not implemented yet
         ListResult<TrialDetail> result = trialService.list(usePagination, targetPage, pageSize,
-                branchId, trialId, nameContaining, branchId, branchNameContaining, categoryId, lecturerNameContaining, status);
+                enterpriseId, trialId, nameContaining, branchId, branchNameContaining, categoryId, lecturerNameContaining, status);
         return ResponseEntity.ok(result);
     }
 

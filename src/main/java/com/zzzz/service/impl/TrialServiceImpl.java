@@ -231,7 +231,7 @@ public class TrialServiceImpl implements TrialService {
         // Process pagination info
         Long starting = null;
         if (usePaginationBool) {
-            long totalNumItems = trialDao.countTotal(enterpriseIdLong, trialIdLong, nameContaining, branchIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+            long totalNumItems = trialDao.countTotal(enterpriseIdLong, trialIdLong, nameContaining, enterpriseIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
             starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
             // If the starting index exceeds the total number of items,
@@ -240,7 +240,7 @@ public class TrialServiceImpl implements TrialService {
                 return result;
         }
 
-        List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, branchIdLong, trialIdLong, nameContaining, branchIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+        List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, trialIdLong, nameContaining, branchIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
         result.setList(list);
         return result;
     }
