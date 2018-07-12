@@ -11,6 +11,8 @@ public class TrialDetail {
     private String imgUrl;
     private long categoryId;
     private String categoryName;
+    private long enterpriseId;
+    private String enterpriseName;
     private long branchId;
     private String branchName;
     private long lecturerId;
@@ -64,6 +66,22 @@ public class TrialDetail {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(long enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
+
+    public String getEnterpriseName() {
+        return enterpriseName;
+    }
+
+    public void setEnterpriseName(String enterpriseName) {
+        this.enterpriseName = enterpriseName;
     }
 
     public long getBranchId() {

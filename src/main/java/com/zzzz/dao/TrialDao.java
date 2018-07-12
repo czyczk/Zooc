@@ -18,18 +18,22 @@ public interface TrialDao {
 
     /**
      * Count the number of items meeting the requirements.
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param trialId Trial ID (optional)
      * @param nameContaining Name containing (optional)
+     * @param branchId Branch ID (optional)
+     * @param branchNameContaining Branch name containing (optional)
      * @param categoryId Category ID (optional)
      * @param lecturerNameContaining Lecturer name containing (optional)
      * @param status Status (optional)
      * @return The number of items meeting the requirements
      * @throws SQLException An exception is thrown if the query is not successful.
      */
-    long countTotal(@Param("branchId") long branchId,
+    long countTotal(@Param("enterpriseId") long enterpriseId,
                     @Param("trialId") Long trialId,
                     @Param("nameContaining") String nameContaining,
+                    @Param("branchId") Long branchId,
+                    @Param("branchNameContaining") String branchNameContaining,
                     @Param("categoryId") Long categoryId,
                     @Param("lecturerNameContaining") String lecturerNameContaining,
                     @Param("status") TrialStatusEnum status) throws SQLException;
@@ -39,9 +43,11 @@ public interface TrialDao {
      * @param usePagination Use pagination or not
      * @param starting Starting index (required when using pagination)
      * @param pageSize Page size (required when using pagination)
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param trialId Trial ID (optional)
      * @param nameContaining Name containing (optional)
+     * @param branchId Branch ID (optional)
+     * @param branchNameContaining Branch name containing (optional)
      * @param categoryId Category ID (optional)
      * @param lecturerNameContaining Lecturer name containing (optional)
      * @param status Status (optional)
@@ -51,9 +57,11 @@ public interface TrialDao {
     List<TrialDetail> list(@Param("usePagination") boolean usePagination,
                            @Param("starting") Long starting,
                            @Param("pageSize") Long pageSize,
-                           @Param("branchId") long branchId,
+                           @Param("enterpriseId") long enterpriseId,
                            @Param("trialId") Long trialId,
                            @Param("nameContaining") String nameContaining,
+                           @Param("branchId") Long branchId,
+                           @Param("branchNameContaining") String branchNameContaining,
                            @Param("categoryId") Long categoryId,
                            @Param("lecturerNameContaining") String lecturerNameContaining,
                            @Param("status") TrialStatusEnum status) throws SQLException;

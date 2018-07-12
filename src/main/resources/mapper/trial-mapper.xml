@@ -23,6 +23,7 @@
   <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.TrialDetail">
     select trial_id, name, detail, img_url,
       category_id, category_name,
+      enterprise_id, enterprise_name,
       branch_id, branch_name,
       lecturer_id, lecturer_name,
       release_time, status
@@ -70,17 +71,24 @@
   <select id="list" parameterType="map" resultType="com.zzzz.vo.TrialDetail">
     select trial_id, name, img_url,
       category_id, category_name,
+      enterprise_id, enterprise_name,
       branch_id, branch_name,
       lecturer_id, lecturer_name,
       release_time, status
     from view_trial_detail
     <where>
-      and branch_id=#{branchId}
+      and enterprise_id=#{enterpriseId}
       <if test="trialId != null">
         and trial_id=#{trialId}
       </if>
       <if test="nameContaining != null">
         and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="branchNameContaining != null">
+        and branch_name like '%' ${branchNameContaining} '%'
       </if>
       <if test="categoryId != null">
         and category_id=#{categoryId}

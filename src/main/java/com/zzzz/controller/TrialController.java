@@ -75,30 +75,34 @@ public class TrialController {
 
     /**
      * Get a list of trials meeting the requirements
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param usePagination Use pagination (`false`) by default
      * @param targetPage Target page (required when using pagination)
      * @param pageSize Page size (required when using pagination)
      * @param trialId Trial ID (optional)
      * @param nameContaining Name containing (optional)
+     * @param branchId The ID of the branch to which the trials belong (optional)
+     * @param branchNameContaining Branch name containing (optional)
      * @param categoryId Category ID (optional)
      * @param lecturerNameContaining Lecturer name containing (optional)
      * @param status Status (optional)
      * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping("/branch/{id}/trial/list")
-    public ResponseEntity<ListResult<TrialDetail>> list(@PathVariable("id") String branchId,
+    @GetMapping("/enterprise/{id}/trial/list")
+    public ResponseEntity<ListResult<TrialDetail>> list(@PathVariable("id") String enterpriseId,
                                                         String usePagination,
                                                         String targetPage,
                                                         String pageSize,
                                                         String trialId,
                                                         String nameContaining,
+                                                        String branchId,
+                                                        String branchNameContaining,
                                                         String categoryId,
                                                         String lecturerNameContaining,
                                                         String status) throws TrialServiceException, SQLException {
         // TODO authentication not implemented yet
         ListResult<TrialDetail> result = trialService.list(usePagination, targetPage, pageSize,
-                branchId, trialId, nameContaining, categoryId, lecturerNameContaining, status);
+                branchId, trialId, nameContaining, branchId, branchNameContaining, categoryId, lecturerNameContaining, status);
         return ResponseEntity.ok(result);
     }
 

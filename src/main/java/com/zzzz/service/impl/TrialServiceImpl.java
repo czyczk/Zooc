@@ -24,15 +24,17 @@ public class TrialServiceImpl implements TrialService {
     private final GeneralDao generalDao;
     private final TrialDao trialDao;
     private final CourseCategoryDao categoryDao;
+    private final EnterpriseDao enterpriseDao;
     private final BranchDao branchDao;
     private final LecturerDao lecturerDao;
     private final ParameterChecker<TrialServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public TrialServiceImpl(GeneralDao generalDao, TrialDao trialDao, CourseCategoryDao categoryDao, BranchDao branchDao, LecturerDao lecturerDao) {
+    public TrialServiceImpl(GeneralDao generalDao, TrialDao trialDao, CourseCategoryDao categoryDao, EnterpriseDao enterpriseDao, BranchDao branchDao, LecturerDao lecturerDao) {
         this.generalDao = generalDao;
         this.trialDao = trialDao;
         this.categoryDao = categoryDao;
+        this.enterpriseDao = enterpriseDao;
         this.branchDao = branchDao;
         this.lecturerDao = lecturerDao;
     }
@@ -174,7 +176,7 @@ public class TrialServiceImpl implements TrialService {
 
     @Override
     @Transactional(readOnly = true)
-    public ListResult<TrialDetail> list(String usePagination, String targetPage, String pageSize, String branchId, String trialId, String nameContaining, String categoryId, String lecturerNameContaining, String status) throws TrialServiceException, SQLException {
+    public ListResult<TrialDetail> list(String usePagination, String targetPage, String pageSize, String enterpriseId, String trialId, String nameContaining, String branchId, String branchNameContaining, String categoryId, String lecturerNameContaining, String status) throws TrialServiceException, SQLException {
         ListResult<TrialDetail> result = new ListResult<>();
 
         // Check if the parameters are valid
@@ -183,7 +185,7 @@ public class TrialServiceImpl implements TrialService {
             checker.rejectIfNullOrEmpty(targetPage, new TrialServiceException(EMPTY_TARGET_PAGE));
             checker.rejectIfNullOrEmpty(pageSize, new TrialServiceException(EMPTY_PAGE_SIZE));
         }
-        checker.rejectIfNullOrEmpty(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
+        checker.rejectIfNullOrEmpty(enterpriseId, new TrialServiceException(EMPTY_ENTERPRISE_ID));
 
         // Required fields
         Long targetPageLong = null;
@@ -192,10 +194,10 @@ public class TrialServiceImpl implements TrialService {
             targetPageLong = checker.parsePositiveLong(targetPage, new TrialServiceException(INVALID_TARGET_PAGE));
             pageSizeLong = checker.parsePositiveLong(pageSize, new TrialServiceException(INVALID_PAGE_SIZE));
         }
-        long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
-        boolean isExisting = branchDao.checkExistenceById(branchIdLong);
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new TrialServiceException(EMPTY_ENTERPRISE_ID));
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
-            throw new TrialServiceException(BRANCH_NOT_EXISTING);
+            throw new TrialServiceException(ENTERPRISE_NOT_EXISTING);
 
         // Optional fields
         Long trialIdLong = null;
@@ -208,23 +210,28 @@ public class TrialServiceImpl implements TrialService {
             categoryIdLong = checker.parseUnsignedLong(categoryId, new TrialServiceException(INVALID_CATEGORY_ID));
         if (lecturerNameContaining != null && lecturerNameContaining.isEmpty())
             lecturerNameContaining = null;
+        Long branchIdLong = null;
+        if (branchId != null && !branchId.isEmpty()) {
+            branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
+            isExisting = branchDao.checkExistenceById(branchIdLong);
+            if (!isExisting)
+                throw new TrialServiceException(BRANCH_NOT_EXISTING);
+        }
+        if (branchNameContaining != null && branchNameContaining.isEmpty())
+            branchNameContaining = null;
         TrialStatusEnum statusEnum = null;
-        if (status != null) {
-            if (status.isEmpty())
-                status = null;
-            else {
-                try {
-                    statusEnum = TrialStatusEnum.valueOf(status);
-                } catch (IllegalArgumentException e) {
-                    throw new TrialServiceException(INVALID_STATUS);
-                }
+        if (status != null && !status.isEmpty()) {
+            try {
+                statusEnum = TrialStatusEnum.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new TrialServiceException(INVALID_STATUS);
             }
         }
 
         // Process pagination info
         Long starting = null;
         if (usePaginationBool) {
-            long totalNumItems = trialDao.countTotal(branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+            long totalNumItems = trialDao.countTotal(enterpriseIdLong, trialIdLong, nameContaining, branchIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
             starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
             // If the starting index exceeds the total number of items,
@@ -233,7 +240,7 @@ public class TrialServiceImpl implements TrialService {
                 return result;
         }
 
-        List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, branchIdLong, trialIdLong, nameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
+        List<TrialDetail> list = trialDao.list(usePaginationBool, starting, pageSizeLong, branchIdLong, trialIdLong, nameContaining, branchIdLong, branchNameContaining, categoryIdLong, lecturerNameContaining, statusEnum);
         result.setList(list);
         return result;
     }

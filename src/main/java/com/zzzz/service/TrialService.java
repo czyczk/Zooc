@@ -59,9 +59,11 @@ public interface TrialService {
      * @param usePagination Use pagination or not
      * @param targetPage Target page (required when using pagination)
      * @param pageSize Page size (required when using pagination)
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param trialId Trial ID (optional)
      * @param nameContaining Name containing (optional)
+     * @param branchId The ID of the branch to which the trials belong (optional)
+     * @param branchNameContaining Branch name containing (optional)
      * @param categoryId Category ID (optional)
      * @param lecturerNameContaining Lecturer name containing (optional)
      * @param status Status (optional)
@@ -71,9 +73,11 @@ public interface TrialService {
     ListResult<TrialDetail> list(String usePagination,
                                  String targetPage,
                                  String pageSize,
-                                 String branchId,
+                                 String enterpriseId,
                                  String trialId,
                                  String nameContaining,
+                                 String branchId,
+                                 String branchNameContaining,
                                  String categoryId,
                                  String lecturerNameContaining,
                                  String status) throws TrialServiceException, SQLException;

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-11 16:00:05
+Date: 2018-07-12 10:04:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `branch` (
   UNIQUE KEY `unique_branch_pk` (`branch_id`),
   KEY `fk_branch_enterprise_id` (`enterprise_id`) USING BTREE,
   CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course
@@ -82,7 +82,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -131,7 +131,7 @@ CREATE TABLE `lecturer` (
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment
@@ -245,7 +245,7 @@ CREATE TABLE `trial` (
   CONSTRAINT `fk_trial_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for trial_reservation
@@ -315,5 +315,5 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- View structure for view_trial_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_trial_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_trial_detail` AS select `trial`.`trial_id` AS `trial_id`,`trial`.`name` AS `name`,`trial`.`detail` AS `detail`,`trial`.`img_url` AS `img_url`,`trial`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`trial`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`trial`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name`,`trial`.`release_time` AS `release_time`,`trial`.`status` AS `status` from (((`trial` join `course_category` on((`trial`.`category_id` = `course_category`.`category_id`))) join `branch` on((`trial`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`trial`.`lecturer_id` = `lecturer`.`lecturer_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_trial_detail` AS select `trial`.`trial_id` AS `trial_id`,`trial`.`name` AS `name`,`trial`.`detail` AS `detail`,`trial`.`img_url` AS `img_url`,`trial`.`category_id` AS `category_id`,`course_category`.`name` AS `category_name`,`branch`.`enterprise_id` AS `enterprise_id`,`enterprise`.`name` AS `enterprise_name`,`trial`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`trial`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name`,`trial`.`release_time` AS `release_time`,`trial`.`status` AS `status` from ((((`trial` join `course_category` on((`trial`.`category_id` = `course_category`.`category_id`))) join `branch` on((`trial`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`trial`.`lecturer_id` = `lecturer`.`lecturer_id`))) join `enterprise` on((`branch`.`enterprise_id` = `enterprise`.`enterprise_id`))) ;
 SET FOREIGN_KEY_CHECKS=1;
