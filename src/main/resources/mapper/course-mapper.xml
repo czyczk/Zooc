@@ -94,6 +94,7 @@
         and status=#{status}
       </if>
     </where>
+    order by course_id
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>

@@ -52,6 +52,7 @@
         and name=#{name}
       </if>
     </where>
+    order by lecturer_id
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>

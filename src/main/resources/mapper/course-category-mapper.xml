@@ -30,5 +30,6 @@
   <select id="list" resultType="CourseCategory">
     select category_id, name
     from course_category
+    order by name
   </select>
 </mapper>

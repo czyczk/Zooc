@@ -106,6 +106,7 @@
         and status=#{status}
       </if>
     </where>
+    order by trial_id
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>

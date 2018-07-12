@@ -79,6 +79,7 @@
         and lecturer_name_containing like '%' ${lecturerNameContaining} '%'
       </if>
     </where>
+    order by course_id, course_offering_id
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>

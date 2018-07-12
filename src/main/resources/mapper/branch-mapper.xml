@@ -60,6 +60,7 @@
         and address like '%' ${addressContaining} '%'
       </if>
     </where>
+    order by enterprise_id, branch_id
     <if test="usePagination == true">
       limit #{starting}, #{pageSize}
     </if>
