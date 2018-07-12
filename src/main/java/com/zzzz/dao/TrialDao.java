@@ -67,13 +67,13 @@ public interface TrialDao {
                            @Param("status") TrialStatusEnum status) throws SQLException;
 
     /**
-     * Get a list of N latest available trials of the branch.
+     * Get a list of N latest available trials of the enterprise.
      * The actual number of items can be less than the N specified.
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param n The number of items to be listed
-     * @return A list of N latest trials of the branch
+     * @return A list of N latest trials of the enterprise
      * @throws SQLException An exception is thrown if the query is not successful.
      */
-    List<TrialDetail> listLatest(@Param("branchId") long branchId,
+    List<TrialDetail> listLatest(@Param("enterpriseId") long enterpriseId,
                                   @Param("n") int n) throws SQLException;
 }

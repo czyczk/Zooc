@@ -113,11 +113,12 @@
   <select id="listLatest" parameterType="map" resultType="com.zzzz.vo.TrialDetail">
     select trial_id, name, img_url,
     category_id, category_name,
+    enterprise_id, enterprise_name,
     branch_id, branch_name,
     lecturer_id, lecturer_name,
     release_time, status
     from view_trial_detail
-    where branch_id=#{branchId}
+    where enterprise_id=#{enterpriseId}
       and status='AVAILABLE'
     order by release_time desc
     limit 0, #{n}

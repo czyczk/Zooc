@@ -83,13 +83,13 @@ public interface TrialService {
                                  String status) throws TrialServiceException, SQLException;
 
     /**
-     * Get a list of N latest trials of a branch.
+     * Get a list of N latest trials of a enterprise.
      * The actual number of items can be less than the N specified.
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param n The number of latest trials to list
-     * @return A list of N latest trials of the branch
+     * @return A list of N latest trials of the enterprise
      * @throws TrialServiceException An exception is thrown if the query is not successful.
      */
-    List<TrialDetail> listLatest(String branchId,
+    List<TrialDetail> listLatest(String enterpriseId,
                                  String n) throws TrialServiceException, SQLException;
 }

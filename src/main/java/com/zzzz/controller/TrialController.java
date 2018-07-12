@@ -109,15 +109,15 @@ public class TrialController {
     /**
      * Get a list of N latest available trials of the branch.
      * The actual number of items can be less than the N specified.
-     * @param branchId The ID of the branch to which the trials belong
+     * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param n The number of items to list
      * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping("/branch/{id}/trial/latest")
-    public ResponseEntity<List<TrialDetail>> list(@PathVariable("id") String branchId,
+    @GetMapping("/enterprise/{id}/trial/latest")
+    public ResponseEntity<List<TrialDetail>> list(@PathVariable("id") String enterpriseId,
                                                   String n) throws TrialServiceException, SQLException {
         // TODO authentication not implemented yet
-        List<TrialDetail> result = trialService.listLatest(branchId, n);
+        List<TrialDetail> result = trialService.listLatest(enterpriseId, n);
         return ResponseEntity.ok(result);
     }
 }

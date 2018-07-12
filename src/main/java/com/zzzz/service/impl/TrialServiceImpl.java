@@ -247,19 +247,19 @@ public class TrialServiceImpl implements TrialService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TrialDetail> listLatest(String branchId, String n) throws TrialServiceException, SQLException {
+    public List<TrialDetail> listLatest(String enterpriseId, String n) throws TrialServiceException, SQLException {
         // Check if the ID is valid
-        checker.rejectIfNullOrEmpty(branchId, new TrialServiceException(EMPTY_BRANCH_ID));
-        long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
+        checker.rejectIfNullOrEmpty(enterpriseId, new TrialServiceException(EMPTY_ENTERPRISE_ID));
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new TrialServiceException(INVALID_ENTERPRISE_ID));
         int nInt = checker.parsePositiveInt(n, new TrialServiceException(INVALID_LATEST_NUMBER));
 
         // Check if the branch exists
-        boolean isExisting = branchDao.checkExistenceById(branchIdLong);
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
-            throw new TrialServiceException(BRANCH_NOT_EXISTING);
+            throw new TrialServiceException(ENTERPRISE_NOT_EXISTING);
 
         // Get the most recent N items
-        List<TrialDetail> result = trialDao.listLatest(branchIdLong, nInt);
+        List<TrialDetail> result = trialDao.listLatest(enterpriseIdLong, nInt);
         return result;
     }
 }
