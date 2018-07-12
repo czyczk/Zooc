@@ -47,8 +47,8 @@
     where trial_id=#{trialId}
   </delete>
   <select id="countTotal" parameterType="map" resultType="long">
-    select count (*)
-    from trial
+    select count(*)
+    from view_trial_detail
     <where>
       and enterprise_id=#{enterpriseId}
       <if test="trialId != null">
