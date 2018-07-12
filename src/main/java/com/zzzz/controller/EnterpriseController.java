@@ -30,16 +30,16 @@ public class EnterpriseController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Get the details of an enterprise (including its branches).
-     * @param enterpriseId The target enterprise ID
-     * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
-     */
-    @GetMapping(value = "/detail/{id}")
-    public ResponseEntity<EnterpriseDetail> getDetailById(@PathVariable("id") String enterpriseId) throws EnterpriseServiceException, SQLException {
-        EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
-        return ResponseEntity.ok(result);
-    }
+//    /**
+//     * Get the details of an enterprise (including its branches).
+//     * @param enterpriseId The target enterprise ID
+//     * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
+//     */
+//    @GetMapping(value = "/detail/{id}")
+//    public ResponseEntity<EnterpriseDetail> getDetailById(@PathVariable("id") String enterpriseId) throws EnterpriseServiceException, SQLException {
+//        EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
+//        return ResponseEntity.ok(result);
+//    }
 
     /**
      * Update an enterprise. Don't pass in fields that are meant to be left unchanged.
