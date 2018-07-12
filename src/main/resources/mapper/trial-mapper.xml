@@ -50,12 +50,18 @@
     select count (*)
     from trial
     <where>
-      and branch_id=#{branchId}
+      and enterprise_id=#{enterpriseId}
       <if test="trialId != null">
         and trial_id=#{trialId}
       </if>
       <if test="nameContaining != null">
         and name like '%' ${nameContaining} '%'
+      </if>
+      <if test="branchId != null">
+        and branch_id=#{branchId}
+      </if>
+      <if test="branchNameContaining != null">
+        and branch_name like '%' ${branchNameContaining} '%'
       </if>
       <if test="categoryId != null">
         and category_id=#{categoryId}
