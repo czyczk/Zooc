@@ -55,19 +55,19 @@
         and trial_id=#{trialId}
       </if>
       <if test="nameContaining != null">
-        and name like '%' ${nameContaining} '%'
+        and name like '%${nameContaining}%'
       </if>
       <if test="branchId != null">
         and branch_id=#{branchId}
       </if>
       <if test="branchNameContaining != null">
-        and branch_name like '%' ${branchNameContaining} '%'
+        and branch_name like '%${branchNameContaining}%'
       </if>
       <if test="categoryId != null">
         and category_id=#{categoryId}
       </if>
       <if test="lecturerNameContaining != null">
-        and lecturer_name like '%' ${lecturerNameContaining} '%'
+        and lecturer_name like '%${lecturerNameContaining}%'
       </if>
       <if test="status != null">
         and status=#{status}
@@ -88,19 +88,19 @@
         and trial_id=#{trialId}
       </if>
       <if test="nameContaining != null">
-        and name like '%' ${nameContaining} '%'
+        and name like '%${nameContaining}%'
       </if>
       <if test="branchId != null">
         and branch_id=#{branchId}
       </if>
       <if test="branchNameContaining != null">
-        and branch_name like '%' ${branchNameContaining} '%'
+        and branch_name like '%${branchNameContaining}%'
       </if>
       <if test="categoryId != null">
         and category_id=#{categoryId}
       </if>
       <if test="lecturerNameContaining != null">
-        and lecturer_name like '%' ${lecturerNameContaining} '%'
+        and lecturer_name like '%${lecturerNameContaining}%'
       </if>
       <if test="status != null">
         and status=#{status}

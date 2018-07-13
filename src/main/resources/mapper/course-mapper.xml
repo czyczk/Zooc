@@ -53,7 +53,7 @@
               and course_id=#{courseId}
             </if>
             <if test="nameContaining != null">
-              and name like '%' ${nameContaining} '%'
+              and name like '%${nameContaining}%'
             </if>
             <if test="categoryId != null">
               and category_id=#{categoryId}
@@ -79,7 +79,7 @@
         and course_id=#{courseId}
       </if>
       <if test="nameContaining != null">
-        and name like '%' ${nameContaining} '%'
+        and name like '%${nameContaining}%'
       </if>
       <if test="categoryId != null">
         and category_id=#{categoryId}

@@ -43,7 +43,7 @@
               and res.trial_id=#{trialId}
             </if>
             <if test="trialNameContaining != null">
-              and tr.name like '%' ${trialNameContaining} '%'
+              and tr.name like '%${trialNameContaining}%'
             </if>
             <if test="status != null">
               and res.status=#{status}
@@ -73,7 +73,7 @@
         and trial_id=#{trialId}
       </if>
       <if test="trialNameContaining != null">
-        and trial_name like '%' ${trialNameContaining} '%'
+        and trial_name like '%${trialNameContaining}%'
       </if>
       <if test="status != null">
         and status=#{status}

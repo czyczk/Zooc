@@ -48,13 +48,13 @@
         and branch_id=#{branchId}
       </if>
       <if test="branchNameContaining != null">
-        and branch_name like '%' ${branchNameContaining} '%'
+        and branch_name like '%${branchNameContaining}%'
       </if>
       <if test="lecturerId != null">
         and lecturer_id=#{lecturerId}
       </if>
       <if test="lecturerNameContaining != null">
-        and lecturer_name_containing like '%' ${lecturerNameContaining} '%'
+        and lecturer_name_containing like '%${lecturerNameContaining}%'
       </if>
     </where>
   </select>
@@ -70,13 +70,13 @@
         and branch_id=#{branchId}
       </if>
       <if test="branchNameContaining != null">
-        and branch_name like '%' ${branchNameContaining} '%'
+        and branch_name like '%${branchNameContaining}%'
       </if>
       <if test="lecturerId != null">
         and lecturer_id=#{lecturerId}
       </if>
       <if test="lecturerNameContaining != null">
-        and lecturer_name_containing like '%' ${lecturerNameContaining} '%'
+        and lecturer_name_containing like '%${lecturerNameContaining}%'
       </if>
     </where>
     order by course_id, course_offering_id

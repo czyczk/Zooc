@@ -38,10 +38,10 @@
         and branch_id=#{branchId}
       </if>
       <if test="nameContaining != null">
-        and name like '%' ${nameContaining} '%'
+        and name like '%${nameContaining}%'
       </if>
       <if test="addressContaining != null">
-        and address like '%' ${addressContaining} '%'
+        and address like '%${addressContaining}%'
       </if>
     </where>
   </select>
