@@ -88,7 +88,7 @@
       course_id, course_name, course_price,
       time, status,
       refund_id, refund_time, refund_reason
-    from view_order_detail
+    from view_refund_detail
     <where>
       enterprise_id=#{enterpriseId}
       <if test="orderId != null">

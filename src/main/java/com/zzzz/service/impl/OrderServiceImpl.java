@@ -264,7 +264,13 @@ public class OrderServiceImpl implements OrderService {
         // Process pagination info
         Long starting = null;
         if (usePaginationBool) {
-            long totalNumItems = orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, statusEnum);
+            long totalNumItems = 0;
+            if (statusEnum != null)
+                totalNumItems = orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, statusEnum);
+            else {
+                totalNumItems += orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, OrderStatusEnum.REFUND_REQUESTED);
+                totalNumItems += orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, OrderStatusEnum.REFUNDED);
+            }
             starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
             // If the starting index exceeds the total number of items,
