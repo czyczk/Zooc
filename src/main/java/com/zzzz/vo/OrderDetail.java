@@ -2,14 +2,19 @@ package com.zzzz.vo;
 
 import com.zzzz.po.OrderStatusEnum;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderDetail {
     private long orderId;
     private long userId;
+    private String username;
+    private String userEmail;
+    private String userMobile;
     private long enterpriseId;
     private long courseId;
     private String courseName;
+    private BigDecimal coursePrice;
     private Date time;
     private OrderStatusEnum status;
 
@@ -27,6 +32,30 @@ public class OrderDetail {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserMobile() {
+        return userMobile;
+    }
+
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
     }
 
     public long getEnterpriseId() {
@@ -51,6 +80,14 @@ public class OrderDetail {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public BigDecimal getCoursePrice() {
+        return coursePrice;
+    }
+
+    public void setCoursePrice(BigDecimal coursePrice) {
+        this.coursePrice = coursePrice;
     }
 
     public Date getTime() {
