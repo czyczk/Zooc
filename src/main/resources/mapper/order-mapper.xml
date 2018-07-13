@@ -36,7 +36,7 @@
               and user_id=#{userId}
             </if>
             <if test="enterpriseId != null">
-              and enterprise_id=#{enterpriseId}
+              and e.enterprise_id=#{enterpriseId}
             </if>
             <if test="courseId != null">
               and course_id=#{courseId}
@@ -63,7 +63,7 @@
         and user_id=#{userId}
       </if>
       <if test="enterpriseId != null">
-        and enterprise_id=#{enterpriseId}
+        and e.enterprise_id=#{enterpriseId}
       </if>
       <if test="courseId != null">
         and course_id=#{courseId}
