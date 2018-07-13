@@ -51,7 +51,7 @@
     ) order_detail
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
-    select o.order_id, o.user_id, e.enterprise_id, o.course_id, c.name 'course_name', c.price 'course_price'
+    select o.order_id, o.user_id, e.enterprise_id, o.course_id, c.name 'course_name', c.price 'course_price',
     o.time, o.status, u.username, u.email 'userEmail', u.mobile 'userMobile'
     from `order` o join course c on o.course_id = c.course_id
          join enterprise e on c.enterprise_id = e.enterprise_id
