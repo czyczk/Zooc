@@ -54,7 +54,7 @@
   <select id="list" parameterType="map" resultType="com.zzzz.vo.TrialReservationDetail">
     select res.reservation_id, res.user_id, u.username, u.email 'userEmail', u.mobile 'userMobile',
     ent.enterprise_id, res.trial_id, tr.name 'trial_name',
-    res.message, res.status
+    res.message, res.time, res.status
     from trial_reservation res join trial tr on res.trial_id = tr.trial_id
          join branch br on tr.branch_id = br.branch_id
          join enterprise ent on br.enterprise_id = ent.enterprise_id
@@ -79,7 +79,7 @@
         and status=#{status}
       </if>
     </where>
-    order by release_time desc
+    order by time desc
     <if test="usePagination">
       limit #{starting}, #{pageSize}
     </if>
