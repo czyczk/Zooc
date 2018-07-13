@@ -17,6 +17,9 @@ public class OrderDetail {
     private BigDecimal coursePrice;
     private Date time;
     private OrderStatusEnum status;
+    private Long refundId;
+    private Date refundTime;
+    private String refundReason;
 
     public long getOrderId() {
         return orderId;
@@ -104,5 +107,29 @@ public class OrderDetail {
 
     public void setStatus(OrderStatusEnum status) {
         this.status = status;
+    }
+
+    public Long getRefundId() {
+        return refundId;
+    }
+
+    public void setRefundId(Long refundId) {
+        this.refundId = refundId;
+    }
+
+    public Date getRefundTime() {
+        return refundTime;
+    }
+
+    public void setRefundTime(Date refundTime) {
+        this.refundTime = refundTime;
+    }
+
+    public String getRefundReason() {
+        return refundReason;
+    }
+
+    public void setRefundReason(String refundReason) {
+        this.refundReason = refundReason;
     }
 }

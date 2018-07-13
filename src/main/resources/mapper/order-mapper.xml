@@ -52,10 +52,12 @@
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
     select o.order_id, o.user_id, e.enterprise_id, o.course_id, c.name 'course_name', c.price 'course_price',
-    o.time, o.status, u.username, u.email 'userEmail', u.mobile 'userMobile'
+    o.time, o.status, u.username, u.email 'user_email', u.mobile 'user_mobile',
+    r.refund_id, r.time 'refund_time', r.reason 'refund_reason'
     from `order` o join course c on o.course_id = c.course_id
          join enterprise e on c.enterprise_id = e.enterprise_id
          join `user` u on o.user_id = u.user_id
+         join refund r on o.order_id = r.order_id;
     <where>
       <if test="orderId != null">
         and order_id=#{orderId}
