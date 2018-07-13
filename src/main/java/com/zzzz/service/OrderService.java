@@ -48,4 +48,27 @@ public interface OrderService {
                                            String orderId, String userId, String enterpriseId,
                                            String courseId, String courseNameContaining,
                                            String status) throws SQLException, OrderServiceException;
+
+    /**
+     * Get a list of all orders that are being requested to be refunded or already refunded.
+     * @param usePagination Use pagination or not
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param enterpriseId The ID of the enterprise to which the orders belong
+     * @param orderId Order ID (optional)
+     * @param userId User ID (optional)
+     * @param userEmail User email (optional)
+     * @param userMobile User mobile (optional)
+     * @param courseId Course ID (optional)
+     * @param courseNameContaining Course name containing (optional)
+     * @param status Status (optional) (REFUND_REQUESTED/REFUNDED)
+     * @return A list of all orders that are being requested to be refunded or already refunded
+     * @throws OrderServiceException An exception is thrown if the query is not successful.
+     */
+    ListResult<OrderDetail> listRefund(String usePagination, String targetPage, String pageSize,
+                                       String enterpriseId,
+                                       String orderId,
+                                       String userId, String userEmail, String userMobile,
+                                       String courseId, String courseNameContaining,
+                                       String status) throws SQLException, OrderServiceException;
 }

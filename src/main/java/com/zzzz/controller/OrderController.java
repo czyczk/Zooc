@@ -119,7 +119,7 @@ public class OrderController {
     }
 
     /**
-     * Get the user's order history.
+     * Get the order list of an enterprise.
      * @param enterpriseId Enterprise ID
      * @param usePagination Use pagination (`false` by default)
      * @param targetPage Target page (required when using pagination)
@@ -139,6 +139,33 @@ public class OrderController {
                                                         String status) throws SQLException, OrderServiceException {
         // TODO authentication not implemented yet
         ListResult<OrderDetail> result = orderService.list(usePagination, targetPage, pageSize, orderId, userId, enterpriseId, courseId, courseNameContaining, status);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get the refund list of an enterprise.
+     * @param enterpriseId Enterprise ID
+     * @param usePagination Use pagination (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @param orderId Order ID (optional)
+     * @param userId User ID (optional)
+     * @param userEmail User email (optional)
+     * @param userMobile User mobile (optional)
+     * @param courseId Course ID (optional)
+     * @param courseNameContaining Course name containing (optional)
+     * @param status Status (optional) (REFUND_REQUESTED/REFUNDED)
+     * @return Success: List; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/refund/list")
+    public ResponseEntity<ListResult<OrderDetail>> listRefund(@PathVariable("id") String enterpriseId,
+                                                              String usePagination, String targetPage, String pageSize,
+                                                              String orderId,
+                                                              String userId, String userEmail, String userMobile,
+                                                              String courseId, String courseNameContaining,
+                                                              String status) throws SQLException, OrderServiceException {
+        // TODO authentication not implemented yet
+        ListResult<OrderDetail> result = orderService.listRefund(usePagination, targetPage, pageSize, enterpriseId, orderId, userId, userEmail, userMobile, courseId, courseNameContaining, status);
         return ResponseEntity.ok(result);
     }
 }

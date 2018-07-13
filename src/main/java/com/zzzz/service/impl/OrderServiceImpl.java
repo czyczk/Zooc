@@ -167,8 +167,12 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderServiceException(ENTERPRISE_NOT_EXISTING);
         }
         Long courseIdLong = null;
-        if (courseId != null && !courseId.isEmpty())
+        if (courseId != null && !courseId.isEmpty()) {
             courseIdLong = checker.parseUnsignedLong(courseId, new OrderServiceException(INVALID_COURSE_ID));
+            boolean isExisting = courseDao.checkExistenceById(courseIdLong);
+            if (!isExisting)
+                throw new OrderServiceException(COURSE_NOT_EXISTING);
+        }
         if (courseNameContaining != null && courseNameContaining.isEmpty())
             courseNameContaining = null;
         OrderStatusEnum statusEnum = null;
@@ -183,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
         // Process pagination info
         Long starting = null;
         if (usePaginationBool) {
-            long totalNumItems = orderDao.countTotal(orderIdLong, userIdLong, enterpriseIdLong, courseIdLong, courseNameContaining, statusEnum);
+            long totalNumItems = orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, null, null, courseIdLong, courseNameContaining, statusEnum);
             starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
 
             // If the starting index exceeds the total number of items,
@@ -193,6 +197,83 @@ public class OrderServiceImpl implements OrderService {
         }
 
         List<OrderDetail> list = orderDao.list(usePaginationBool, starting, pageSizeLong, orderIdLong, userIdLong, enterpriseIdLong, courseIdLong, courseNameContaining, statusEnum);
+        result.setList(list);
+        return result;
+    }
+
+    @Override
+    public ListResult<OrderDetail> listRefund(String usePagination, String targetPage, String pageSize, String enterpriseId, String orderId, String userId, String userEmail, String userMobile, String courseId, String courseNameContaining, String status) throws SQLException, OrderServiceException {
+        ListResult<OrderDetail> result = new ListResult<>();
+
+        // Check if the parameters are valid
+        boolean usePaginationBool = Boolean.parseBoolean(usePagination);
+        if (usePaginationBool) {
+            checker.rejectIfNullOrEmpty(targetPage, new OrderServiceException(EMPTY_TARGET_PAGE));
+            checker.rejectIfNullOrEmpty(pageSize, new OrderServiceException(EMPTY_PAGE_SIZE));
+        }
+        checker.rejectIfNullOrEmpty(enterpriseId, new OrderServiceException(EMPTY_ENTERPRISE_ID));
+
+        // Required fields
+        Long targetPageLong = null;
+        Long pageSizeLong = null;
+        if (usePaginationBool) {
+            targetPageLong = checker.parsePositiveLong(targetPage, new OrderServiceException(INVALID_TARGET_PAGE));
+            pageSizeLong = checker.parsePositiveLong(pageSize, new OrderServiceException(INVALID_PAGE_SIZE));
+        }
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new OrderServiceException(INVALID_ENTERPRISE_ID));
+        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new OrderServiceException(ENTERPRISE_NOT_EXISTING);
+
+        // Optional fields
+        Long orderIdLong = null;
+        if (orderId != null && !orderId.isEmpty())
+            orderIdLong = checker.parseUnsignedLong(orderId, new OrderServiceException(INVALID_ORDER_ID));
+        Long userIdLong = null;
+        if (userId != null && !userId.isEmpty()) {
+            userIdLong = checker.parseUnsignedLong(userId, new OrderServiceException(INVALID_USER_ID));
+            // Check if the user exists
+            isExisting = userDao.checkExistenceById(userIdLong);
+            if (!isExisting)
+                throw new OrderServiceException(USER_NOT_EXISTING);
+        }
+        if (userEmail != null && userEmail.isEmpty())
+            userEmail = null;
+        if (userMobile != null && userMobile.isEmpty())
+            userMobile = null;
+        Long courseIdLong = null;
+        if (courseId != null && !courseId.isEmpty()) {
+            courseIdLong = checker.parseUnsignedLong(courseId, new OrderServiceException(INVALID_COURSE_ID));
+            isExisting = courseDao.checkExistenceById(courseIdLong);
+            if (!isExisting)
+                throw new OrderServiceException(COURSE_NOT_EXISTING);
+        }
+        if (courseNameContaining != null && courseNameContaining.isEmpty())
+            courseNameContaining = null;
+        OrderStatusEnum statusEnum = null;
+        if (status != null && !status.isEmpty()) {
+            try {
+                statusEnum = OrderStatusEnum.valueOf(status);
+                if (statusEnum != OrderStatusEnum.REFUND_REQUESTED && statusEnum != OrderStatusEnum.REFUNDED)
+                    throw new IllegalArgumentException();
+            } catch (IllegalArgumentException e) {
+                throw new OrderServiceException(INVALID_STATUS);
+            }
+        }
+
+        // Process pagination info
+        Long starting = null;
+        if (usePaginationBool) {
+            long totalNumItems = orderDao.countTotal(enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, statusEnum);
+            starting = PaginationUtil.getStartingIndex(targetPageLong, pageSizeLong, totalNumItems, result);
+
+            // If the starting index exceeds the total number of items,
+            // return a list result with an empty list
+            if (starting == -1)
+                return result;
+        }
+
+        List<OrderDetail> list = orderDao.listRefund(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, statusEnum);
         result.setList(list);
         return result;
     }

@@ -6,6 +6,7 @@ public class OrderServiceException extends ServiceException {
     public enum ExceptionTypeEnum {
         EMPTY_TARGET_PAGE("目标页码为空。", HttpStatus.BAD_REQUEST),
         EMPTY_PAGE_SIZE("页大小为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_ENTERPRISE_ID("企业编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_ORDER_ID("订单编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_USER_ID("用户编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_COURSE_ID("课程编号为空。", HttpStatus.BAD_REQUEST),

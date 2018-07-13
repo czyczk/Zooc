@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-12 10:04:51
+Date: 2018-07-13 13:41:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -71,7 +71,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_category
@@ -82,7 +82,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -245,7 +245,7 @@ CREATE TABLE `trial` (
   CONSTRAINT `fk_trial_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for trial_reservation
@@ -310,6 +310,12 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- ----------------------------
 DROP VIEW IF EXISTS `view_course_offering_detail`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_course_offering_detail` AS select `course_offering`.`course_offering_id` AS `course_offering_id`,`course_offering`.`course_id` AS `course_id`,`course_offering`.`branch_id` AS `branch_id`,`branch`.`name` AS `branch_name`,`course_offering`.`lecturer_id` AS `lecturer_id`,`lecturer`.`name` AS `lecturer_name` from ((`course_offering` join `branch` on((`course_offering`.`branch_id` = `branch`.`branch_id`))) join `lecturer` on((`course_offering`.`lecturer_id` = `lecturer`.`lecturer_id`))) ;
+
+-- ----------------------------
+-- View structure for view_order_detail
+-- ----------------------------
+DROP VIEW IF EXISTS `view_order_detail`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_order_detail` AS select `order`.`order_id` AS `order_id`,`course`.`enterprise_id` AS `enterprise_id`,`order`.`user_id` AS `user_id`,`user`.`username` AS `username`,`user`.`email` AS `user_email`,`user`.`mobile` AS `user_mobile`,`order`.`course_id` AS `course_id`,`course`.`name` AS `course_name`,`course`.`price` AS `course_price`,`order`.`time` AS `time`,`order`.`status` AS `status`,`refund`.`refund_id` AS `refund_id`,`refund`.`time` AS `refund_time`,`refund`.`reason` AS `refund_reason` from (((`order` join `user` on((`order`.`user_id` = `user`.`user_id`))) join `course` on((`order`.`course_id` = `course`.`course_id`))) join `refund` on((`refund`.`order_id` = `order`.`order_id`))) ;
 
 -- ----------------------------
 -- View structure for view_trial_detail
