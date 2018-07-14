@@ -14,8 +14,8 @@ public interface TrialReservationDao {
     TrialReservationDetail getVoById(long reservationId) throws SQLException;
 
     /**
-     * Update a reservation. Only the status is open for modification.
-     * @param reservation New reservation. Only the `status` field will be used
+     * Update a reservation. Only the message and the status are open for modification.
+     * @param reservation New reservation. Only the `message` and the `status` field will be used
      * @return Number of rows affected
      */
     int update(TrialReservation reservation) throws SQLException;

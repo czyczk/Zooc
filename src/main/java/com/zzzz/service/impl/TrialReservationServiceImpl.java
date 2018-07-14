@@ -100,7 +100,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
 
     @Override
     @Transactional(rollbackFor = { TrialReservationServiceException.class, SQLException.class })
-    public void update(String targetReservationId, String status) throws SQLException, TrialReservationServiceException {
+    public void update(String targetReservationId, String message, String status) throws SQLException, TrialReservationServiceException {
         // Check if the ID is valid
         checker.rejectIfNullOrEmpty(targetReservationId, new TrialReservationServiceException(EMPTY_RESERVATION_ID));
         long targetReservationIdLong = checker.parseUnsignedLong(targetReservationId, new TrialReservationServiceException(INVALID_RESERVATION_ID));
@@ -109,6 +109,11 @@ public class TrialReservationServiceImpl implements TrialReservationService {
         TrialReservation reservation = trialReservationDao.getById(targetReservationIdLong);
         if (reservation == null)
             throw new TrialReservationServiceException(RESERVATION_NOT_EXISTING);
+
+        // Change the message if it's not null
+        if (message != null) {
+            reservation.setMessage(message);
+        }
 
         // Change the status if it's not null
         if (status != null) {

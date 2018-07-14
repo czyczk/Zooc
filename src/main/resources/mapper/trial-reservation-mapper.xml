@@ -19,6 +19,7 @@
   </select>
   <update id="update" parameterType="TrialReservation">
     update trial_reservation set
+      message=#{message}
       status=#{status}
     where reservation_id=#{reservationId}
   </update>
@@ -34,7 +35,7 @@
               and reservation_id=#{reservationId}
             </if>
             <if test="userId != null">
-              and user_id=#{userId}
+              and res.user_id=#{userId}
             </if>
             <if test="enterpriseId != null">
               and ent.enterprise_id=#{enterpriseId}
@@ -64,7 +65,7 @@
         and reservation_id=#{reservationId}
       </if>
       <if test="userId != null">
-        and user_id=#{userId}
+        and res.user_id=#{userId}
       </if>
       <if test="enterpriseId != null">
         and ent.enterprise_id=#{enterpriseId}

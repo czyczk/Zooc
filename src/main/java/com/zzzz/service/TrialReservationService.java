@@ -36,13 +36,14 @@ public interface TrialReservationService {
     TrialReservationDetail getVoById(String reservationId) throws SQLException, TrialReservationServiceException;
 
     /**
-     * Update a reservation. Only the status is open for modification.
+     * Update a reservation. Only the message and the status are open for modification.
      * The reservation won't be changed if the status is null.
      * @param targetReservationId Target reservation ID
+     * @param message New message
      * @param status New status
      * @throws TrialReservationServiceException An exception is thrown if the update is unsuccessful.
      */
-    void update(String targetReservationId, String status) throws SQLException, TrialReservationServiceException;
+    void update(String targetReservationId, String message, String status) throws SQLException, TrialReservationServiceException;
 
     /**
      * Get a list containing trial reservations meeting the requirements.

@@ -50,17 +50,17 @@ public class TrialReservationController {
 
     /**
      * Update the status of a reservation.
-     * Open for the user who made the reservation. Users can cancel/use the reservation.
+     * Open for the user who made the reservation. Users can cancel/use the reservation and modify the message before it's used.
      * Open for the owner to approve/reject the reservation
      * @param targetReservationId Target reservation ID
-     * @param param status
+     * @param param message, status
      * @return Success: 203; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping("/reservation/{id}")
     public ResponseEntity update(@PathVariable("id") String targetReservationId,
                                  @RequestBody TrialReservationParam param) throws SQLException, TrialReservationServiceException {
         // TODO authentication not implemented yet
-        trialReservationService.update(targetReservationId, param.getStatus());
+        trialReservationService.update(targetReservationId, param.getMessage(), param.getStatus());
         return ResponseEntity.noContent().build();
     }
 
