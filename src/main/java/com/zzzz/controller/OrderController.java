@@ -33,7 +33,7 @@ public class OrderController {
      * @param param userId
      * @return Success: New order ID; Bad request: 400; Not found: 404; Internal: 500
      */
-    @PutMapping("/course/{id}/order")
+    @PostMapping("/course/{id}/order")
     public ResponseEntity<Long> create(@PathVariable("id") String courseId,
                                        @RequestBody OrderParam param) throws SQLException, OrderServiceException {
         // TODO authentication not implemented yet
@@ -61,7 +61,7 @@ public class OrderController {
      * @param param status
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
-    @PostMapping("/order/{id}")
+    @PutMapping("/order/{id}")
     public ResponseEntity update(@PathVariable("id") String orderId,
                                  @RequestBody OrderParam param) throws SQLException, OrderServiceException {
         // TODO authentication not implemented yet

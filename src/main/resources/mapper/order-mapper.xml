@@ -90,27 +90,27 @@
       refund_id, refund_time, refund_reason
     from view_refund_detail
     <where>
-      enterprise_id=#{enterpriseId}
+      and enterprise_id=#{enterpriseId}
       <if test="orderId != null">
-        order_id=#{orderId}
+        and order_id=#{orderId}
       </if>
       <if test="userId != null">
-        user_id=#{userId}
+        and user_id=#{userId}
       </if>
       <if test="userEmail != null">
-        user_email=#{userEmail}
+        and user_email=#{userEmail}
       </if>
       <if test="userMobile != null">
-        user_mobile=#{userMobile}
+        and user_mobile=#{userMobile}
       </if>
       <if test="courseId != null">
-        course_id=#{courseId}
+        and course_id=#{courseId}
       </if>
       <if test="courseNameContaining != null">
-        course_name like '%${courseNameContaining}%'
+        and course_name like '%${courseNameContaining}%'
       </if>
       <if test="status != null">
-        status=#{status}
+        and status=#{status}
       </if>
     </where>
     order by time desc

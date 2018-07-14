@@ -52,7 +52,7 @@
     ) reservation_detail
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.TrialReservationDetail">
-    select res.reservation_id, res.user_id, u.username, u.email 'userEmail', u.mobile 'userMobile',
+    select res.reservation_id, res.user_id, u.username, u.email 'user_email', u.mobile 'user_mobile',
     ent.enterprise_id, res.trial_id, tr.name 'trial_name',
     res.message, res.time, res.status
     from trial_reservation res join trial tr on res.trial_id = tr.trial_id
@@ -73,10 +73,10 @@
         and trial_id=#{trialId}
       </if>
       <if test="trialNameContaining != null">
-        and trial_name like '%${trialNameContaining}%'
+        and tr.name like '%${trialNameContaining}%'
       </if>
       <if test="status != null">
-        and status=#{status}
+        and res.status=#{status}
       </if>
     </where>
     order by time desc
