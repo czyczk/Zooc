@@ -19,7 +19,7 @@
   </select>
   <update id="update" parameterType="TrialReservation">
     update trial_reservation set
-      message=#{message}
+      message=#{message},
       status=#{status}
     where reservation_id=#{reservationId}
   </update>
