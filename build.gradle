@@ -1,11 +1,17 @@
 buildscript {
     ext.spring_version = '5.0.7.RELEASE'
     ext.groovy_version = '2.5.0'
+    ext.tomcat_version = '9.0.1'
+    dependencies {
+        // Tomcat
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+    }
 }
 
 plugins {
     id 'java'
     id 'war'
+    id 'com.bmuschko.tomcat' version '2.5'
 }
 
 group 'com.zzzz'
@@ -18,7 +24,14 @@ repositories {
 }
 
 dependencies {
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:$tomcat_version",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:$tomcat_version"
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compileJava {
+        options.encoding = "UTF-8"
+    }
 
     // Logger
     compile 'org.slf4j:slf4j-api:1.7.25'
@@ -35,9 +48,6 @@ dependencies {
 
     // Servlet
     providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
-//    compile 'javax.servlet.jsp.jstl:jstl:1.2'
-//    compile 'org.glassfish.web:jstl-impl:1.2'
-//    compile 'org.apache.taglibs:taglibs-standard-impl:1.2.5'
 
     // Spring
     compile "org.springframework:spring-core:$spring_version"
@@ -50,7 +60,6 @@ dependencies {
 
     // JSON
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
-//    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
 
     // File upload
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
@@ -58,4 +67,10 @@ dependencies {
 
     // Hashing utils
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+}
+
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+    contextPath = '/'
 }
