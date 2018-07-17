@@ -14,3 +14,6 @@ The Tomcat server is configured inside with the Gralde project. So it's as easy 
 $ gradle build
 $ gradle tomcatRun
 ```
+
+# Database: table definitions and sample data
+The SQL files can be found in directory `sql`, where `zooc.sql` defines only the structure of the tables and `zooc_with_sample_data.sql` includes also the sample data for testing.
