@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-18 14:52:05
+Date: 2018-07-18 15:12:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -238,7 +238,7 @@ CREATE TABLE `moment_comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `moment_img`;
 CREATE TABLE `moment_img` (
-  `moment_img_index` bigint(20) unsigned NOT NULL,
+  `moment_img_index` tinyint(20) unsigned NOT NULL,
   `moment_id` bigint(20) unsigned NOT NULL,
   `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`moment_img_index`,`moment_id`),
