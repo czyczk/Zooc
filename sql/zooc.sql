@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-13 15:00:20
+Date: 2018-07-18 14:51:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `branch` (
   UNIQUE KEY `unique_branch_pk` (`branch_id`),
   KEY `fk_branch_enterprise_id` (`enterprise_id`) USING BTREE,
   CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course
@@ -71,7 +71,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_category
@@ -82,7 +82,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -100,7 +100,7 @@ CREATE TABLE `course_offering` (
   CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -131,7 +131,7 @@ CREATE TABLE `lecturer` (
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment
@@ -169,10 +169,10 @@ CREATE TABLE `moment_comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `moment_img`;
 CREATE TABLE `moment_img` (
-  `moment_img_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `moment_img_index` bigint(20) unsigned NOT NULL,
   `moment_id` bigint(20) unsigned NOT NULL,
   `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`moment_img_id`),
+  PRIMARY KEY (`moment_img_index`,`moment_id`),
   KEY `fk_moment_img_moment_id` (`moment_id`),
   CONSTRAINT `fk_moment_img_moment_id` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`moment_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -208,7 +208,7 @@ CREATE TABLE `order` (
   KEY `fk_order_course_id` (`course_id`),
   CONSTRAINT `fk_order_course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_order_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for refund
@@ -263,7 +263,7 @@ CREATE TABLE `trial_reservation` (
   KEY `fk_trial_reservation_trial_id` (`trial_id`),
   CONSTRAINT `fk_trial_reservation` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_trial_reservation_trial_id` FOREIGN KEY (`trial_id`) REFERENCES `trial` (`trial_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for user

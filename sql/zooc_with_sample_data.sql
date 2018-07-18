@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-17 21:05:02
+Date: 2018-07-18 14:52:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -238,10 +238,10 @@ CREATE TABLE `moment_comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `moment_img`;
 CREATE TABLE `moment_img` (
-  `moment_img_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `moment_img_index` bigint(20) unsigned NOT NULL,
   `moment_id` bigint(20) unsigned NOT NULL,
   `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`moment_img_id`),
+  PRIMARY KEY (`moment_img_index`,`moment_id`),
   KEY `fk_moment_img_moment_id` (`moment_id`),
   CONSTRAINT `fk_moment_img_moment_id` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`moment_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -1,16 +1,16 @@
 package com.zzzz.po;
 
 public class MomentImg {
-    private long momentImgId;
+    private long momentImgIndex;
     private long momentId;
     private String imgUrl;
 
-    public long getMomentImgId() {
-        return momentImgId;
+    public long getMomentImgIndex() {
+        return momentImgIndex;
     }
 
-    public void setMomentImgId(long momentImgId) {
-        this.momentImgId = momentImgId;
+    public void setMomentImgIndex(long momentImgIndex) {
+        this.momentImgIndex = momentImgIndex;
     }
 
     public long getMomentId() {
