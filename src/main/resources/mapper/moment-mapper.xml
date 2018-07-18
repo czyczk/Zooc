@@ -11,11 +11,9 @@
     delete from moment
     where moment_id=#{momentId}
   </delete>
-  <update id="update" parameterType="java.lang.String">
+  <update id="update" parameterType="Moment">
     update moment set
-      enterprise_id=#{enterpriseId},
-      content=#{content},
-      time=#{time}
+      content=#{content}
     where moment_id=#{momentId}
   </update>
   <select id="getById" parameterType="long" resultType="Moment">

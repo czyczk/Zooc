@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.MomentImgDao">
+  <insert id="insert" parameterType="MomentImg">
+    insert into moment_img(moment_img_index, moment_id, img_url)
+    values(#{momentImgIndex}, #{momentId}, #{imgUrl})
+  </insert>
+  <delete id="delete" parameterType="map">
+    delete from moment_img
+    where moment_img_index=#{momentImgIndex}
+          and moment_id=#{momentId}
+  </delete>
+  <update id="update" parameterType="MomentImg">
+    update moment_img set
+      img_url=#{imgUrl}
+    where moment_id=#{momentId}
+  </update>
+  <select id="checkExistenceByPk" parameterType="map" resultType="boolean">
+    select count(*)
+    from moment_img
+    where moment_img_index=#{momentImgIndex}
+          and moment_id=#{momentId}
+  </select>
+  <select id="getByPk" parameterType="map" resultType="MomentImg">
+    select moment_img_index, moment_id, img_url
+    from moment_img
+    where moment_img_index=#{momentImgIndex}
+          and moment_id=#{momentId}
+  </select>
+  <select id="countTotal" parameterType="long" resultType="short">
+    select count(*)
+    from moment_img
+    where moment_id=#{momentId}
+  </select>
+  <select id="list" parameterType="long" resultType="MomentImg">
+    select moment_img_index, moment_id, img_url
+    from moment_img
+    where moment_img_index=#{momentImgIndex}
+          and moment_id=#{momentId}
+  </select>
+</mapper>
