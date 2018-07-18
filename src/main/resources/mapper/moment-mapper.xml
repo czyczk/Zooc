@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.MomentDao">
+  <insert id="insert" parameterType="Moment">
+    insert into moment(moment_id, enterprise_id, content, time)
+    values(#{momentId}, #{enterpriseId}, #{content}, #{time})
+  </insert>
+  <delete id="delete" parameterType="long">
+    delete from moment
+    where moment_id=#{momentId}
+  </delete>
+  <update id="update" parameterType="java.lang.String">
+    update moment set
+      enterprise_id=#{enterpriseId},
+      content=#{content},
+      time=#{time}
+    where moment_id=#{momentId}
+  </update>
+  <select id="getById" parameterType="long" resultType="Moment">
+    select moment_id, enterprise_id, content, time
+    from moment
+    where moment_id=#{momentId}
+  </select>
+  <select id="countTotal" parameterType="long" resultType="long">
+    select count(*)
+    from moment
+    where enterprise_id=#{enterpriseId}
+  </select>
+  <select id="list" parameterType="map" resultType="Moment">
+    select moment_id, enterprise_id, content, time
+    from moment
+    where enterprise_id=#{enterpriseId}
+    order by time desc
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+</mapper>

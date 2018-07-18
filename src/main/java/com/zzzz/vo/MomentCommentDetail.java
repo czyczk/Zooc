@@ -2,11 +2,22 @@ package com.zzzz.vo;
 
 import java.util.Date;
 
-public class MomentComment {
+public class MomentCommentDetail {
+    private long momentCommentId;
     private long userId;
     private String username;
+    private String userEmail;
+    private String userMobile;
     private String content;
     private Date time;
+
+    public long getMomentCommentId() {
+        return momentCommentId;
+    }
+
+    public void setMomentCommentId(long momentCommentId) {
+        this.momentCommentId = momentCommentId;
+    }
 
     public long getUserId() {
         return userId;
@@ -22,6 +33,22 @@ public class MomentComment {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserMobile() {
+        return userMobile;
+    }
+
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
     }
 
     public String getContent() {

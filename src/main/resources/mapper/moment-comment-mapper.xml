@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.MomentCommentDao">
+  <insert id="insert" parameterType="MomentComment">
+    insert into moment_comment(moment_id, user_id, content, time)
+    values(#{momentId}, #{userId}, #{content}, #{time})
+  </insert>
+  <delete id="delete" parameterType="long">
+    delete from moment_comment
+    where moment_comment_id=#{momentCommentId}
+  </delete>
+  <update id="update" parameterType="map">
+    update moment_comment set
+      content=#{content}
+    where moment_comment_id=#{momentCommentId}
+  </update>
+  <select id="countTotal" parameterType="long" resultType="long">
+    select count(*)
+    from moment_comment
+    where moment_id=#{momentId}
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.MomentCommentDetail">
+    select moment_comment_id,
+           mc.user_id, username, email 'user_email', mobile 'user_mobile',
+           content, time
+    from moment_comment mc join user u on mc.user_id = u.user_id
+    where moment_id=#{momentId}
+    order by time
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+</mapper>

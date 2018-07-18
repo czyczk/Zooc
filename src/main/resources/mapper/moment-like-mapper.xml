@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.MomentLikeDao">
+  <insert id="insert" parameterType="MomentLike">
+    insert into moment_like(moment_id, user_id, time)
+    values(#{momentId}, #{userId}, #{time})
+  </insert>
+  <delete id="delete" parameterType="long">
+    delete from moment_like
+    where moment_like_id=#{momentLikeId}
+  </delete>
+  <select id="countTotal" parameterType="long" resultType="long">
+    select count(*)
+    from moment_like
+    where moment_id=#{momentId}
+  </select>
+  <select id="list" parameterType="map" resultType="com.zzzz.vo.MomentLikeDetail">
+    select moment_like_id, moment_id,
+           ml.user_id, username, email 'user_email', mobile 'user_mobile', time
+    from moment_like ml join user u on ml.user_id = u.user_id
+    where moment_id=#{momentId}
+    order by time desc
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+</mapper>
