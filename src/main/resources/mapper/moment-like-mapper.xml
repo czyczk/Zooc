@@ -11,10 +11,15 @@
     delete from moment_like
     where moment_like_id=#{momentLikeId}
   </delete>
-  <select id="countTotal" parameterType="long" resultType="long">
+  <select id="countTotal" parameterType="map" resultType="long">
     select count(*)
     from moment_like
-    where moment_id=#{momentId}
+    <where>
+      and moment_id=#{momentId}
+      <if test="userId != null">
+        and user_id=#{userId}
+      </if>
+    </where>
   </select>
   <select id="list" parameterType="map" resultType="com.zzzz.vo.MomentLikeDetail">
     select moment_like_id, moment_id,
@@ -22,8 +27,6 @@
     from moment_like ml join user u on ml.user_id = u.user_id
     where moment_id=#{momentId}
     order by time desc
-    <if test="usePagination">
-      limit #{starting}, #{pageSize}
-    </if>
+    limit 0, #{n}
   </select>
 </mapper>

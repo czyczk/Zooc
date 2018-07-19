@@ -23,11 +23,11 @@ public interface MomentDao {
     int delete(long momentId) throws SQLException;
 
     /**
-     * Update the content of a moment.
-     * @param content New content (left unchanged if null)
+     * Update the content of a moment. Only the content is open for modification.
+     * @param moment Moment (only the content field is used)
      * @return Number of rows affected
      */
-    int update(String content) throws SQLException;
+    int update(Moment moment) throws SQLException;
 
     /**
      * Get a moment by its ID.
