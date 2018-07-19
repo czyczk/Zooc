@@ -7,6 +7,11 @@
     insert into moment(moment_id, enterprise_id, content, time)
     values(#{momentId}, #{enterpriseId}, #{content}, #{time})
   </insert>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from moment
+    where moment_id=#{momentId}
+  </select>
   <delete id="delete" parameterType="long">
     delete from moment
     where moment_id=#{momentId}

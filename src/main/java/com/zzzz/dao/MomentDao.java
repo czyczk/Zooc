@@ -15,6 +15,13 @@ public interface MomentDao {
     int insert(Moment moment) throws SQLException;
 
     /**
+     * Check whether a moment exists.
+     * @param momentId Moment ID
+     * @return `true` if the moment exists or `false` otherwise
+     */
+    boolean checkExistenceById(long momentId) throws SQLException;
+
+    /**
      * Delete a moment.
      * The related likes, images and comments will be deleted as well.
      * @param momentId Moment ID
