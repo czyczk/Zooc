@@ -58,6 +58,10 @@ dependencies {
     compile "org.springframework:spring-web:$spring_version"
     compile "org.springframework:spring-webmvc:$spring_version"
 
+    // Redis
+    compile "org.springframework.data:spring-data-redis:2.0.8.RELEASE"
+    compile "redis.clients:jedis:2.9.0"
+
     // JSON
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
