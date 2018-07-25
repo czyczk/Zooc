@@ -9,18 +9,25 @@ import java.util.List;
 
 public interface MomentLikeDao {
     /**
-     * Insert a moment like
+     * Insert a moment like.
      * @param momentLike Moment like
      * @return Number of rows affected
      */
     int insert(MomentLike momentLike) throws SQLException;
 
     /**
-     * Delete a moment like
+     * Delete a moment like.
      * @param momentLikeId Moment like ID
      * @return Number of rows affected
      */
     int delete(long momentLikeId) throws SQLException;
+
+    /**
+     * Get a moment like by its ID.
+     * @param momentLikeId Moment like ID
+     * @return Moment like
+     */
+    MomentLike getById(long momentLikeId) throws SQLException;
 
     /**
      * Get the number of likes of a moment that meet the requirements.

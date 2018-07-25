@@ -11,6 +11,11 @@
     delete from moment_like
     where moment_like_id=#{momentLikeId}
   </delete>
+  <select id="getById" parameterType="long" resultType="MomentLike">
+    select moment_like_id, moment_id, user_id, time
+    from moment_like
+    where moment_like_id=#{momentLikeId}
+  </select>
   <select id="countTotal" parameterType="map" resultType="long">
     select count(*)
     from moment_like
