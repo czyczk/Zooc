@@ -1,7 +1,9 @@
 package com.zzzz.service.impl;
 
 import com.zzzz.dao.UserDao;
+import com.zzzz.repo.UserRepo;
 import com.zzzz.po.User;
+import com.zzzz.repo.impl.UserRepoImpl;
 import com.zzzz.service.UserService;
 import com.zzzz.service.UserServiceException;
 import com.zzzz.service.util.ParameterChecker;
@@ -15,10 +17,15 @@ import static com.zzzz.service.UserServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
+    private final UserRepo userRepo;
+    private final ParameterChecker<UserServiceException> checker = new ParameterChecker<>();
 
-    private ParameterChecker<UserServiceException> checker = new ParameterChecker<>();
+    @Autowired
+    public UserServiceImpl(UserDao userDao, UserRepoImpl userRepo) {
+        this.userDao = userDao;
+        this.userRepo = userRepo;
+    }
 
     @Override
     @Transactional(rollbackFor = { UserServiceException.class, SQLException.class })
@@ -70,7 +77,13 @@ public class UserServiceImpl implements UserService {
         checker.rejectIfNullOrEmpty(userId, new UserServiceException(EMPTY_USER_ID));
         long userIdLong = checker.parseUnsignedLong(userId, new UserServiceException(INVALID_USER_ID));
 
-        User result = userDao.getById(userIdLong);
+        // Attempt to get it from Redis first
+        // On miss, fetch it from the database and cache it
+        User result = userRepo.getUser(userIdLong);
+        if (result == null) {
+            result = userDao.getById(userIdLong);
+            userRepo.saveUser(result);
+        }
         return result;
     }
 

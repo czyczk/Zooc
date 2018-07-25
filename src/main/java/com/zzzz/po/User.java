@@ -1,6 +1,8 @@
 package com.zzzz.po;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private Long userId;
     private String username;
     private String password;
