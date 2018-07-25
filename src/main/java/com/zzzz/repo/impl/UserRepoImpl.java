@@ -34,6 +34,7 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public void updateUser(User user) {
         hashOps.put(KEY, user.getUserId(), user);
+        // TODO delete other related cache
     }
 
     @Override
