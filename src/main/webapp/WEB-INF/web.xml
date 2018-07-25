@@ -3,11 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-  <!-- Spring configuration -->
-  <!--<context-param>-->
-    <!--<param-name>contextConfigLocation</param-name>-->
-    <!--<param-value>classpath:spring/spring.xml</param-value>-->
-  <!--</context-param>-->
+  <!-- Spring config -->
+  <context-param>
+    <param-name>contextClass</param-name>
+    <param-value>
+      org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+    </param-value>
+  </context-param>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>com.zzzz.config.SpringConfig</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
   <!-- Configure dispatcher servlet -->
   <servlet>
     <servlet-name>dispatcher</servlet-name>
@@ -39,18 +49,6 @@
     <filter-name>CharacterEncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  <!--<filter-mapping>-->
-    <!--<filter-name>LoginFilter</filter-name>-->
-    <!--<url-pattern>/api/transfer/*</url-pattern>-->
-  <!--</filter-mapping>-->
-  <!--<filter-mapping>-->
-    <!--<filter-name>LoginFilter</filter-name>-->
-    <!--<url-pattern>/views/transfer/*</url-pattern>-->
-  <!--</filter-mapping>-->
-  <!--<filter-mapping>-->
-    <!--<filter-name>LoginFilter</filter-name>-->
-    <!--<url-pattern>/views/message/addMessage.jsp</url-pattern>-->
-  <!--</filter-mapping>-->
   
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>

@@ -1,20 +1,26 @@
 package com.zzzz.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
 @Configuration
+//@ImportResource({ "classpath:spring/spring*.xml" })
 @PropertySource(value = { "classpath:redis.properties" })
-public class SpringRedisConfig {
+@ComponentScan(basePackages = { "com.zzzz.repo" })
+public class SpringConfig {
     @Value("${redis.hostName}")
     private String hostName;
 
@@ -58,6 +64,7 @@ public class SpringRedisConfig {
         poolConfig.setMaxWaitMillis(maxWaitMillis);
         // Check validity when getting connections
         poolConfig.setTestOnBorrow(testOnBorrow);
+        System.out.println("!!!!!!PoolConfigCreated");
         return poolConfig;
     }
 
@@ -68,6 +75,7 @@ public class SpringRedisConfig {
         standaloneConfiguration.setHostName(hostName);
         standaloneConfiguration.setPort(port);
         standaloneConfiguration.setDatabase(database);
+        standaloneConfiguration.setPassword(RedisPassword.of(password));
 
         // Extended configuration
         JedisClientConfiguration.JedisClientConfigurationBuilder clientConfigBuilder = JedisClientConfiguration.builder();
@@ -79,5 +87,22 @@ public class SpringRedisConfig {
         clientConfigBuilder.connectTimeout(Duration.ofSeconds(timeout));
 
         return new JedisConnectionFactory(standaloneConfiguration, clientConfigBuilder.build());
+    }
+
+    @Bean
+    RedisTemplate<String, Object> redisTemplate() {
+        Jackson2JsonRedisSerializer jacksonSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jacksonSerializer.setObjectMapper(om);
+
+        RedisTemplate<String, Object> result = new RedisTemplate<>();
+        result.setKeySerializer(jacksonSerializer);
+        result.setValueSerializer(jacksonSerializer);
+        result.setHashKeySerializer(jacksonSerializer);
+        result.setHashValueSerializer(jacksonSerializer);
+        result.setConnectionFactory(jedisConnectionFactory());
+        return result;
     }
 }
