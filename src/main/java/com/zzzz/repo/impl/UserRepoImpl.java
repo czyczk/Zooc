@@ -11,9 +11,9 @@ import javax.annotation.PostConstruct;
 
 @Repository
 public class UserRepoImpl implements UserRepo {
-    // "user"{id} => User
+    // user {id} => User
     private static final String KEY = "user";
-    private final RedisTemplate<String, User> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, Long, User> hashOps;
 
     @Autowired
@@ -39,5 +39,10 @@ public class UserRepoImpl implements UserRepo {
     @Override
     public User getUser(long userId) {
         return hashOps.get(KEY, userId);
+    }
+
+    @Override
+    public boolean isCached(long userId) {
+        return hashOps.hasKey(KEY, userId);
     }
 }

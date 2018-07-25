@@ -22,4 +22,11 @@ public interface UserRepo {
      * @return User
      */
     User getUser(long userId);
+
+    /**
+     * Check if a user is cached.
+     * @param userId User ID
+     * @return `true` if the user is cached or `false` otherwise
+     */
+    boolean isCached(long userId);
 }
