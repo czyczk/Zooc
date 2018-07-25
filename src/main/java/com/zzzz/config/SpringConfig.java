@@ -64,7 +64,6 @@ public class SpringConfig {
         poolConfig.setMaxWaitMillis(maxWaitMillis);
         // Check validity when getting connections
         poolConfig.setTestOnBorrow(testOnBorrow);
-        System.out.println("!!!!!!PoolConfigCreated");
         return poolConfig;
     }
 

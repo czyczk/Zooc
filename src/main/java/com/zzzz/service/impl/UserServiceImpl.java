@@ -3,7 +3,6 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.UserDao;
 import com.zzzz.repo.UserRepo;
 import com.zzzz.po.User;
-import com.zzzz.repo.impl.UserRepoImpl;
 import com.zzzz.service.UserService;
 import com.zzzz.service.UserServiceException;
 import com.zzzz.service.util.ParameterChecker;
@@ -22,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private final ParameterChecker<UserServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, UserRepoImpl userRepo) {
+    public UserServiceImpl(UserDao userDao, UserRepo userRepo) {
         this.userDao = userDao;
         this.userRepo = userRepo;
     }
