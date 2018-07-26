@@ -1,9 +1,11 @@
 package com.zzzz.controller;
 
+import com.zzzz.dto.MomentCommentParam;
 import com.zzzz.dto.MomentParam;
 import com.zzzz.po.Moment;
 import com.zzzz.service.*;
 import com.zzzz.vo.ListResult;
+import com.zzzz.vo.MomentCommentDetail;
 import com.zzzz.vo.MomentLikeDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,8 @@ public class MomentController {
      * @return Success: Last moment ID; Bad request: 400; Enterprise not found: 404; Internal: 500
      */
     @PostMapping("/enterprise/{id}/moment")
-    public ResponseEntity<Long> createMoment(@PathVariable("id") String enterpriseId, MomentParam param) throws MomentServiceException, SQLException {
+    public ResponseEntity<Long> createMoment(@PathVariable("id") String enterpriseId,
+                                             @RequestBody MomentParam param) throws MomentServiceException, SQLException {
         long lastId = this.momentService.insert(enterpriseId, param.getContent(), new Date());
         return ResponseEntity.ok(lastId);
     }
@@ -49,7 +52,8 @@ public class MomentController {
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping("/moment/{id}")
-    public ResponseEntity updateMoment(@PathVariable("id") String momentId, MomentParam param) throws MomentServiceException, SQLException {
+    public ResponseEntity updateMoment(@PathVariable("id") String momentId,
+                                       @RequestBody MomentParam param) throws MomentServiceException, SQLException {
         this.momentService.update(momentId, param.getContent());
         return ResponseEntity.noContent().build();
     }
@@ -87,7 +91,7 @@ public class MomentController {
      */
     @PostMapping("/moment/{id}/like")
     public ResponseEntity<Long> like(@PathVariable("id") String momentId,
-                                     String userId) throws MomentLikeServiceException, SQLException {
+                                     @RequestBody String userId) throws MomentLikeServiceException, SQLException {
         momentLikeService.insert(momentId, userId, new Date());
         return ResponseEntity.noContent().build();
     }
@@ -100,7 +104,7 @@ public class MomentController {
      */
     @DeleteMapping("/moment/{id}/like")
     public ResponseEntity unlike(@PathVariable("id") String momentId,
-                                 String userId) throws MomentLikeServiceException, SQLException {
+                                 @RequestBody String userId) throws MomentLikeServiceException, SQLException {
         momentLikeService.delete(momentId, userId);
         return ResponseEntity.noContent().build();
     }
@@ -141,4 +145,30 @@ public class MomentController {
         List<MomentLikeDetail> result = momentLikeService.listLatest(momentId, n);
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * Create a moment comment.
+     * @param momentId Moment ID
+     * @param param userId, content
+     * @return Success: new moment comment ID; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @PostMapping("/moment/{id}/comment")
+    public ResponseEntity<Long> createComment(@PathVariable("id") String momentId,
+                                        @RequestBody MomentCommentParam param) throws SQLException, MomentCommentServiceException {
+        long lastId = momentCommentService.insert(momentId, param.getUserId(), param.getContent(), new Date());
+        return ResponseEntity.ok(lastId);
+    }
+
+    /**
+     * Delete a moment comment.
+     * @param momentCommentId Moment comment ID
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity deleteComment(@PathVariable("id") String momentCommentId) throws SQLException, MomentCommentServiceException {
+        momentCommentService.delete(momentCommentId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
