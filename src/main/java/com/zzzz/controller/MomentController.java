@@ -119,12 +119,23 @@ public class MomentController {
     }
 
     /**
+     * Get the total number of likes of a moment.
+     * @param momentId Moment ID
+     * @return Success: total; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/moment/{id}/like")
+    public ResponseEntity<Long> countTotalLikes(@PathVariable("id") String momentId) throws MomentLikeServiceException, SQLException {
+        long total = momentLikeService.countTotal(momentId);
+        return ResponseEntity.ok(total);
+    }
+
+    /**
      * Get a list of the latest N likes of a moment.
      * @param momentId Moment ID
      * @param n The number of likes to be listed. The actual result can be less than N items.
      * @return Success: Latest N likes; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping("/moment/{id}/like/list")
+    @GetMapping("/moment/{id}/like/latest")
     public ResponseEntity listLatestLikes(@PathVariable("id") String momentId,
                                           String n) throws MomentLikeServiceException, SQLException {
         List<MomentLikeDetail> result = momentLikeService.listLatest(momentId, n);
