@@ -16,6 +16,11 @@
     from moment_like
     where moment_like_id=#{momentLikeId}
   </select>
+  <select id="getByMomentIdAndUserId" parameterType="map" resultType="MomentLike">
+    select moment_like_id, moment_id, user_id, time
+    from moment_like
+    where moment_id=#{momentId} and user_id=#{userId}
+  </select>
   <select id="countTotal" parameterType="map" resultType="long">
     select count(*)
     from moment_like

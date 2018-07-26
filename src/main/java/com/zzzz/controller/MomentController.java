@@ -1,0 +1,133 @@
+package com.zzzz.controller;
+
+import com.zzzz.dto.MomentParam;
+import com.zzzz.po.Moment;
+import com.zzzz.service.*;
+import com.zzzz.vo.ListResult;
+import com.zzzz.vo.MomentLikeDetail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1")
+public class MomentController {
+    private final MomentService momentService;
+    private final MomentCommentService momentCommentService;
+    private final MomentLikeService momentLikeService;
+    private final MomentImgService momentImgService;
+
+    @Autowired
+    public MomentController(MomentService momentService, MomentCommentService momentCommentService,
+                            MomentLikeService momentLikeService, MomentImgService momentImgService) {
+        this.momentService = momentService;
+        this.momentCommentService = momentCommentService;
+        this.momentLikeService = momentLikeService;
+        this.momentImgService = momentImgService;
+    }
+
+    /**
+     * Create a moment.
+     * @param enterpriseId The ID of the enterprise to which the moment belongs
+     * @param param content
+     * @return Success: Last moment ID; Bad request: 400; Enterprise not found: 404; Internal: 500
+     */
+    @PostMapping("/enterprise/{id}/moment")
+    public ResponseEntity<Long> createMoment(@PathVariable("id") String enterpriseId, MomentParam param) throws MomentServiceException, SQLException {
+        long lastId = this.momentService.insert(enterpriseId, param.getContent(), new Date());
+        return ResponseEntity.ok(lastId);
+    }
+
+    /**
+     * Update a moment. Only the content is open for modification.
+     * @param momentId Moment ID
+     * @param param content
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @PutMapping("/moment/{id}")
+    public ResponseEntity updateMoment(@PathVariable("id") String momentId, MomentParam param) throws MomentServiceException, SQLException {
+        this.momentService.update(momentId, param.getContent());
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Delete a moment.
+     * @param momentId Moment ID
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @DeleteMapping("/moment/{id}")
+    public ResponseEntity deleteMoment(@PathVariable("id") String momentId) throws MomentServiceException, SQLException {
+        momentService.delete(momentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get a list of moments of an enterprise.
+     * @param enterpriseId Enterprise ID
+     * @param usePagination Use pagination or not (`false` by default): boolean
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @return Success: Moment list result; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/moment/list")
+    public ResponseEntity<ListResult<Moment>> listMoments(@PathVariable("id") String enterpriseId,
+                                                          String usePagination, String targetPage, String pageSize) throws MomentServiceException, SQLException {
+        return ResponseEntity.ok(momentService.list(usePagination, targetPage, pageSize, enterpriseId));
+    }
+
+    /**
+     * Like a moment.
+     * @param momentId Moment ID
+     * @param userId User ID
+     * @return Success: 204; Bad request: 400; Not found: 400; Internal: 500
+     */
+    @PostMapping("/moment/{id}/like")
+    public ResponseEntity<Long> like(@PathVariable("id") String momentId,
+                                     String userId) throws MomentLikeServiceException, SQLException {
+        momentLikeService.insert(momentId, userId, new Date());
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Unlike a moment.
+     * @param momentId Moment ID
+     * @param userId User ID
+     * @return Success: 204; Bad request: 400; Not found: 400; Internal: 500
+     */
+    @DeleteMapping("/moment/{id}/like")
+    public ResponseEntity unlike(@PathVariable("id") String momentId,
+                                 String userId) throws MomentLikeServiceException, SQLException {
+        momentLikeService.delete(momentId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Check if a user has liked a moment.
+     * @param momentId Moment ID
+     * @param userId User ID
+     * @return `true` if the user has liked it or `false` otherwise
+     */
+    @GetMapping("/moment/{id}/like")
+    public ResponseEntity<Boolean> hasLiked(@PathVariable("id") String momentId,
+                                            String userId) throws MomentLikeServiceException, SQLException {
+        boolean hasLiked = momentLikeService.hasLiked(momentId, userId);
+        return ResponseEntity.ok(hasLiked);
+    }
+
+    /**
+     * Get a list of the latest N likes of a moment.
+     * @param momentId Moment ID
+     * @param n The number of likes to be listed. The actual result can be less than N items.
+     * @return Success: Latest N likes; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/moment/{id}/like/list")
+    public ResponseEntity listLatestLikes(@PathVariable("id") String momentId,
+                                          String n) throws MomentLikeServiceException, SQLException {
+        List<MomentLikeDetail> result = momentLikeService.listLatest(momentId, n);
+        return ResponseEntity.ok(result);
+    }
+}

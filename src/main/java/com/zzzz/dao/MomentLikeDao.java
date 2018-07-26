@@ -30,6 +30,14 @@ public interface MomentLikeDao {
     MomentLike getById(long momentLikeId) throws SQLException;
 
     /**
+     * Get a moment like by its moment ID and user ID.
+     * @param momentId Moment ID
+     * @param userId User ID
+     * @return Moment like
+     */
+    MomentLike getByMomentIdAndUserId(@Param("momentId") long momentId, @Param("userId") long userId) throws SQLException;
+
+    /**
      * Get the number of likes of a moment that meet the requirements.
      * @param momentId Moment ID
      * @param userId User ID (optional)

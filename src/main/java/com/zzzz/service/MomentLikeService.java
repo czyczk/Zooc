@@ -21,12 +21,27 @@ public interface MomentLikeService {
                 String userId,
                 Date time) throws MomentLikeServiceException, SQLException;
 
+    /**
+     * Delete a moment like.
+     * Redis:
+     *   Decrement the number of total moment likes.
+     * @param momentLikeId Moment like ID
+     * @throws MomentLikeServiceException An exception is thrown if the deletion is not successful.
+     */
     void delete(String momentLikeId) throws MomentLikeServiceException, SQLException;
 
     /**
-     * Check if the user has liked a moment.
+     * Delete a moment like.
      * Redis:
      *   Decrement the number of total moment likes.
+     * @param momentId Moment ID
+     * @param userId User ID
+     * @throws MomentLikeServiceException An exception is thrown if the deletion is not successful.
+     */
+    void delete(String momentId, String userId) throws MomentLikeServiceException, SQLException;
+
+    /**
+     * Check if the user has liked a moment.
      * @param momentId Moment ID
      * @param userId User ID
      * @return `true` if the user has liked it or `false` otherwise

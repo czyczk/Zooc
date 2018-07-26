@@ -95,6 +95,32 @@ public class MomentLikeServiceImpl implements MomentLikeService {
     }
 
     @Override
+    public void delete(String momentId, String userId) throws MomentLikeServiceException, SQLException {
+        // Check if the parameters are valid
+        checker.rejectIfNullOrEmpty(momentId, new MomentLikeServiceException(EMPTY_MOMENT_ID));
+        checker.rejectIfNullOrEmpty(userId, new MomentLikeServiceException(EMPTY_USER_ID));
+        long momentIdLong = checker.parseUnsignedLong(momentId, new MomentLikeServiceException(INVALID_MOMENT_ID));
+        long userIdLong = checker.parseUnsignedLong(userId, new MomentLikeServiceException(INVALID_USER_ID));
+
+        // Check if the moment and the user exist
+        boolean isExisting = momentDao.checkExistenceById(momentIdLong);
+        if (!isExisting)
+            throw new MomentLikeServiceException(MOMENT_NOT_EXISTING);
+        isExisting = userRepo.isCached(userIdLong) ||  userDao.checkExistenceById(userIdLong);
+        if (!isExisting)
+            throw new MomentLikeServiceException(USER_NOT_EXISTING);
+
+        // Get the ID of the moment like
+        MomentLike like = momentLikeDao.getByMomentIdAndUserId(momentIdLong, userIdLong);
+        if (like == null)
+            throw new MomentLikeServiceException(MOMENT_LIKE_NOT_EXISTING);
+
+        momentLikeDao.delete(like.getMomentLikeId());
+        // Redis: total-- (if cached)
+        momentLikeTotalRepo.decrTotalIfCached(like.getMomentId());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public boolean hasLiked(String momentId, String userId) throws MomentLikeServiceException, SQLException {
         // Check if the parameters are valid
