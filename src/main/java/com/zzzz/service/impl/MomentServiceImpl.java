@@ -4,6 +4,7 @@ import com.zzzz.dao.EnterpriseDao;
 import com.zzzz.dao.GeneralDao;
 import com.zzzz.dao.MomentDao;
 import com.zzzz.po.Moment;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.service.MomentService;
 import com.zzzz.service.MomentServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -24,13 +25,16 @@ public class MomentServiceImpl implements MomentService {
     private final GeneralDao generalDao;
     private final MomentDao momentDao;
     private final EnterpriseDao enterpriseDao;
+    private final EnterpriseRepo enterpriseRepo;
     private final ParameterChecker<MomentServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public MomentServiceImpl(GeneralDao generalDao, MomentDao momentDao, EnterpriseDao enterpriseDao) {
+    public MomentServiceImpl(GeneralDao generalDao, MomentDao momentDao, EnterpriseDao enterpriseDao,
+                             EnterpriseRepo enterpriseRepo) {
         this.generalDao = generalDao;
         this.momentDao = momentDao;
         this.enterpriseDao = enterpriseDao;
+        this.enterpriseRepo = enterpriseRepo;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class MomentServiceImpl implements MomentService {
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new MomentServiceException(INVALID_ENTERPRISE_ID));
 
         // Check if the enterprise exists
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new MomentServiceException(ENTERPRISE_NOT_EXISTING);
 
@@ -117,7 +121,7 @@ public class MomentServiceImpl implements MomentService {
         }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new MomentServiceException(INVALID_ENTERPRISE_ID));
 
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new MomentServiceException(ENTERPRISE_NOT_EXISTING);
 
