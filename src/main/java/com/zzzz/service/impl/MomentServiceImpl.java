@@ -5,6 +5,7 @@ import com.zzzz.dao.GeneralDao;
 import com.zzzz.dao.MomentDao;
 import com.zzzz.po.Moment;
 import com.zzzz.repo.EnterpriseRepo;
+import com.zzzz.repo.MomentLikeTotalRepo;
 import com.zzzz.service.MomentService;
 import com.zzzz.service.MomentServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -25,15 +26,17 @@ public class MomentServiceImpl implements MomentService {
     private final GeneralDao generalDao;
     private final MomentDao momentDao;
     private final EnterpriseDao enterpriseDao;
+    private final MomentLikeTotalRepo momentLikeTotalRepo;
     private final EnterpriseRepo enterpriseRepo;
     private final ParameterChecker<MomentServiceException> checker = new ParameterChecker<>();
 
     @Autowired
     public MomentServiceImpl(GeneralDao generalDao, MomentDao momentDao, EnterpriseDao enterpriseDao,
-                             EnterpriseRepo enterpriseRepo) {
+                             MomentLikeTotalRepo momentLikeTotalRepo, EnterpriseRepo enterpriseRepo) {
         this.generalDao = generalDao;
         this.momentDao = momentDao;
         this.enterpriseDao = enterpriseDao;
+        this.momentLikeTotalRepo = momentLikeTotalRepo;
         this.enterpriseRepo = enterpriseRepo;
     }
 
@@ -80,6 +83,9 @@ public class MomentServiceImpl implements MomentService {
 
         // Delete
         momentDao.delete(momentIdLong);
+
+        // Delete cache
+        momentLikeTotalRepo.deleteTotal(momentIdLong);
     }
 
     @Override
