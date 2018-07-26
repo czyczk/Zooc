@@ -4,6 +4,8 @@ import com.zzzz.dao.BranchDao;
 import com.zzzz.dao.EnterpriseDao;
 import com.zzzz.dao.GeneralDao;
 import com.zzzz.po.Branch;
+import com.zzzz.repo.BranchRepo;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.service.BranchService;
 import com.zzzz.service.BranchServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -21,16 +23,22 @@ import static com.zzzz.service.BranchServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class BranchServiceImpl implements BranchService {
-    @Autowired
-    private GeneralDao generalDao;
+    private final GeneralDao generalDao;
+    private final BranchDao branchDao;
+    private final EnterpriseDao enterpriseDao;
+    private final BranchRepo branchRepo;
+    private final EnterpriseRepo enterpriseRepo;
+    private final ParameterChecker<BranchServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    private BranchDao branchDao;
-
-    @Autowired
-    private EnterpriseDao enterpriseDao;
-
-    private ParameterChecker<BranchServiceException> checker = new ParameterChecker<>();
+    public BranchServiceImpl(GeneralDao generalDao, BranchDao branchDao, EnterpriseDao enterpriseDao,
+                             BranchRepo branchRepo, EnterpriseRepo enterpriseRepo) {
+        this.generalDao = generalDao;
+        this.branchDao = branchDao;
+        this.enterpriseDao = enterpriseDao;
+        this.branchRepo = branchRepo;
+        this.enterpriseRepo = enterpriseRepo;
+    }
 
     @Override
     @Transactional(rollbackFor = { BranchServiceException.class, SQLException.class })
@@ -49,7 +57,7 @@ public class BranchServiceImpl implements BranchService {
         BigDecimal longitudeBd = checker.parseBigDecimal(longitude, new BranchServiceException(INVALID_LONGITUDE));
 
         // Check if the enterprise exists
-        boolean isExisting = branchDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new BranchServiceException(ENTERPRISE_NOT_EXISTING);
 
@@ -65,6 +73,9 @@ public class BranchServiceImpl implements BranchService {
 
         // Fetch the last ID
         long lastId = generalDao.getLastInsertId();
+
+        // Redis: cache the branch
+        branchRepo.saveBranch(branch);
         return lastId;
 
     }
@@ -76,7 +87,7 @@ public class BranchServiceImpl implements BranchService {
         checker.rejectIfNullOrEmpty(branchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        return branchDao.checkExistenceById(branchIdLong);
+        return branchRepo.isCached(branchIdLong) || branchDao.checkExistenceById(branchIdLong);
     }
 
     @Override
@@ -88,8 +99,12 @@ public class BranchServiceImpl implements BranchService {
         checker.rejectIfNullOrEmpty(branchId, new BranchServiceException(EMPTY_BRANCH_ID));
         long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
 
-        result = branchDao.getById(branchIdLong);
-        // Check if the enterprise exists
+        // Redis: Check if the branch is cached
+        result = branchRepo.getBranch(branchIdLong);
+        // DB: On missing, fetch it from the database
+        if (result == null)
+            result = branchDao.getById(branchIdLong);
+        // On missing, throw an exception
         if (result == null)
             throw new BranchServiceException(BRANCH_NOT_EXISTING);
         return result;
@@ -103,7 +118,9 @@ public class BranchServiceImpl implements BranchService {
         long branchIdLong = checker.parseUnsignedLong(targetBranchId, new BranchServiceException(INVALID_BRANCH_ID));
 
         // Check if the target branch exists
-        Branch branch = branchDao.getById(branchIdLong);
+        Branch branch = branchRepo.getBranch(branchIdLong);
+        if (branch == null)
+            branchDao.getById(branchIdLong);
         if (branch == null)
             throw new BranchServiceException(BRANCH_NOT_EXISTING);
 
@@ -137,6 +154,7 @@ public class BranchServiceImpl implements BranchService {
 
         // Update
         branchDao.update(branch);
+        branchRepo.updateBranch(branch);
     }
 
     @Override
@@ -147,13 +165,16 @@ public class BranchServiceImpl implements BranchService {
         long branchIdLong = checker.parseUnsignedLong(branchId, new BranchServiceException(INVALID_BRANCH_ID));
 
         // Fetch the branch and check if it exists
-        Branch branch = branchDao.getById(branchIdLong);
+        Branch branch = branchRepo.getBranch(branchIdLong);
+        if (branch == null)
+            branchDao.getById(branchIdLong);
         if (branch == null)
             throw new BranchServiceException(BRANCH_NOT_EXISTING);
 
         // Set the branch to disabled
         branch.setDisabled(true);
         branchDao.update(branch);
+        branchRepo.updateBranch(branch);
     }
 
     @Override
@@ -177,7 +198,7 @@ public class BranchServiceImpl implements BranchService {
             pageSizeLong = checker.parsePositiveLong(pageSize, new BranchServiceException(INVALID_PAGE_SIZE));
         }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new BranchServiceException(INVALID_ENTERPRISE_ID));
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new BranchServiceException(ENTERPRISE_NOT_EXISTING);
 
