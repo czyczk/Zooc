@@ -17,13 +17,6 @@ public interface BranchRepo {
     Branch getBranch(long branchId);
 
     /**
-     * Delete a branch. Related cache will be cleared as well,
-     * including trials and course offerings.
-     * @param branchId Branch ID
-     */
-    void deleteBranch(long branchId);
-
-    /**
      * Update a branch. Related cache will be cleared as well,
      * including trials and course offerings.
      * @param branch Branch
