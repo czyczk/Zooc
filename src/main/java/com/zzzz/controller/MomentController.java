@@ -3,6 +3,7 @@ package com.zzzz.controller;
 import com.zzzz.dto.MomentCommentParam;
 import com.zzzz.dto.MomentParam;
 import com.zzzz.po.Moment;
+import com.zzzz.po.MomentImg;
 import com.zzzz.service.*;
 import com.zzzz.vo.ListResult;
 import com.zzzz.vo.MomentCommentDetail;
@@ -47,6 +48,7 @@ public class MomentController {
 
     /**
      * Update a moment. Only the content is open for modification.
+     * The content is left unchanged if the new content is null.
      * @param momentId Moment ID
      * @param param content
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
@@ -154,7 +156,7 @@ public class MomentController {
      */
     @PostMapping("/moment/{id}/comment")
     public ResponseEntity<Long> createComment(@PathVariable("id") String momentId,
-                                        @RequestBody MomentCommentParam param) throws SQLException, MomentCommentServiceException {
+                                              @RequestBody MomentCommentParam param) throws SQLException, MomentCommentServiceException {
         long lastId = momentCommentService.insert(momentId, param.getUserId(), param.getContent(), new Date());
         return ResponseEntity.ok(lastId);
     }
@@ -170,5 +172,57 @@ public class MomentController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Update a moment comment. Only the content is open for modification.
+     * The content will be left unchanged if the new content is null.
+     * @param momentCommentId Moment comment ID
+     * @param param content
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @PutMapping("/comment/{id}")
+    public ResponseEntity updateComment(@PathVariable("id") String momentCommentId,
+                                        @RequestBody MomentCommentParam param) throws SQLException, MomentCommentServiceException {
+        momentCommentService.update(momentCommentId, param.getContent());
+        return ResponseEntity.noContent().build();
+    }
 
+    /**
+     * Get a list of comments of a moment.
+     * @param momentId Moment ID
+     * @param usePagination Use pagination or not (`false` by default)
+     * @param targetPage Target page (required when using pagination)
+     * @param pageSize Page size (required when using pagination)
+     * @return Success: Moment comment list result; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/moment/{id}/comment/list")
+    public ResponseEntity<ListResult<MomentCommentDetail>> listComments(@PathVariable("id") String momentId,
+                                                                        String usePagination,
+                                                                        String targetPage, String pageSize) throws SQLException, MomentCommentServiceException {
+        ListResult<MomentCommentDetail> result = momentCommentService.list(usePagination, targetPage, pageSize, momentId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get a list of images of a moment. URLs inside.
+     * @param momentId Moment ID
+     * @return Success: Image URLs of a moment (ordered); Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/moment/{id}/img/list")
+    public ResponseEntity<List<MomentImg>> listImgs(@PathVariable("id") String momentId) throws SQLException, MomentImgServiceException {
+        List<MomentImg> result = momentImgService.list(momentId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Update images URLs of a moment.
+     * @param momentId Moment ID
+     * @param imgUrls Image URLs (9 URLs at most, ordered in the list)
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @PostMapping("/moment/{id}/img")
+    public ResponseEntity updateImgs(@PathVariable("id") String momentId,
+                                     @RequestBody List<String> imgUrls) throws SQLException, MomentImgServiceException {
+        momentImgService.updateImgUrls(momentId, imgUrls);
+        return ResponseEntity.noContent().build();
+    }
 }
