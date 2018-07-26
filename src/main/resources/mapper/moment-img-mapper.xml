@@ -15,7 +15,8 @@
   <update id="update" parameterType="MomentImg">
     update moment_img set
       img_url=#{imgUrl}
-    where moment_id=#{momentId}
+    where moment_img_index=#{momentImgIndex}
+          and moment_id=#{momentId}
   </update>
   <select id="checkExistenceByPk" parameterType="map" resultType="boolean">
     select count(*)
@@ -39,5 +40,6 @@
     from moment_img
     where moment_img_index=#{momentImgIndex}
           and moment_id=#{momentId}
+    order by moment_img_index
   </select>
 </mapper>
