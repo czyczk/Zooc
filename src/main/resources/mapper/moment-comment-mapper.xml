@@ -16,6 +16,16 @@
       content=#{content}
     where moment_comment_id=#{momentCommentId}
   </update>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from moment_comment
+    where moment_comment_id=#{momentCommentId}
+  </select>
+  <select id="getById" parameterType="long" resultType="MomentComment">
+    select moment_comment_id, moment_id, user_id, content, time
+    from moment_comment
+    where moment_comment_id=#{momentCommentId};
+  </select>
   <select id="countTotal" parameterType="long" resultType="long">
     select count(*)
     from moment_comment

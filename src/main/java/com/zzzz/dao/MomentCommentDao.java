@@ -19,6 +19,20 @@ public interface MomentCommentDao {
     int update(MomentComment momentComment) throws SQLException;
 
     /**
+     * Check existence by ID.
+     * @param momentCommentId Moment comment ID
+     * @return `true` if the comment exists or `false` otherwise
+     */
+    boolean checkExistenceById(long momentCommentId) throws SQLException;
+
+    /**
+     * Get a moment comment by its ID.
+     * @param momentCommentId Moment comment ID
+     * @return Moment comment
+     */
+    MomentComment getById(long momentCommentId) throws SQLException;
+
+    /**
      * Count the number of comments of a moment.
      * @param momentId Moment ID
      * @return The total number of comments of a moment
