@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 @Repository
 public class MomentLikeTotalRepoImpl implements MomentLikeTotalRepo {
     private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, Long> hashOps;
+    private HashOperations<String, Long, Number> hashOps;
 
     @Autowired
     private MomentLikeTotalRepoImpl(RedisTemplate redisTemplate) {
@@ -51,6 +51,7 @@ public class MomentLikeTotalRepoImpl implements MomentLikeTotalRepo {
 
     @Override
     public Long getTotal(long momentId) {
-        return hashOps.get(KEY, momentId);
+        Number result = hashOps.get(KEY, momentId);
+        return result == null ? null : result.longValue();
     }
 }
