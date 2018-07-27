@@ -129,7 +129,7 @@ public class MomentController {
      * @param momentId Moment ID
      * @return Success: total; Bad request: 400; Not found: 404; Internal: 500
      */
-    @GetMapping("/moment/{id}/like")
+    @GetMapping("/moment/{id}/like/total")
     public ResponseEntity<Long> countTotalLikes(@PathVariable("id") String momentId) throws MomentLikeServiceException, SQLException {
         long total = momentLikeService.countTotal(momentId);
         return ResponseEntity.ok(total);
