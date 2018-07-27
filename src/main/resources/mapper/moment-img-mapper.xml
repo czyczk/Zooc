@@ -38,8 +38,7 @@
   <select id="list" parameterType="long" resultType="MomentImg">
     select moment_img_index, moment_id, img_url
     from moment_img
-    where moment_img_index=#{momentImgIndex}
-          and moment_id=#{momentId}
+    where moment_id=#{momentId}
     order by moment_img_index
   </select>
 </mapper>
