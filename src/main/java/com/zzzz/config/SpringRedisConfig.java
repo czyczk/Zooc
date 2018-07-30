@@ -50,10 +50,10 @@ public class SpringRedisConfig {
     @Value("${redis.testOnBorrow}")
     private boolean testOnBorrow;
 
-    @Bean
-    private static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+//    @Bean
+//    private static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
+//        return new PropertySourcesPlaceholderConfigurer();
+//    }
 
     @Bean
     JedisPoolConfig poolConfig() {

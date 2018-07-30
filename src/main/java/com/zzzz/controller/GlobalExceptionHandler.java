@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 @RestControllerAdvice
@@ -41,5 +42,12 @@ public class GlobalExceptionHandler {
         // Log the error
         logger.error("该操作尚未实现。");
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("该操作尚未实现。");
+    }
+
+    @ExceptionHandler(value = IOException.class)
+    public ResponseEntity handleIOException(IOException e) {
+        // Log the error
+        logger.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败。");
     }
 }
