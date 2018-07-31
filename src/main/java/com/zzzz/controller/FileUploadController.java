@@ -1,6 +1,8 @@
 package com.zzzz.controller;
 
 import com.zzzz.service.FdfsService;
+import com.zzzz.service.FdfsServiceException;
+import com.zzzz.vo.UploadResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +29,8 @@ public class FileUploadController {
      * @return Success: File URL; Internal: 500
      */
     @PostMapping("/file")
-    public ResponseEntity<String> uploadFile(@RequestBody MultipartFile file) throws IOException {
-        String url = fdfsService.uploadFile(file);
-        return ResponseEntity.ok(url);
+    public ResponseEntity<UploadResult> uploadFile(@RequestBody MultipartFile file) throws IOException, FdfsServiceException {
+        UploadResult result = fdfsService.uploadFile(file);
+        return ResponseEntity.ok(result);
     }
 }

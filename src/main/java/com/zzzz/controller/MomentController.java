@@ -1,6 +1,7 @@
 package com.zzzz.controller;
 
 import com.zzzz.dto.MomentCommentParam;
+import com.zzzz.dto.MomentImgParam;
 import com.zzzz.dto.MomentParam;
 import com.zzzz.po.Moment;
 import com.zzzz.po.MomentImg;
@@ -216,13 +217,13 @@ public class MomentController {
     /**
      * Update images URLs of a moment.
      * @param momentId Moment ID
-     * @param imgUrls Image URLs (9 URLs at most, ordered in the list)
+     * @param param imgUrls: Image URLs (9 URLs at most, ordered in the list)
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PostMapping("/moment/{id}/img")
     public ResponseEntity updateImgs(@PathVariable("id") String momentId,
-                                     @RequestBody List<String> imgUrls) throws SQLException, MomentImgServiceException {
-        momentImgService.updateImgUrls(momentId, imgUrls);
+                                     @RequestBody MomentImgParam param) throws SQLException, MomentImgServiceException {
+        momentImgService.updateImgUrls(momentId, param.getImgUrls());
         return ResponseEntity.noContent().build();
     }
 }
