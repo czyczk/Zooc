@@ -3,7 +3,7 @@ package com.zzzz.dto;
 import java.util.List;
 
 public class MomentImgParam {
-    List<String> imgUrls;
+    private List<String> imgUrls;
 
     public List<String> getImgUrls() {
         return imgUrls;
