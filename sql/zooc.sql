@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-31 15:31:31
+Date: 2018-07-31 20:06:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -263,11 +263,24 @@ DROP TABLE IF EXISTS `point`;
 CREATE TABLE `point` (
   `user_id` bigint(20) unsigned NOT NULL,
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `poit` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `point` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`,`enterprise_id`),
   KEY `fk_point_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_point_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`),
   CONSTRAINT `fk_point_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for promotion_strategy
+-- ----------------------------
+DROP TABLE IF EXISTS `promotion_strategy`;
+CREATE TABLE `promotion_strategy` (
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `use_coupon` bit(1) NOT NULL DEFAULT b'0',
+  `use_point` bit(1) NOT NULL DEFAULT b'0',
+  `points_per_yuan` int(11) NOT NULL,
+  PRIMARY KEY (`enterprise_id`),
+  CONSTRAINT `fk_promotion_strategy_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
