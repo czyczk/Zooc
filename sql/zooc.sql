@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-18 15:12:12
+Date: 2018-07-31 15:31:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -49,6 +49,52 @@ CREATE TABLE `branch` (
   KEY `fk_branch_enterprise_id` (`enterprise_id`) USING BTREE,
   CONSTRAINT `fk_branch_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for checkin_record
+-- ----------------------------
+DROP TABLE IF EXISTS `checkin_record`;
+CREATE TABLE `checkin_record` (
+  `user_id` bigint(20) unsigned NOT NULL,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`user_id`,`enterprise_id`,`date`),
+  KEY `fk_checkin_history_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_checkin_history_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`),
+  CONSTRAINT `fk_checkin_history_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for coupon
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon`;
+CREATE TABLE `coupon` (
+  `coupon_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `value` decimal(10,2) unsigned NOT NULL,
+  `threshold` decimal(10,2) unsigned NOT NULL DEFAULT '0.00',
+  `time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `status` enum('ENABLED','DISABLED') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ENABLED',
+  PRIMARY KEY (`coupon_id`),
+  KEY `idx_coupon_enterprise_id_status` (`enterprise_id`,`status`),
+  CONSTRAINT `fk_coupon_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for coupon_record
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon_record`;
+CREATE TABLE `coupon_record` (
+  `coupon_history_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `coupon_id` bigint(20) unsigned NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`coupon_history_id`),
+  KEY `fk_coupon_history_user_id` (`user_id`),
+  KEY `fk_coupon_history_coupon_id` (`coupon_id`),
+  CONSTRAINT `fk_coupon_history_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`coupon_id`),
+  CONSTRAINT `fk_coupon_history_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course
@@ -209,6 +255,20 @@ CREATE TABLE `order` (
   CONSTRAINT `fk_order_course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_order_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for point
+-- ----------------------------
+DROP TABLE IF EXISTS `point`;
+CREATE TABLE `point` (
+  `user_id` bigint(20) unsigned NOT NULL,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `poit` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`enterprise_id`),
+  KEY `fk_point_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_point_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`),
+  CONSTRAINT `fk_point_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for refund
