@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.AdministratorDao">
   <insert id="insert" parameterType="Administrator">
-    insert into administrator(username, password, type, enterpriseId)
+    insert into administrator(username, password, type, enterprise_Id)
     values(#{username}, #{password}, #{type}, #{enterpriseId})
   </insert>
   <select id="checkExistenceById" parameterType="long" resultType="boolean">
