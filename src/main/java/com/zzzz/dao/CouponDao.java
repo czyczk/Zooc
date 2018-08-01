@@ -15,7 +15,7 @@ public interface CouponDao {
     boolean checkExistenceById(long couponId) throws SQLException;
 
     /**
-     * Count the number of coupons meeting the requirements.
+     * Count the number of enabled coupons meeting the requirements.
      * @param couponId Coupon ID
      * @param enterpriseId The ID of the enterprise to which the coupon belongs
      * @param minValue Lower bound of value
@@ -36,7 +36,7 @@ public interface CouponDao {
                     @Param("earlierThan") Date earlierThan) throws SQLException;
 
     /**
-     * Get a list of coupons meeting the requirements.
+     * Get a list of enabled coupons meeting the requirements.
      * @param usePagination Use pagination or not
      * @param starting Starting index (required when using pagination)
      * @param pageSize Page size (required when using pagination)
