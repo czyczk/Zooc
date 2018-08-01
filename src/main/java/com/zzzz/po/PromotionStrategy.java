@@ -5,6 +5,7 @@ public class PromotionStrategy {
     private boolean useCoupons;
     private boolean usePoints;
     private int pointsPerYuan;
+    private int checkinPoints;
 
     public long getEnterpriseId() {
         return enterpriseId;
@@ -36,5 +37,13 @@ public class PromotionStrategy {
 
     public void setPointsPerYuan(int pointsPerYuan) {
         this.pointsPerYuan = pointsPerYuan;
+    }
+
+    public int getCheckinPoints() {
+        return checkinPoints;
+    }
+
+    public void setCheckinPoints(int checkinPoints) {
+        this.checkinPoints = checkinPoints;
     }
 }

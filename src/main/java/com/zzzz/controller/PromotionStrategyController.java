@@ -24,13 +24,13 @@ public class PromotionStrategyController {
     /**
      * Update a promotion strategy. Fields will be left unchanged if not specified.
      * @param enterpriseId Enterprise ID
-     * @param param useCoupons, usePoints, pointsPerYuan
+     * @param param useCoupons, usePoints, pointsPerYuan, checkinPoints
      * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PutMapping("/promotion-strategy/{id}")
     public ResponseEntity update(@PathVariable("id") String enterpriseId,
                                  @RequestBody PromotionStrategyParam param) throws PromotionStrategyServiceException, SQLException {
-        promotionStrategyService.update(enterpriseId, param.getUseCoupons(), param.getUsePoints(), param.getPointsPerYuan());
+        promotionStrategyService.update(enterpriseId, param.getUseCoupons(), param.getUsePoints(), param.getPointsPerYuan(), param.getCheckinPoints());
         return ResponseEntity.noContent().build();
     }
 

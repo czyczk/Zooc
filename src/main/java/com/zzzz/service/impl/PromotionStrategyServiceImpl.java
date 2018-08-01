@@ -35,7 +35,7 @@ public class PromotionStrategyServiceImpl implements PromotionStrategyService {
 
     @Override
     @Transactional(rollbackFor = { PromotionStrategyServiceException.class, SQLException.class })
-    public void update(String enterpriseId, String useCoupons, String usePoints, String pointsPerYuan) throws PromotionStrategyServiceException, SQLException {
+    public void update(String enterpriseId, String useCoupons, String usePoints, String pointsPerYuan, String checkinPoints) throws PromotionStrategyServiceException, SQLException {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(enterpriseId, new PromotionStrategyServiceException(EMPTY_ENTERPRISE_ID));
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new PromotionStrategyServiceException(INVALID_ENTERPRISE_ID));
@@ -73,6 +73,10 @@ public class PromotionStrategyServiceImpl implements PromotionStrategyService {
         if (pointsPerYuan != null && !pointsPerYuan.isEmpty()) {
             int pointsPerYuanInt = checker.parsePositiveInt(pointsPerYuan, new PromotionStrategyServiceException(INVALID_POINTS_PER_YUAN));
             strategy.setPointsPerYuan(pointsPerYuanInt);
+        }
+        if (checkinPoints != null && !checkinPoints.isEmpty()) {
+            int checkinPointsInt = checker.parseUnsignedInt(checkinPoints, new PromotionStrategyServiceException(INVALID_CHECKIN_POINTS));
+            strategy.setCheckinPoints(checkinPointsInt);
         }
 
         promotionStrategyDao.update(strategy);

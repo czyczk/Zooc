@@ -8,18 +8,19 @@
     values(#{enterpriseId})
   </insert>
   <insert id="insert" parameterType="PromotionStrategy">
-    insert into promotion_strategy(enterprise_id, use_coupons, use_points, points_per_yuan)
-    values(#{enterpriseId}, #{useCoupons}, #{usePoints}, #{pointsPerYuan})
+    insert into promotion_strategy(enterprise_id, use_coupons, use_points, points_per_yuan, checkin_points)
+    values(#{enterpriseId}, #{useCoupons}, #{usePoints}, #{pointsPerYuan}, #{checkinPoints})
   </insert>
   <update id="update" parameterType="PromotionStrategy">
     update promotion_strategy set
       use_coupons=#{useCoupons},
       use_points=#{usePoints},
-      points_per_yuan=#{pointsPerYuan}
+      points_per_yuan=#{pointsPerYuan},
+      checkin_points=#{checkinPoints}
     where enterprise_id=#{enterpriseId}
   </update>
   <select id="getByEnterpriseId" parameterType="long" resultType="PromotionStrategy">
-    select (enterprise_id, use_coupons, use_points, points_per_yuan)
+    select (enterprise_id, use_coupons, use_points, points_per_yuan, checkin_points)
     from promotion_strategy
     where enterprise_id=#{enterpriseId}
   </select>

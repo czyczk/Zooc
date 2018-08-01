@@ -11,9 +11,10 @@ public interface PromotionStrategyService {
      * @param useCoupons New status of coupon strategy
      * @param usePoints New status of point strategy
      * @param pointsPerYuan New strategy of the number of points that can offset 1 yuan
+     * @param checkinPoints New number of points a user can get after checking in
      * @throws PromotionStrategyServiceException An exception is thrown if the update is not successful.
      */
-    void update(String enterpriseId, String useCoupons, String usePoints, String pointsPerYuan) throws PromotionStrategyServiceException, SQLException;
+    void update(String enterpriseId, String useCoupons, String usePoints, String pointsPerYuan, String checkinPoints) throws PromotionStrategyServiceException, SQLException;
 
     /**
      * Get the promotion strategy of an enterprise.

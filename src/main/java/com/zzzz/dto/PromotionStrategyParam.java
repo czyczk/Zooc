@@ -5,6 +5,7 @@ public class PromotionStrategyParam {
     private String useCoupons;
     private String usePoints;
     private String pointsPerYuan;
+    private String checkinPoints;
 
     public String getEnterpriseId() {
         return enterpriseId;
@@ -36,5 +37,13 @@ public class PromotionStrategyParam {
 
     public void setPointsPerYuan(String pointsPerYuan) {
         this.pointsPerYuan = pointsPerYuan;
+    }
+
+    public String getCheckinPoints() {
+        return checkinPoints;
+    }
+
+    public void setCheckinPoints(String checkinPoints) {
+        this.checkinPoints = checkinPoints;
     }
 }
