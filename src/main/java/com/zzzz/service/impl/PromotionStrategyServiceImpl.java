@@ -47,8 +47,15 @@ public class PromotionStrategyServiceImpl implements PromotionStrategyService {
 
         // Fetch the existing strategy
         PromotionStrategy strategy = promotionStrategyRepo.getByEnterpriseId(enterpriseIdLong);
-        if (strategy == null)
+        if (strategy == null) {
             strategy = promotionStrategyDao.getByEnterpriseId(enterpriseIdLong);
+            // If the strategy does not exist, create one with the default settings
+            if (strategy == null) {
+                promotionStrategyDao.insertWithDefaultValues(enterpriseIdLong);
+                strategy = promotionStrategyDao.getByEnterpriseId(enterpriseIdLong);
+            }
+            promotionStrategyRepo.save(strategy);
+        }
 
         // Update if necessary
         if (useCoupons != null && !useCoupons.isEmpty()) {
