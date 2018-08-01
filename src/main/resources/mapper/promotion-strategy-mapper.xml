@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.PromotionStrategyDao">
+  <insert id="insertWithDefaultValues" parameterType="long">
+    insert into promotion_strategy(enterprise_id)
+    values(#{enterpriseId})
+  </insert>
+  <insert id="insert" parameterType="PromotionStrategy">
+    insert into promotion_strategy(enterprise_id, use_coupons, use_points, points_per_yuan)
+    values(#{enterpriseId}, #{useCoupons}, #{usePoints}, #{pointsPerYuan})
+  </insert>
+  <update id="update" parameterType="PromotionStrategy">
+    update promotion_strategy set
+      use_coupons=#{useCoupons},
+      use_points=#{usePoints},
+      points_per_yuan=#{pointsPerYuan}
+    where enterprise_id=#{enterpriseId}
+  </update>
+  <select id="getByEnterpriseId" parameterType="long" resultType="PromotionStrategy">
+    select (enterprise_id, use_coupons, use_points, points_per_yuan)
+    from promotion_strategy
+    where enterprise_id=#{enterpriseId}
+  </select>
+</mapper>

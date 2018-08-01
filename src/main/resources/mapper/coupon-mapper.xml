@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.CouponDao">
+  <insert id="insert" parameterType="Coupon">
+    insert into coupon(enterprise_id, `value`, threshold, time)
+    values(#{enterpriseId}, #{value}, #{threshold}, #{time})
+  </insert>
+  <select id="getById" parameterType="long" resultType="Coupon">
+    select coupon_id, enterprise_id, `value`, threshold, time, status
+    from coupon
+    where coupon_id=#{couponId}
+  </select>
+  <update id="update" parameterType="Coupon">
+    update coupon set
+      `value`=#{value},
+      threshold=#{threshold},
+      time=#{time},
+      status=#{status}
+    where coupon_id=#{couponId}
+  </update>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from coupon
+    where coupon_id=#{couponId}
+  </select>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from view_available_coupon
+    <where>
+      <if test="couponId != null">
+        and coupon_id=#{couponId}
+      </if>
+      <if test="enterpriseId != null">
+        and enterprise_id=#{enterpriseId}
+      </if>
+      <if test="minValue != null">
+        and `value` >= #{minValue}
+      </if>
+      <if test="maxValue != null">
+        and `value` &lt;= #{maxValue}
+      </if>
+      <if test="minThreshold != null">
+        and threshold >= #{minThreshold}
+      </if>
+      <if test="maxThreshold != null">
+        and threshold &lt;= #{maxThreshold}
+      </if>
+      <if test="laterThan != null">
+        and time >= #{laterThan}
+      </if>
+      <if test="earlierThan != null">
+        and time &lt;= #{earlierThan}
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="Coupon">
+    select coupon_id, enterprise_id, `value`, threshold, time, status
+    from view_available_coupon
+    <where>
+      <if test="couponId != null">
+        and coupon_id=#{couponId}
+      </if>
+      <if test="enterpriseId != null">
+        and enterprise_id=#{enterpriseId}
+      </if>
+      <if test="minValue != null">
+        and `value` >= #{minValue}
+      </if>
+      <if test="maxValue != null">
+        and `value` &lt;= #{maxValue}
+      </if>
+      <if test="minThreshold != null">
+        and threshold >= #{minThreshold}
+      </if>
+      <if test="maxThreshold != null">
+        and threshold &lt;= #{maxThreshold}
+      </if>
+      <if test="laterThan != null">
+        and time >= #{laterThan}
+      </if>
+      <if test="earlierThan != null">
+        and time &lt;= #{earlierThan}
+      </if>
+    </where>
+    order by coupon_id
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+</mapper>

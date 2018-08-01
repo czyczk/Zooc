@@ -2,8 +2,8 @@ package com.zzzz.po;
 
 public class PromotionStrategy {
     private long enterpriseId;
-    private boolean useCoupon;
-    private boolean usePoint;
+    private boolean useCoupons;
+    private boolean usePoints;
     private int pointsPerYuan;
 
     public long getEnterpriseId() {
@@ -14,20 +14,20 @@ public class PromotionStrategy {
         this.enterpriseId = enterpriseId;
     }
 
-    public boolean isUseCoupon() {
-        return useCoupon;
+    public boolean isUseCoupons() {
+        return useCoupons;
     }
 
-    public void setUseCoupon(boolean useCoupon) {
-        this.useCoupon = useCoupon;
+    public void setUseCoupons(boolean useCoupons) {
+        this.useCoupons = useCoupons;
     }
 
-    public boolean isUsePoint() {
-        return usePoint;
+    public boolean isUsePoints() {
+        return usePoints;
     }
 
-    public void setUsePoint(boolean usePoint) {
-        this.usePoint = usePoint;
+    public void setUsePoints(boolean usePoints) {
+        this.usePoints = usePoints;
     }
 
     public int getPointsPerYuan() {
