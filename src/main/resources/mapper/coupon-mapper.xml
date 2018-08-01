@@ -29,11 +29,9 @@
     select count(*)
     from view_available_coupon
     <where>
+      and enterprise_id=#{enterpriseId}
       <if test="couponId != null">
         and coupon_id=#{couponId}
-      </if>
-      <if test="enterpriseId != null">
-        and enterprise_id=#{enterpriseId}
       </if>
       <if test="minValue != null">
         and `value` >= #{minValue}
@@ -59,11 +57,9 @@
     select coupon_id, enterprise_id, `value`, threshold, time, status
     from view_available_coupon
     <where>
+      and enterprise_id=#{enterpriseId}
       <if test="couponId != null">
         and coupon_id=#{couponId}
-      </if>
-      <if test="enterpriseId != null">
-        and enterprise_id=#{enterpriseId}
       </if>
       <if test="minValue != null">
         and `value` >= #{minValue}
