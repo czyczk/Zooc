@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-31 20:19:06
+Date: 2018-07-31 22:20:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -276,8 +276,8 @@ CREATE TABLE `point` (
 DROP TABLE IF EXISTS `promotion_strategy`;
 CREATE TABLE `promotion_strategy` (
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `use_coupon` bit(1) NOT NULL DEFAULT b'0',
-  `use_point` bit(1) NOT NULL DEFAULT b'0',
+  `use_coupons` bit(1) NOT NULL DEFAULT b'0',
+  `use_points` bit(1) NOT NULL DEFAULT b'0',
   `points_per_yuan` int(11) unsigned NOT NULL DEFAULT '100',
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `fk_promotion_strategy_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
@@ -359,6 +359,12 @@ CREATE TABLE `user` (
 -- ----------------------------
 DROP VIEW IF EXISTS `view_available_branch`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_branch` AS select `branch`.`branch_id` AS `branch_id`,`branch`.`enterprise_id` AS `enterprise_id`,`branch`.`name` AS `name`,`branch`.`address` AS `address`,`branch`.`latitude` AS `latitude`,`branch`.`longitude` AS `longitude`,`branch`.`telephone` AS `telephone`,`branch`.`is_disabled` AS `is_disabled` from `branch` where (`branch`.`is_disabled` = 0x00) ;
+
+-- ----------------------------
+-- View structure for view_available_coupon
+-- ----------------------------
+DROP VIEW IF EXISTS `view_available_coupon`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_coupon` AS select `coupon`.`coupon_id` AS `coupon_id`,`coupon`.`enterprise_id` AS `enterprise_id`,`coupon`.`value` AS `value`,`coupon`.`threshold` AS `threshold`,`coupon`.`time` AS `time`,`coupon`.`status` AS `status` from `coupon` where (`coupon`.`status` = 'ENABLED') ;
 
 -- ----------------------------
 -- View structure for view_available_course
