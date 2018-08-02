@@ -11,6 +11,8 @@ import java.util.List;
 public interface CourseService {
     /**
      * Insert a new course.
+     * Redis:
+     *   - Clear cache of the latest three since the list has been changed
      * @param enterpriseId The ID of the enterprise to which the course belong
      * @param name Name
      * @param detail Detail
@@ -31,10 +33,22 @@ public interface CourseService {
 
     Course getById(String courseId) throws CourseServiceException, SQLException;
 
+    /**
+     * Get the VO of a course by its ID.
+     * Redis:
+     *   - Try to get it from the cache first
+     *     On missing, get it from the DB and cache it
+     * @param courseId Course ID
+     * @return Course VO
+     * @throws CourseServiceException An exception is thrown if the query is unsuccessful.
+     */
     CourseDetail getVoById(String courseId) throws CourseServiceException, SQLException;
 
     /**
      * Update a course. A field will be left unchanged if the corresponding parameter is null.
+     * Redis:
+     *   - Delete it from the cache (since it's CourseDetail that is cached, not Course)
+     *   - Clear cache of the latest three since the list has been changed
      * @param targetCourseId The target course ID
      * @param name New name
      * @param detail New detail
@@ -83,6 +97,9 @@ public interface CourseService {
     /**
      * List the latest N available courses of the enterprise.
      * The actual number of result can be less than the N specified.
+     * Redis:
+     *    - Fetch them from the cache first
+     *      On missing, cache them
      * @param enterpriseId The ID of the enterprise to which the courses belong
      * @param n The number of items to list
      * @return The latest N available courses

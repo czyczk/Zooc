@@ -6,6 +6,9 @@ import com.zzzz.dao.EnterpriseDao;
 import com.zzzz.dao.GeneralDao;
 import com.zzzz.po.Course;
 import com.zzzz.po.CourseStatusEnum;
+import com.zzzz.repo.CourseCategoryRepo;
+import com.zzzz.repo.CourseDetailRepo;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.service.CourseService;
 import com.zzzz.service.CourseServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -29,14 +32,22 @@ public class CourseServiceImpl implements CourseService {
     private final EnterpriseDao enterpriseDao;
     private final CourseCategoryDao courseCategoryDao;
     private final GeneralDao generalDao;
+    private final CourseDetailRepo courseDetailRepo;
+    private final EnterpriseRepo enterpriseRepo;
+    private final CourseCategoryRepo courseCategoryRepo;
     private final ParameterChecker<CourseServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public CourseServiceImpl(CourseDao courseDao, EnterpriseDao enterpriseDao, CourseCategoryDao courseCategoryDao, GeneralDao generalDao) {
+    public CourseServiceImpl(CourseDao courseDao, EnterpriseDao enterpriseDao, CourseCategoryDao courseCategoryDao,
+                             GeneralDao generalDao,
+                             CourseDetailRepo courseDetailRepo, EnterpriseRepo enterpriseRepo, CourseCategoryRepo courseCategoryRepo) {
         this.courseDao = courseDao;
         this.enterpriseDao = enterpriseDao;
         this.courseCategoryDao = courseCategoryDao;
         this.generalDao = generalDao;
+        this.courseDetailRepo = courseDetailRepo;
+        this.enterpriseRepo = enterpriseRepo;
+        this.courseCategoryRepo = courseCategoryRepo;
     }
 
     @Override
@@ -55,11 +66,11 @@ public class CourseServiceImpl implements CourseService {
         BigDecimal priceBd = checker.parseUnsignedBigDecimal(price, new CourseServiceException(INVALID_PRICE));
 
         // Check if the enterprise exists
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new CourseServiceException(ENTERPRISE_NOT_EXISTING);
         // Check if the category exists
-        isExisting = courseCategoryDao.checkExistenceById(categoryIdLong);
+        isExisting = courseCategoryRepo.isCached(categoryIdLong) || courseCategoryDao.checkExistenceById(categoryIdLong);
         if (!isExisting)
             throw new CourseServiceException(CATEGORY_NOT_EXISTING);
         // Insert
@@ -76,6 +87,9 @@ public class CourseServiceImpl implements CourseService {
         courseDao.insert(course);
         // Fetch the last ID
         long courseId = generalDao.getLastInsertId();
+
+        // Redis: Clear cache of the latest three
+        courseDetailRepo.deleteLatestThree();
         return courseId;
     }
 
@@ -101,11 +115,18 @@ public class CourseServiceImpl implements CourseService {
         checker.rejectIfNullOrEmpty(courseId, new CourseServiceException(EMPTY_COURSE_ID));
         long courseIdLong = checker.parseUnsignedLong(courseId, new CourseServiceException(INVALID_COURSE_ID));
 
-        // Fetch the course from the database
-        CourseDetail result = courseDao.getVoById(courseIdLong);
-        // Check if the course exists
-        if (result == null)
-            throw new CourseServiceException(COURSE_NOT_EXISTING);
+        // Fetch the course from the cache
+        CourseDetail result = courseDetailRepo.getById(courseIdLong);
+        if (result == null) {
+            // Fetch the course from the database
+            result = courseDao.getVoById(courseIdLong);
+            // Check if the course exists
+            if (result == null)
+                throw new CourseServiceException(COURSE_NOT_EXISTING);
+            // Cache it
+            courseDetailRepo.save(result);
+        }
+
         return result;
     }
 
@@ -160,6 +181,8 @@ public class CourseServiceImpl implements CourseService {
         }
         // Update
         courseDao.update(course);
+        courseDetailRepo.delete(targetCourseIdLong);
+        courseDetailRepo.deleteLatestThree();
     }
 
     @Override
@@ -183,7 +206,7 @@ public class CourseServiceImpl implements CourseService {
             pageSizeLong = checker.parsePositiveLong(pageSize, new CourseServiceException(INVALID_PAGE_SIZE));
         }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CourseServiceException(INVALID_ENTERPRISE_ID));
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new CourseServiceException(ENTERPRISE_NOT_EXISTING);
 
@@ -237,12 +260,20 @@ public class CourseServiceImpl implements CourseService {
         int nInt = checker.parsePositiveInt(n, new CourseServiceException(INVALID_LATEST_NUMBER));
 
         // Check if the enterprise exists
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new CourseServiceException(ENTERPRISE_NOT_EXISTING);
 
         // Get the most recent N items
-        List<CourseDetail> result = courseDao.listLatest(enterpriseIdLong, nInt);
+        List<CourseDetail> result;
+        if (nInt == 3) {
+            result = courseDetailRepo.getLatestThree(enterpriseIdLong);
+            if (result == null || result.isEmpty())
+                result = courseDao.listLatest(enterpriseIdLong, nInt);
+            courseDetailRepo.saveLatestThree(result);
+        } else {
+            result = courseDao.listLatest(enterpriseIdLong, nInt);
+        }
         return result;
     }
 }

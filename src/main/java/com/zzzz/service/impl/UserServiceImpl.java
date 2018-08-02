@@ -94,9 +94,13 @@ public class UserServiceImpl implements UserService {
         long targetUserIdLong = checker.parseUnsignedLong(targetUserId, new UserServiceException(INVALID_USER_ID));
 
         // Check if the target exists
-        User user = userDao.getById(targetUserIdLong);
-        if (user == null)
-            throw new UserServiceException(USER_NOT_EXISTING);
+        User user = userRepo.getUser(targetUserIdLong);
+        if (user == null) {
+            user = userDao.getById(targetUserIdLong);
+            if (user == null)
+                throw new UserServiceException(USER_NOT_EXISTING);
+        }
+
 
         // Check validity if the information is specified
         if (username != null) {
@@ -129,6 +133,7 @@ public class UserServiceImpl implements UserService {
         user.setAvatarUrl(avatarUrl);
 
         userDao.update(user);
+        userRepo.updateUser(user);
     }
 
     @Override

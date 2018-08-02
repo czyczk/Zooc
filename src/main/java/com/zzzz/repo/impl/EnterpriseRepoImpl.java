@@ -1,7 +1,7 @@
 package com.zzzz.repo.impl;
 
+import com.zzzz.po.Enterprise;
 import com.zzzz.repo.EnterpriseRepo;
-import com.zzzz.vo.EnterpriseDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
 public class EnterpriseRepoImpl implements EnterpriseRepo {
     private static final String KEY = "enterprise";
     private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, EnterpriseDetail> hashOps;
+    private HashOperations<String, Long, Enterprise> hashOps;
 
     @Autowired
     private EnterpriseRepoImpl(RedisTemplate<String, Object> redisTemplate) {
@@ -26,23 +26,28 @@ public class EnterpriseRepoImpl implements EnterpriseRepo {
     }
 
     @Override
-    public void saveEnterpriseVO(EnterpriseDetail enterprise) {
+    public void saveEnterprise(Enterprise enterprise) {
         hashOps.put(KEY, enterprise.getEnterpriseId(), enterprise);
     }
 
     @Override
-    public void updateEnterpriseVO(EnterpriseDetail enterprise) {
+    public void updateEnterprise(Enterprise enterprise) {
         hashOps.put(KEY, enterprise.getEnterpriseId(), enterprise);
-        // TODO Delete related cache
+        // Delete all courses
+        hashOps.delete(CourseDetailRepoImpl.KEY);
+        hashOps.delete(CourseDetailRepoImpl.KEY_LATEST);
     }
 
     @Override
-    public void deleteEnterpriseVO(long enterpriseId) {
+    public void deleteEnterprise(long enterpriseId) {
         hashOps.delete(KEY, enterpriseId);
+        // Delete all courses
+        hashOps.delete(CourseDetailRepoImpl.KEY);
+        hashOps.delete(CourseDetailRepoImpl.KEY_LATEST);
     }
 
     @Override
-    public EnterpriseDetail getEnterpriseVO(long enterpriseId) {
+    public Enterprise getEnterpriseById(long enterpriseId) {
         return hashOps.get(KEY, enterpriseId);
     }
 

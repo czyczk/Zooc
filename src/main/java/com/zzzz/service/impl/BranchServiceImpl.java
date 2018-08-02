@@ -101,12 +101,14 @@ public class BranchServiceImpl implements BranchService {
 
         // Redis: Check if the branch is cached
         result = branchRepo.getBranch(branchIdLong);
-        // DB: On missing, fetch it from the database
-        if (result == null)
+        // DB: On missing, fetch it from the database and cache it
+        if (result == null) {
             result = branchDao.getById(branchIdLong);
-        // On missing, throw an exception
-        if (result == null)
-            throw new BranchServiceException(BRANCH_NOT_EXISTING);
+            // On missing, throw an exception
+            if (result == null)
+                throw new BranchServiceException(BRANCH_NOT_EXISTING);
+            branchRepo.saveBranch(result);
+        }
         return result;
     }
 
@@ -174,7 +176,7 @@ public class BranchServiceImpl implements BranchService {
         // Set the branch to disabled
         branch.setDisabled(true);
         branchDao.update(branch);
-        branchRepo.updateBranch(branch);
+        branchRepo.deleteBranch(branchIdLong);
     }
 
     @Override

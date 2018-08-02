@@ -1,8 +1,7 @@
 package com.zzzz.service.impl;
 
-import com.zzzz.dao.AdministratorDao;
 import com.zzzz.dao.EnterpriseDao;
-import com.zzzz.vo.EnterpriseDetail;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.po.Enterprise;
 import com.zzzz.service.EnterpriseService;
 import com.zzzz.service.EnterpriseServiceException;
@@ -17,25 +16,15 @@ import static com.zzzz.service.EnterpriseServiceException.ExceptionTypeEnum.*;
 
 @Service
 public class EnterpriseServiceImpl implements EnterpriseService {
-    @Autowired
-    private AdministratorDao administratorDao;
+    private final EnterpriseDao enterpriseDao;
+    private final EnterpriseRepo enterpriseRepo;
+    private final ParameterChecker<EnterpriseServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    private EnterpriseDao enterpriseDao;
-
-    private ParameterChecker<EnterpriseServiceException> checker = new ParameterChecker<>();
-
-    @Override
-    @Transactional(rollbackFor = { EnterpriseServiceException.class, SQLException.class })
-    public void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException {
-        // TODO implemented later
-        throw new UnsupportedOperationException();
-
-        // Check if the parameters are valid
-
-        // Check if the administrator exists
-
-        // Insert
+    public EnterpriseServiceImpl(EnterpriseDao enterpriseDao,
+                                 EnterpriseRepo enterpriseRepo) {
+        this.enterpriseDao = enterpriseDao;
+        this.enterpriseRepo = enterpriseRepo;
     }
 
     @Override
@@ -48,26 +37,13 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
         // Fetch the enterprise
-        result = enterpriseDao.getById(enterpriseIdLong);
-        if (result == null)
-            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
-
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException, SQLException {
-        EnterpriseDetail result;
-
-        // Check if the enterprise ID is valid
-        checker.rejectIfNullOrEmpty(enterpriseId, new EnterpriseServiceException(EMPTY_ENTERPRISE_ID));
-        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
-
-        // Fetch the enterprise
-        result = enterpriseDao.getVoById(enterpriseIdLong);
-        if (result == null)
-            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+        result = enterpriseRepo.getEnterpriseById(enterpriseIdLong);
+        if (result == null) {
+            result = enterpriseDao.getById(enterpriseIdLong);
+            if (result == null)
+                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+            enterpriseRepo.saveEnterprise(result);
+        }
 
         return result;
     }
@@ -80,9 +56,12 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         long targetEnterpriseIdLong = checker.parseUnsignedLong(targetEnterpriseId, new EnterpriseServiceException(INVALID_ENTERPRISE_ID));
 
         // Fetch the original enterprise
-        Enterprise enterprise = enterpriseDao.getById(targetEnterpriseIdLong);
-        if (enterprise == null)
-            throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+        Enterprise enterprise = enterpriseRepo.getEnterpriseById(targetEnterpriseIdLong);
+        if (enterprise == null) {
+            enterprise = enterpriseDao.getById(targetEnterpriseIdLong);
+            if (enterprise == null)
+                throw new EnterpriseServiceException(ENTERPRISE_NOT_EXISTING);
+        }
 
         if (name != null) {
             if (name.isEmpty())
@@ -117,6 +96,6 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
         // Update
         enterpriseDao.update(enterprise);
-
+        enterpriseRepo.updateEnterprise(enterprise);
     }
 }

@@ -3,6 +3,10 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.*;
 import com.zzzz.po.Trial;
 import com.zzzz.po.TrialStatusEnum;
+import com.zzzz.repo.BranchRepo;
+import com.zzzz.repo.CourseCategoryRepo;
+import com.zzzz.repo.EnterpriseRepo;
+import com.zzzz.repo.TrialDetailRepo;
 import com.zzzz.service.TrialService;
 import com.zzzz.service.TrialServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -27,16 +31,28 @@ public class TrialServiceImpl implements TrialService {
     private final EnterpriseDao enterpriseDao;
     private final BranchDao branchDao;
     private final LecturerDao lecturerDao;
+    private final CourseCategoryRepo categoryRepo;
+    private final EnterpriseRepo enterpriseRepo;
+    private final BranchRepo branchRepo;
+    private final TrialDetailRepo trialDetailRepo;
     private final ParameterChecker<TrialServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public TrialServiceImpl(GeneralDao generalDao, TrialDao trialDao, CourseCategoryDao categoryDao, EnterpriseDao enterpriseDao, BranchDao branchDao, LecturerDao lecturerDao) {
+    public TrialServiceImpl(GeneralDao generalDao,
+                            TrialDao trialDao, CourseCategoryDao categoryDao,
+                            EnterpriseDao enterpriseDao, BranchDao branchDao, LecturerDao lecturerDao,
+                            CourseCategoryRepo courseCategoryRepo, EnterpriseRepo enterpriseRepo,
+                            BranchRepo branchRepo, TrialDetailRepo trialDetailRepo) {
         this.generalDao = generalDao;
         this.trialDao = trialDao;
         this.categoryDao = categoryDao;
         this.enterpriseDao = enterpriseDao;
         this.branchDao = branchDao;
         this.lecturerDao = lecturerDao;
+        this.categoryRepo = courseCategoryRepo;
+        this.enterpriseRepo = enterpriseRepo;
+        this.branchRepo = branchRepo;
+        this.trialDetailRepo = trialDetailRepo;
     }
 
     @Override
@@ -54,10 +70,10 @@ public class TrialServiceImpl implements TrialService {
         long lecturerIdLong = checker.parseUnsignedLong(lecturerId, new TrialServiceException(INVALID_LECTURER_ID));
 
         // Check if the category, the branch and the lecturer exist
-        boolean isExisting = categoryDao.checkExistenceById(categoryIdLong);
+        boolean isExisting = categoryRepo.isCached(categoryIdLong) || categoryDao.checkExistenceById(categoryIdLong);
         if (!isExisting)
             throw new TrialServiceException(CATEGORY_NOT_EXISTING);
-        isExisting = branchDao.checkExistenceById(branchIdLong);
+        isExisting = branchRepo.isCached(branchIdLong) || branchDao.checkExistenceById(branchIdLong);
         if (!isExisting)
             throw new TrialServiceException(BRANCH_NOT_EXISTING);
         isExisting = lecturerDao.checkExistenceById(lecturerIdLong);
@@ -78,6 +94,7 @@ public class TrialServiceImpl implements TrialService {
 
         // Insert
         trialDao.insert(trial);
+        trialDetailRepo.deleteLatestThree();
         return generalDao.getLastInsertId();
     }
 
@@ -89,10 +106,13 @@ public class TrialServiceImpl implements TrialService {
         long trialIdLong = checker.parseUnsignedLong(trialId, new TrialServiceException(INVALID_TRIAL_ID));
 
         // Fetch the trial and check if it's null
-        TrialDetail result = trialDao.getVoById(trialIdLong);
-        if (result == null)
-            throw new TrialServiceException(TRIAL_NOT_EXISTING);
-
+        TrialDetail result = trialDetailRepo.getById(trialIdLong);
+        if (result == null) {
+            result = trialDao.getVoById(trialIdLong);
+            if (result == null)
+                throw new TrialServiceException(TRIAL_NOT_EXISTING);
+            trialDetailRepo.save(result);
+        }
         return result;
     }
 
@@ -130,7 +150,7 @@ public class TrialServiceImpl implements TrialService {
             if (categoryId.isEmpty())
                 throw new TrialServiceException(EMPTY_CATEGORY_ID);
             long categoryIdLong = checker.parseUnsignedLong(categoryId, new TrialServiceException(INVALID_CATEGORY_ID));
-            boolean isExisting = categoryDao.checkExistenceById(categoryIdLong);
+            boolean isExisting = categoryRepo.isCached(categoryIdLong) || categoryDao.checkExistenceById(categoryIdLong);
             if (!isExisting)
                 throw new TrialServiceException(CATEGORY_NOT_EXISTING);
             trial.setCategoryId(categoryIdLong);
@@ -139,7 +159,7 @@ public class TrialServiceImpl implements TrialService {
             if (branchId.isEmpty())
                 throw new TrialServiceException(EMPTY_BRANCH_ID);
             long branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
-            boolean isExisting = branchDao.checkExistenceById(branchIdLong);
+            boolean isExisting = branchRepo.isCached(branchIdLong) || branchDao.checkExistenceById(branchIdLong);
             if (!isExisting)
                 throw new TrialServiceException(BRANCH_NOT_EXISTING);
             trial.setBranchId(branchIdLong);
@@ -172,6 +192,8 @@ public class TrialServiceImpl implements TrialService {
 
         // Update
         trialDao.update(trial);
+        trialDetailRepo.delete(targetTrialIdLong);
+        trialDetailRepo.deleteLatestThree();
     }
 
     @Override
@@ -195,7 +217,7 @@ public class TrialServiceImpl implements TrialService {
             pageSizeLong = checker.parsePositiveLong(pageSize, new TrialServiceException(INVALID_PAGE_SIZE));
         }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new TrialServiceException(EMPTY_ENTERPRISE_ID));
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new TrialServiceException(ENTERPRISE_NOT_EXISTING);
 
@@ -213,7 +235,7 @@ public class TrialServiceImpl implements TrialService {
         Long branchIdLong = null;
         if (branchId != null && !branchId.isEmpty()) {
             branchIdLong = checker.parseUnsignedLong(branchId, new TrialServiceException(INVALID_BRANCH_ID));
-            isExisting = branchDao.checkExistenceById(branchIdLong);
+            isExisting = branchRepo.isCached(branchIdLong) || branchDao.checkExistenceById(branchIdLong);
             if (!isExisting)
                 throw new TrialServiceException(BRANCH_NOT_EXISTING);
         }
@@ -254,12 +276,21 @@ public class TrialServiceImpl implements TrialService {
         int nInt = checker.parsePositiveInt(n, new TrialServiceException(INVALID_LATEST_NUMBER));
 
         // Check if the branch exists
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new TrialServiceException(ENTERPRISE_NOT_EXISTING);
 
         // Get the most recent N items
-        List<TrialDetail> result = trialDao.listLatest(enterpriseIdLong, nInt);
+        List<TrialDetail> result;
+        if (nInt == 3) {
+            result = trialDetailRepo.getLatestThree(enterpriseIdLong);
+            if (result == null || result.isEmpty()) {
+                trialDao.listLatest(enterpriseIdLong, nInt);
+                trialDetailRepo.saveLatestThree(result);
+            }
+        } else {
+            result = trialDao.listLatest(enterpriseIdLong, nInt);
+        }
         return result;
     }
 }

@@ -1,6 +1,5 @@
 package com.zzzz.service;
 
-import com.zzzz.dto.BranchParam;
 import com.zzzz.po.Branch;
 import com.zzzz.vo.ListResult;
 
@@ -27,10 +26,20 @@ public interface BranchService {
 
     boolean checkExistenceById(String branchId) throws BranchServiceException, SQLException;
 
+    /**
+     * Get a branch by its ID.
+     * Redis:
+     *   Cache it if not done
+     * @param branchId Brannch ID
+     * @return Branch
+     * @throws BranchServiceException An exception is thrown if the query is not successful.
+     */
     Branch getById(String branchId) throws BranchServiceException, SQLException;
 
     /**
      * Update a branch. A field will be left unchanged if the parameter is null.
+     * Redis:
+     *   Update the branch
      * @param targetBranchId Target branch ID
      * @param name New name
      * @param address New address
@@ -48,6 +57,8 @@ public interface BranchService {
 
     /**
      * Disable a branch. The branch will be invisible from now on.
+     * Redis:
+     *   Delete the branch
      * @param branchId Branch ID
      * @throws BranchServiceException An exception will be thrown if the operation is not successful.
      */

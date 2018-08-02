@@ -1,7 +1,6 @@
 package com.zzzz.controller;
 
 import com.zzzz.dto.EnterpriseParam;
-import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 import com.zzzz.service.EnterpriseService;
 import com.zzzz.service.EnterpriseServiceException;
@@ -15,8 +14,12 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/v1/enterprise")
 public class EnterpriseController {
+    private final EnterpriseService enterpriseService;
+
     @Autowired
-    private EnterpriseService enterpriseService;
+    public EnterpriseController(EnterpriseService enterpriseService) {
+        this.enterpriseService = enterpriseService;
+    }
 
     /**
      * Get an enterprise
@@ -29,17 +32,6 @@ public class EnterpriseController {
         Enterprise result = enterpriseService.getById(enterpriseId);
         return ResponseEntity.ok(result);
     }
-
-//    /**
-//     * Get the details of an enterprise (including its branches).
-//     * @param enterpriseId The target enterprise ID
-//     * @return Success: Enterprise detail; Bad request: 400; Not found: 404; Internal: 500
-//     */
-//    @GetMapping(value = "/detail/{id}")
-//    public ResponseEntity<EnterpriseDetail> getDetailById(@PathVariable("id") String enterpriseId) throws EnterpriseServiceException, SQLException {
-//        EnterpriseDetail result = enterpriseService.getVoById(enterpriseId);
-//        return ResponseEntity.ok(result);
-//    }
 
     /**
      * Update an enterprise. Don't pass in fields that are meant to be left unchanged.

@@ -18,10 +18,17 @@ public interface BranchRepo {
 
     /**
      * Update a branch. Related cache will be cleared as well,
-     * including trials and course offerings.
+     * including the trials.
      * @param branch Branch
      */
     void updateBranch(Branch branch);
+
+    /**
+     * Delete a branch from cache. Related cache will be cleared as well,
+     * including the trials.
+     * @param branchId Branch ID
+     */
+    void deleteBranch(long branchId);
 
     /**
      * Check if a branch is cached.

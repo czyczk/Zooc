@@ -1,24 +1,25 @@
 package com.zzzz.service;
 
-import com.zzzz.vo.EnterpriseDetail;
 import com.zzzz.po.Enterprise;
 
 import java.sql.SQLException;
 
 public interface EnterpriseService {
-    /*
-     * Create an enterprise with a default template.
-     * @param administratorId The ID of the administrator whom the new enterprise belongs to
-     * @throws EnterpriseServiceException An exception is thrown if the insertion is not successful.
+    /**
+     * Get an enterprise by its ID.
+     * Redis:
+     *   - Fetch it from the cache first.
+     *     On missing, fetch it from the DB and cache it.
+     * @param enterpriseId Enterprise ID
+     * @return Enterprise
+     * @throws EnterpriseServiceException An exception is thrown if the query is not successful.
      */
-//    void createTemplate(String administratorId) throws EnterpriseServiceException;
-
-    void insert(String administratorId, String name, String imgUrl, String introduction, String videoUrl, String detail) throws EnterpriseServiceException;
     Enterprise getById(String enterpriseId) throws EnterpriseServiceException, SQLException;
-    EnterpriseDetail getVoById(String enterpriseId) throws EnterpriseServiceException, SQLException;
 
     /**
      * Update an enterprise. A field should be left null if no modification is to be made.
+     * Redis:
+     *   - Update it from the cache. Related cache will be deleted as well.
      * @param targetEnterpriseId The ID of the enterprise to be modified.
      * @param name New name
      * @param imgUrl New image URL

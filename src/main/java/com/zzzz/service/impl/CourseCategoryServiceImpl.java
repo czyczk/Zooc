@@ -3,6 +3,7 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.CourseCategoryDao;
 import com.zzzz.dao.GeneralDao;
 import com.zzzz.po.CourseCategory;
+import com.zzzz.repo.CourseCategoryRepo;
 import com.zzzz.service.CourseCategoryService;
 import com.zzzz.service.CourseCategoryServiceException;
 import com.zzzz.service.util.ParameterChecker;
@@ -19,12 +20,15 @@ import static com.zzzz.service.CourseCategoryServiceException.ExceptionTypeEnum.
 public class CourseCategoryServiceImpl implements CourseCategoryService {
     private final GeneralDao generalDao;
     private final CourseCategoryDao courseCategoryDao;
+    private final CourseCategoryRepo courseCategoryRepo;
     private final ParameterChecker<CourseCategoryServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public CourseCategoryServiceImpl(GeneralDao generalDao, CourseCategoryDao courseCategoryDao) {
+    public CourseCategoryServiceImpl(GeneralDao generalDao, CourseCategoryDao courseCategoryDao,
+                                     CourseCategoryRepo courseCategoryRepo) {
         this.generalDao = generalDao;
         this.courseCategoryDao = courseCategoryDao;
+        this.courseCategoryRepo = courseCategoryRepo;
     }
 
     @Override
@@ -40,13 +44,21 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
         CourseCategory category = new CourseCategory();
         category.setName(name);
         courseCategoryDao.insert(category);
+        long lastId = generalDao.getLastInsertId();
+
+        // Redis: cache the new one
+        courseCategoryRepo.save(category);
         return generalDao.getLastInsertId();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CourseCategory> list() throws SQLException {
-        List<CourseCategory> result = courseCategoryDao.list();
+        List<CourseCategory> result = courseCategoryRepo.getAll();
+        if (result == null || result.isEmpty()) {
+            result = courseCategoryDao.list();
+            courseCategoryRepo.saveAll(result);
+        }
         return result;
     }
 }

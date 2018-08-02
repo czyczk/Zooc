@@ -7,6 +7,7 @@ import java.sql.SQLException;
 public interface PromotionStrategyService {
     /**
      * Update the promotion strategy of an enterprise. Do not pass in fields that meant to be left unchanged.
+     * If the promotion strategy does not exist, a new one with the default values will be created first.
      * @param enterpriseId Enterprise ID
      * @param useCoupons New status of coupon strategy
      * @param usePoints New status of point strategy

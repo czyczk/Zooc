@@ -39,7 +39,17 @@ public class BranchRepoImpl implements BranchRepo {
     @Override
     public void updateBranch(Branch branch) {
         hashOps.put(KEY, branch.getBranchId(), branch);
-        // TODO delete related cache (trials and course offerings)
+        // Delete related trials
+        hashOps.delete(TrialDetailRepoImpl.KEY);
+        hashOps.delete(TrialDetailRepoImpl.KEY_LATEST);
+    }
+
+    @Override
+    public void deleteBranch(long branchId) {
+        hashOps.delete(KEY, branchId);
+        // Delete related trials
+        hashOps.delete(TrialDetailRepoImpl.KEY);
+        hashOps.delete(TrialDetailRepoImpl.KEY_LATEST);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.zzzz.dao.EnterpriseDao;
 import com.zzzz.dao.GeneralDao;
 import com.zzzz.dao.LecturerDao;
 import com.zzzz.po.Lecturer;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.service.LecturerService;
 import com.zzzz.service.LecturerServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -23,13 +24,16 @@ public class LecturerServiceImpl implements LecturerService {
     private final GeneralDao generalDao;
     private final LecturerDao lecturerDao;
     private final EnterpriseDao enterpriseDao;
+    private final EnterpriseRepo enterpriseRepo;
     private ParameterChecker<LecturerServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public LecturerServiceImpl(GeneralDao generalDao, LecturerDao lecturerDao, EnterpriseDao enterpriseDao) {
+    public LecturerServiceImpl(GeneralDao generalDao, LecturerDao lecturerDao, EnterpriseDao enterpriseDao,
+                               EnterpriseRepo enterpriseRepo) {
         this.generalDao = generalDao;
         this.lecturerDao = lecturerDao;
         this.enterpriseDao = enterpriseDao;
+        this.enterpriseRepo = enterpriseRepo;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class LecturerServiceImpl implements LecturerService {
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new LecturerServiceException(INVALID_ENTERPRISE_ID));
 
         // Check if the enterprise exists
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new LecturerServiceException(ENTERPRISE_NOT_EXISTING);
 
@@ -162,7 +166,7 @@ public class LecturerServiceImpl implements LecturerService {
             pageSizeLong = checker.parsePositiveLong(pageSize, new LecturerServiceException(INVALID_PAGE_SIZE));
         }
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new LecturerServiceException(INVALID_ENTERPRISE_ID));
-        boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
         if (!isExisting)
             throw new LecturerServiceException(ENTERPRISE_NOT_EXISTING);
 

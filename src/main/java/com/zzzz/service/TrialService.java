@@ -10,6 +10,8 @@ import java.util.List;
 public interface TrialService {
     /**
      * Insert a new trial. The ID of the last inserted trial will be returned.
+     * Redis:
+     *   - Clear cache of the latest three trials since the list has been changed.
      * @param name Name
      * @param detail Detail
      * @param imgUrl Image URL
@@ -25,6 +27,9 @@ public interface TrialService {
 
     /**
      * Get the VO of a trial by its ID.
+     * Redis:
+     *   - Try to fetch it from the cache first.
+     *     On missing, fetch it from the DB and cache it.
      * @param trialId Trial ID
      * @return Trial VO
      * @throws TrialServiceException An exception is thrown if the query is not successful.
@@ -33,6 +38,9 @@ public interface TrialService {
 
     /**
      * Update a trial. Fields will be left unchanged if the corresponding parameters are null.
+     * Redis:
+     *   - Delete the cache of it.
+     *   - Clear cache of the latest three trials since the list has been changed.
      * @param targetTrialId Target trial ID
      * @param name New name
      * @param detail New detail
@@ -84,6 +92,9 @@ public interface TrialService {
 
     /**
      * Get a list of N latest trials of a enterprise.
+     * Redis:
+     *   - Fetch them from the cache first.
+     *     On missing, fetch them from the database and cache them.
      * The actual number of items can be less than the N specified.
      * @param enterpriseId The ID of the enterprise to which the trials belong
      * @param n The number of latest trials to list

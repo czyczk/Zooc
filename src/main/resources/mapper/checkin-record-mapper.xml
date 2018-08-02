@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.CheckinRecordDao">
+  <select id="getByPk" parameterType="map" resultType="CheckinRecord">
+    select user_id, enterprise_id, date
+    from checkin_record
+    where user_id=#{userId} and enterprise_id=#{enterpriseId} and date=#{date}
+  </select>
+  <select id="list" parameterType="map" resultType="CheckinRecord">
+    select user_id, enterprise_id, date
+    from checkin_record
+    where user_id=#{userId} and enterprise_id=#{enterpriseId}
+          and YEAR(date)=#{year} and MONTH(date)=#{month}
+  </select>
+</mapper>

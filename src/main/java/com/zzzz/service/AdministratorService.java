@@ -16,6 +16,7 @@ public interface AdministratorService {
 
     /**
      * Create a new enterprise account with the username and the password given.
+     * An enterprise with default settings along with a default promotion strategy will be created as well.
      * @param username Username
      * @param password Password
      * @return The ID of the new account

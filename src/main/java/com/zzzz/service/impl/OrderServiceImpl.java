@@ -3,6 +3,8 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.*;
 import com.zzzz.po.Order;
 import com.zzzz.po.OrderStatusEnum;
+import com.zzzz.repo.EnterpriseRepo;
+import com.zzzz.repo.UserRepo;
 import com.zzzz.service.OrderService;
 import com.zzzz.service.OrderServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -26,15 +28,21 @@ public class OrderServiceImpl implements OrderService {
     private final UserDao userDao;
     private final EnterpriseDao enterpriseDao;
     private final CourseDao courseDao;
+    private final UserRepo userRepo;
+    private final EnterpriseRepo enterpriseRepo;
     private final ParameterChecker<OrderServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public OrderServiceImpl(GeneralDao generalDao, OrderDao orderDao, UserDao userDao, EnterpriseDao enterpriseDao, CourseDao courseDao) {
+    public OrderServiceImpl(GeneralDao generalDao,
+                            OrderDao orderDao, UserDao userDao, EnterpriseDao enterpriseDao, CourseDao courseDao,
+                            UserRepo userRepo, EnterpriseRepo enterpriseRepo) {
         this.generalDao = generalDao;
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.enterpriseDao = enterpriseDao;
         this.courseDao = courseDao;
+        this.userRepo = userRepo;
+        this.enterpriseRepo = enterpriseRepo;
     }
 
     @Override
@@ -50,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         long courseIdLong = checker.parseUnsignedLong(courseId, new OrderServiceException(INVALID_COURSE_ID));
 
         // Check if the user exists
-        boolean isExisting = userDao.checkExistenceById(userIdLong);
+        boolean isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
         if (!isExisting)
             throw new OrderServiceException(USER_NOT_EXISTING);
         // Check if the course exists
@@ -154,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
         if (userId != null && !userId.isEmpty()) {
             userIdLong = checker.parseUnsignedLong(userId, new OrderServiceException(INVALID_USER_ID));
             // Check if the user exists
-            boolean isExisting = userDao.checkExistenceById(userIdLong);
+            boolean isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
             if (!isExisting)
                 throw new OrderServiceException(USER_NOT_EXISTING);
         }
@@ -162,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
         if (enterpriseId != null && !enterpriseId.isEmpty()) {
             enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new OrderServiceException(INVALID_ENTERPRISE_ID));
             // Check if the enterprise exists
-            boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+            boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
             if (!isExisting)
                 throw new OrderServiceException(ENTERPRISE_NOT_EXISTING);
         }
@@ -233,7 +241,7 @@ public class OrderServiceImpl implements OrderService {
         if (userId != null && !userId.isEmpty()) {
             userIdLong = checker.parseUnsignedLong(userId, new OrderServiceException(INVALID_USER_ID));
             // Check if the user exists
-            isExisting = userDao.checkExistenceById(userIdLong);
+            isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
             if (!isExisting)
                 throw new OrderServiceException(USER_NOT_EXISTING);
         }

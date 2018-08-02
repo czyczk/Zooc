@@ -3,9 +3,11 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.AdministratorDao;
 import com.zzzz.dao.EnterpriseDao;
 import com.zzzz.dao.GeneralDao;
+import com.zzzz.dao.PromotionStrategyDao;
 import com.zzzz.po.Administrator;
 import com.zzzz.po.AdministratorTypeEnum;
 import com.zzzz.po.Enterprise;
+import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.service.AdministratorService;
 import com.zzzz.service.AdministratorServiceException;
 import com.zzzz.service.util.ParameterChecker;
@@ -19,14 +21,21 @@ import static com.zzzz.service.AdministratorServiceException.ExceptionTypeEnum.*
 
 @Service
 public class AdministratorServiceImpl implements AdministratorService {
-    @Autowired
-    private GeneralDao generalDao;
+    private final GeneralDao generalDao;
+    private final AdministratorDao administratorDao;
+    private final EnterpriseDao enterpriseDao;
+    private final PromotionStrategyDao promotionStrategyDao;
 
     @Autowired
-    private AdministratorDao administratorDao;
-
-    @Autowired
-    private EnterpriseDao enterpriseDao;
+    public AdministratorServiceImpl(GeneralDao generalDao,
+                                    AdministratorDao administratorDao, EnterpriseDao enterpriseDao,
+                                    PromotionStrategyDao promotionStrategyDao,
+                                    EnterpriseRepo enterpriseRepo) {
+        this.generalDao = generalDao;
+        this.administratorDao = administratorDao;
+        this.enterpriseDao = enterpriseDao;
+        this.promotionStrategyDao = promotionStrategyDao;
+    }
 
     private ParameterChecker<AdministratorServiceException> checker = new ParameterChecker<>();
 
@@ -73,13 +82,17 @@ public class AdministratorServiceImpl implements AdministratorService {
 
         // Insert a new enterprise with the default template
         Enterprise enterprise = createEnterpriseTemplate();
+        enterpriseDao.insert(enterprise);
         // Fetch the ID of the last inserted item (enterprise)
-        long lastId = generalDao.getLastInsertId();
-        administrator.setEnterpriseId(lastId);
+        long enterpriseId = generalDao.getLastInsertId();
+        administrator.setEnterpriseId(enterpriseId);
+        // Create a default promotion strategy for the enterprise
+        promotionStrategyDao.insertWithDefaultValues(enterpriseId);
+
         // Insert the new administrator
         administratorDao.insert(administrator);
         // Fetch the ID of the last inserted item
-        lastId = generalDao.getLastInsertId();
+        long lastId = generalDao.getLastInsertId();
         return lastId;
     }
 

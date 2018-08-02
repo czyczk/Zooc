@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-31 22:20:08
+Date: 2018-08-02 21:46:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -279,6 +279,7 @@ CREATE TABLE `promotion_strategy` (
   `use_coupons` bit(1) NOT NULL DEFAULT b'0',
   `use_points` bit(1) NOT NULL DEFAULT b'0',
   `points_per_yuan` int(11) unsigned NOT NULL DEFAULT '100',
+  `checkin_points` int(10) unsigned NOT NULL DEFAULT '5',
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `fk_promotion_strategy_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

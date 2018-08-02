@@ -3,6 +3,8 @@ package com.zzzz.service.impl;
 import com.zzzz.dao.*;
 import com.zzzz.po.TrialReservation;
 import com.zzzz.po.TrialReservationStatusEnum;
+import com.zzzz.repo.EnterpriseRepo;
+import com.zzzz.repo.UserRepo;
 import com.zzzz.service.TrialReservationService;
 import com.zzzz.service.TrialReservationServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -26,15 +28,22 @@ public class TrialReservationServiceImpl implements TrialReservationService {
     private final UserDao userDao;
     private final EnterpriseDao enterpriseDao;
     private final TrialDao trialDao;
+    private final UserRepo userRepo;
+    private final EnterpriseRepo enterpriseRepo;
     private final ParameterChecker<TrialReservationServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public TrialReservationServiceImpl(GeneralDao generalDao, TrialReservationDao trialReservationDao, UserDao userDao, EnterpriseDao enterpriseDao, TrialDao trialDao) {
+    public TrialReservationServiceImpl(GeneralDao generalDao,
+                                       TrialReservationDao trialReservationDao, UserDao userDao,
+                                       EnterpriseDao enterpriseDao, TrialDao trialDao,
+                                       UserRepo userRepo, EnterpriseRepo enterpriseRepo) {
         this.generalDao = generalDao;
         this.trialReservationDao = trialReservationDao;
         this.userDao = userDao;
         this.enterpriseDao = enterpriseDao;
         this.trialDao = trialDao;
+        this.userRepo = userRepo;
+        this.enterpriseRepo = enterpriseRepo;
     }
 
 
@@ -50,7 +59,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
         long trialIdLong = checker.parseUnsignedLong(trialId, new TrialReservationServiceException(INVALID_TRIAL_ID));
 
         // Check if the user and the trial exist
-        boolean isExisting = userDao.checkExistenceById(userIdLong);
+        boolean isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
         if (!isExisting)
             throw new TrialReservationServiceException(USER_NOT_EXISTING);
         isExisting = trialDao.checkExistenceById(trialIdLong);
@@ -158,7 +167,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
         if (userId != null && !userId.isEmpty()) {
             userIdLong = checker.parseUnsignedLong(userId, new TrialReservationServiceException(INVALID_USER_ID));
             // Check if the user exists
-            boolean isExisting = userDao.checkExistenceById(userIdLong);
+            boolean isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
             if (!isExisting)
                 throw new TrialReservationServiceException(USER_NOT_EXISTING);
         }
@@ -166,7 +175,7 @@ public class TrialReservationServiceImpl implements TrialReservationService {
         if (enterpriseId != null && !enterpriseId.isEmpty()) {
             enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new TrialReservationServiceException(INVALID_ENTERPRISE_ID));
             // Check if the enterprise exists
-            boolean isExisting = enterpriseDao.checkExistenceById(enterpriseIdLong);
+            boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
             if (!isExisting)
                 throw new TrialReservationServiceException(ENTERPRISE_NOT_EXISTING);
         }

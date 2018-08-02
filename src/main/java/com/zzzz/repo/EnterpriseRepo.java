@@ -1,25 +1,32 @@
 package com.zzzz.repo;
 
-import com.zzzz.vo.EnterpriseDetail;
+import com.zzzz.po.Enterprise;
 
 public interface EnterpriseRepo {
-    void saveEnterpriseVO(EnterpriseDetail enterprise);
+    void saveEnterprise(Enterprise enterprise);
 
-    void updateEnterpriseVO(EnterpriseDetail enterprise);
+    /**
+     * Update an enterprise.
+     * All related cache will be cleared,
+     * including the courses
+     * @param enterprise Enterprise
+     */
+    void updateEnterprise(Enterprise enterprise);
 
     /**
      * Delete an enterprise.
-     * The related cache will be cleared.
+     * The related cache will be cleared,
+     * including the courses
      * @param enterpriseId Enterprise ID
      */
-    void deleteEnterpriseVO(long enterpriseId);
+    void deleteEnterprise(long enterpriseId);
 
     /**
-     * Get the VO of an enterprise.
+     * Get an enterprise by its ID.
      * @param enterpriseId Enterprise ID
-     * @return Enterprise VO
+     * @return Enterprise
      */
-    EnterpriseDetail getEnterpriseVO(long enterpriseId);
+    Enterprise getEnterpriseById(long enterpriseId);
 
     /**
      * Check if an enterprise is cached.
