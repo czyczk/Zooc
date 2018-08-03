@@ -7,8 +7,8 @@ import java.util.Date;
  * After a user uses a coupon, a CouponRecord is created so that the user won't be able to use it again.
  */
 public class CouponRecord {
-    // Coupon history ID
-    private long couponHistoryId;
+    // Coupon record ID
+    private long couponRecordId;
     // The ID of the user who used the coupon
     private long userId;
     // The ID of the coupon that has been used
@@ -16,12 +16,12 @@ public class CouponRecord {
     // The time the coupon was used
     private Date time;
 
-    public long getCouponHistoryId() {
-        return couponHistoryId;
+    public long getCouponRecordId() {
+        return couponRecordId;
     }
 
-    public void setCouponHistoryId(long couponHistoryId) {
-        this.couponHistoryId = couponHistoryId;
+    public void setCouponRecordId(long couponRecordId) {
+        this.couponRecordId = couponRecordId;
     }
 
     public long getUserId() {

@@ -1,12 +1,12 @@
 package com.zzzz.service.impl;
 
-import com.zzzz.dao.CouponDao;
-import com.zzzz.dao.EnterpriseDao;
-import com.zzzz.dao.GeneralDao;
+import com.zzzz.dao.*;
 import com.zzzz.po.Coupon;
+import com.zzzz.po.CouponRecord;
 import com.zzzz.po.CouponStatusEnum;
 import com.zzzz.repo.CouponRepo;
 import com.zzzz.repo.EnterpriseRepo;
+import com.zzzz.repo.UserRepo;
 import com.zzzz.service.CouponService;
 import com.zzzz.service.CouponServiceException;
 import com.zzzz.service.util.PaginationUtil;
@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.zzzz.service.CouponServiceException.ExceptionTypeEnum.*;
 
@@ -27,18 +26,27 @@ public class CouponServiceImpl implements CouponService {
     private final GeneralDao generalDao;
     private final CouponDao couponDao;
     private final EnterpriseDao enterpriseDao;
+    private final UserDao userDao;
+    private final CouponRecordDao couponRecordDao;
     private final CouponRepo couponRepo;
     private final EnterpriseRepo enterpriseRepo;
+    private final UserRepo userRepo;
     private final ParameterChecker<CouponServiceException> checker = new ParameterChecker<>();
 
     @Autowired
-    public CouponServiceImpl(GeneralDao generalDao, CouponDao couponDao, EnterpriseDao enterpriseDao,
-                             CouponRepo couponRepo, EnterpriseRepo enterpriseRepo) {
+    public CouponServiceImpl(GeneralDao generalDao, CouponDao couponDao,
+                             EnterpriseDao enterpriseDao, UserDao userDao,
+                             CouponRecordDao couponRecordDao,
+                             CouponRepo couponRepo, EnterpriseRepo enterpriseRepo,
+                             UserRepo userRepo) {
         this.generalDao = generalDao;
         this.couponDao = couponDao;
         this.enterpriseDao = enterpriseDao;
+        this.userDao = userDao;
+        this.couponRecordDao = couponRecordDao;
         this.couponRepo = couponRepo;
         this.enterpriseRepo = enterpriseRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
@@ -206,5 +214,37 @@ public class CouponServiceImpl implements CouponService {
         List<Coupon> list = couponDao.list(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, couponIdLong, minValueBd, maxValueBd, minThresholdBd, maxThresholdBd, laterThanDate, earlierThanDate);
         result.setList(list);
         return result;
+    }
+
+    @Override
+    public List<Coupon> listUserAvailable(String enterpriseId, String userId) throws CouponServiceException, SQLException {
+        // Check if the parameters are valid
+        checker.rejectIfNullOrEmpty(enterpriseId, new CouponServiceException(EMPTY_ENTERPRISE_ID));
+        checker.rejectIfNullOrEmpty(userId, new CouponServiceException(EMPTY_USER_ID));
+        long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CouponServiceException(INVALID_ENTERPRISE_ID));
+        long userIdLong = checker.parseUnsignedLong(userId, new CouponServiceException(INVALID_USER_ID));
+
+        // Check if the enterprise and the user exist
+        boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
+        if (!isExisting)
+            throw new CouponServiceException(ENTERPRISE_NOT_EXISTING);
+        isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
+        if (!isExisting)
+            throw new CouponServiceException(COUPON_NOT_EXISTING);
+
+        // Fetch all coupons of the enterprise
+        List<Coupon> allCoupons = couponDao.list(false, null, null, enterpriseIdLong,
+                null, null, null, null, null,
+                null, null);
+        List<CouponRecord> allRecords = couponRecordDao.list(false, null, null,
+                userIdLong, enterpriseIdLong, null, null);
+
+        Map<Long, Coupon> availableCouponsMap = new HashMap<>();
+        allCoupons.parallelStream().forEach(it -> availableCouponsMap.put(it.getCouponId(), it));
+        allRecords.parallelStream().forEach(it -> availableCouponsMap.remove(it.getCouponId()));
+
+        List<Coupon> availableCoupons = new ArrayList<>(availableCouponsMap.values());
+        availableCoupons.sort(Comparator.comparing(Coupon::getCouponId));
+        return availableCoupons;
     }
 }

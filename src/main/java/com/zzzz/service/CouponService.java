@@ -5,6 +5,7 @@ import com.zzzz.vo.ListResult;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public interface CouponService {
     /**
@@ -73,4 +74,13 @@ public interface CouponService {
                             String minValue, String maxValue,
                             String minThreshold, String maxThreshold,
                             String laterThan, String earlierThan) throws CouponServiceException, SQLException;
+
+    /**
+     * List coupons that are created by the enterprise and available for the user (i.e. not used by the user).
+     * @param enterpriseId Enterprise ID
+     * @param userId User ID
+     * @return Available coupons for the user
+     * @throws CouponServiceException An exception is thrown if the query is not successful.
+     */
+    List<Coupon> listUserAvailable(String enterpriseId, String userId) throws CouponServiceException, SQLException;
 }

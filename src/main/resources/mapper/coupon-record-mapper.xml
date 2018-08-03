@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzzz.dao.CouponRecordDao">
+  <insert id="insert" parameterType="CouponRecord">
+    insert into coupon_record(user_id, coupon_id, time)
+    values(#{userId}, #{couponId}, #{time})
+  </insert>
+  <select id="getById" parameterType="long" resultType="CouponRecord">
+    select coupon_record_id, user_id, coupon_id, time
+    from coupon_record
+    where coupon_record_id=#{couponRecordId}
+  </select>
+  <select id="checkExistenceById" parameterType="long" resultType="boolean">
+    select count(*)
+    from coupon_record
+    where coupon_record_id=#{couponRecordId}
+  </select>
+  <select id="countTotal" parameterType="map" resultType="long">
+    select count(*)
+    from coupon_record cr join coupon c on cr.coupon_id = c.coupon_id
+         join enterprise e on c.enterprise_id = e.enterprise_id
+    <where>
+      and user_id=#{userId}
+      <if test="enterpriseId != null">
+        and e.enterprise_id=#{enterpriseId}
+      </if>
+      <if test="couponRecordId != null">
+        and coupon_record_id=#{couponRecordId}
+      </if>
+      <if test="couponId != null">
+        and cr.coupon_id=#{couponId}
+      </if>
+    </where>
+  </select>
+  <select id="list" parameterType="map" resultType="CouponRecord">
+    select coupon_record_id, user_id, cr.coupon_id, cr.time
+    from coupon_record cr join coupon c on cr.coupon_id = c.coupon_id
+    join enterprise e on c.enterprise_id = e.enterprise_id
+    <where>
+      and user_id=#{userId}
+      <if test="enterpriseId != null">
+        and e.enterprise_id=#{enterpriseId}
+      </if>
+      <if test="couponRecordId != null">
+        and coupon_record_id=#{couponRecordId}
+      </if>
+      <if test="couponId != null">
+        and cr.coupon_id=#{couponId}
+      </if>
+    </where>
+    order by time desc
+    <if test="usePagination">
+      limit #{starting}, #{pageSize}
+    </if>
+  </select>
+</mapper>

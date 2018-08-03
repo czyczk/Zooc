@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -100,6 +101,19 @@ public class CouponController {
                 minValue, maxValue,
                 minThreshold, maxThreshold,
                 laterThan, earlierThan);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get a list of coupons that are created by the enterprise and available to the user
+     * @param enterpriseId Enterprise ID
+     * @param userId User ID
+     * @return Success: Available coupon list; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/enterprise/{id}/coupon/user-available")
+    public ResponseEntity<List<Coupon>> listUserAvailable(@PathVariable("id") String enterpriseId,
+                                                          String userId) throws SQLException, CouponServiceException {
+        List<Coupon> result = couponService.listUserAvailable(enterpriseId, userId);
         return ResponseEntity.ok(result);
     }
 }
