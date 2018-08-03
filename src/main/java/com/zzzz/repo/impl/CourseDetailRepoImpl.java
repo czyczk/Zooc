@@ -4,6 +4,7 @@ import com.zzzz.repo.CourseDetailRepo;
 import com.zzzz.vo.CourseDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,17 +15,19 @@ import java.util.List;
 public class CourseDetailRepoImpl implements CourseDetailRepo {
     static final String KEY = "course";
     static final String KEY_LATEST = KEY + ":latest";
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, CourseDetail> redisTemplate;
     private HashOperations<String, Long, CourseDetail> hashOps;
+    private ListOperations<String, CourseDetail> listOps;
 
     @Autowired
-    private CourseDetailRepoImpl(RedisTemplate<String, Object> redisTemplate) {
+    private CourseDetailRepoImpl(RedisTemplate<String, CourseDetail> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @PostConstruct
     private void init() {
         this.hashOps = redisTemplate.opsForHash();
+        this.listOps = redisTemplate.opsForList();
     }
 
     @Override
@@ -44,7 +47,7 @@ public class CourseDetailRepoImpl implements CourseDetailRepo {
 
     @Override
     public void saveLatestThree(List<CourseDetail> latestCourses) {
-        redisTemplate.opsForValue().set(KEY_LATEST, latestCourses);
+        listOps.rightPushAll(KEY_LATEST, latestCourses);
     }
 
     @Override
@@ -54,6 +57,6 @@ public class CourseDetailRepoImpl implements CourseDetailRepo {
 
     @Override
     public List<CourseDetail> getLatestThree(long enterpriseId) {
-        return (List<CourseDetail>) redisTemplate.opsForValue().get(KEY_LATEST);
+        return listOps.range(KEY_LATEST, 0, -1);
     }
 }

@@ -91,14 +91,14 @@ public class SpringRedisConfig {
     }
 
     @Bean
-    RedisTemplate<String, Object> redisTemplate() {
+    RedisTemplate redisTemplate() {
         Jackson2JsonRedisSerializer jacksonSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jacksonSerializer.setObjectMapper(om);
 
-        RedisTemplate<String, Object> result = new RedisTemplate<>();
+        RedisTemplate result = new RedisTemplate<>();
         result.setKeySerializer(jacksonSerializer);
         result.setValueSerializer(jacksonSerializer);
         result.setHashKeySerializer(jacksonSerializer);

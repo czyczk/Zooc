@@ -48,6 +48,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleIOException(IOException e) {
         // Log the error
         logger.error(e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败。");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("I/O 错误。");
     }
 }

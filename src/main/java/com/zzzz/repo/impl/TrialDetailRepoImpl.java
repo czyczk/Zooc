@@ -4,6 +4,7 @@ import com.zzzz.repo.TrialDetailRepo;
 import com.zzzz.vo.TrialDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,17 +15,19 @@ import java.util.List;
 public class TrialDetailRepoImpl implements TrialDetailRepo {
     static final String KEY = "trial";
     static final String KEY_LATEST = KEY + ":latest";
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, TrialDetail> redisTemplate;
     private HashOperations<String, Long, TrialDetail> hashOps;
+    private ListOperations<String, TrialDetail> listOps;
 
     @Autowired
-    private TrialDetailRepoImpl(RedisTemplate<String, Object> redisTemplate) {
+    private TrialDetailRepoImpl(RedisTemplate<String, TrialDetail> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @PostConstruct
     private void init() {
         this.hashOps = redisTemplate.opsForHash();
+        this.listOps = redisTemplate.opsForList();
     }
 
     @Override
@@ -44,7 +47,7 @@ public class TrialDetailRepoImpl implements TrialDetailRepo {
 
     @Override
     public void saveLatestThree(List<TrialDetail> latestTrials) {
-        redisTemplate.opsForValue().set(KEY_LATEST, latestTrials);
+        listOps.rightPushAll(KEY_LATEST, latestTrials);
     }
 
     @Override
@@ -54,6 +57,6 @@ public class TrialDetailRepoImpl implements TrialDetailRepo {
 
     @Override
     public List<TrialDetail> getLatestThree(long enterpriseId) {
-        return (List<TrialDetail>) redisTemplate.opsForValue().get(KEY_LATEST);
+        return listOps.range(KEY_LATEST, 0, -1);
     }
 }

@@ -285,7 +285,7 @@ public class TrialServiceImpl implements TrialService {
         if (nInt == 3) {
             result = trialDetailRepo.getLatestThree(enterpriseIdLong);
             if (result == null || result.isEmpty()) {
-                trialDao.listLatest(enterpriseIdLong, nInt);
+                result = trialDao.listLatest(enterpriseIdLong, nInt);
                 trialDetailRepo.saveLatestThree(result);
             }
         } else {

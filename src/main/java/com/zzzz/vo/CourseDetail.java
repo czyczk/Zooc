@@ -16,7 +16,6 @@ public class CourseDetail {
     private Date releaseTime;
     private BigDecimal price;
     private CourseStatusEnum status;
-//    private List<CourseOffering> courseOfferings;
 
     public long getCourseId() {
         return courseId;
@@ -82,23 +81,11 @@ public class CourseDetail {
         this.price = price;
     }
 
+    public CourseStatusEnum getStatus() {
+        return status;
+    }
+
     public void setStatus(CourseStatusEnum status) {
         this.status = status;
     }
-
-    public String getStatusEnum() {
-        return status.name();
-    }
-
-    public String getStatusDesc() {
-        return status.getDesc();
-    }
-
-//    public List<CourseOffering> getCourseOfferings() {
-//        return courseOfferings;
-//    }
-//
-//    public void setCourseOfferings(List<CourseOffering> courseOfferings) {
-//        this.courseOfferings = courseOfferings;
-//    }
 }

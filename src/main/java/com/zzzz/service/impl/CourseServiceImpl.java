@@ -268,9 +268,10 @@ public class CourseServiceImpl implements CourseService {
         List<CourseDetail> result;
         if (nInt == 3) {
             result = courseDetailRepo.getLatestThree(enterpriseIdLong);
-            if (result == null || result.isEmpty())
+            if (result == null || result.isEmpty()) {
                 result = courseDao.listLatest(enterpriseIdLong, nInt);
-            courseDetailRepo.saveLatestThree(result);
+                courseDetailRepo.saveLatestThree(result);
+            }
         } else {
             result = courseDao.listLatest(enterpriseIdLong, nInt);
         }

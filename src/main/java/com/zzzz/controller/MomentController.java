@@ -2,6 +2,7 @@ package com.zzzz.controller;
 
 import com.zzzz.dto.MomentCommentParam;
 import com.zzzz.dto.MomentImgParam;
+import com.zzzz.dto.MomentLikeParam;
 import com.zzzz.dto.MomentParam;
 import com.zzzz.po.Moment;
 import com.zzzz.po.MomentImg;
@@ -89,13 +90,13 @@ public class MomentController {
     /**
      * Like a moment.
      * @param momentId Moment ID
-     * @param userId User ID
+     * @param param userId
      * @return Success: 204; Bad request: 400; Not found: 400; Internal: 500
      */
     @PostMapping("/moment/{id}/like")
     public ResponseEntity<Long> like(@PathVariable("id") String momentId,
-                                     @RequestBody String userId) throws MomentLikeServiceException, SQLException {
-        momentLikeService.insert(momentId, userId, new Date());
+                                     @RequestBody MomentLikeParam param) throws MomentLikeServiceException, SQLException {
+        momentLikeService.insert(momentId, param.getUserId(), new Date());
         return ResponseEntity.noContent().build();
     }
 
@@ -107,7 +108,7 @@ public class MomentController {
      */
     @DeleteMapping("/moment/{id}/like")
     public ResponseEntity unlike(@PathVariable("id") String momentId,
-                                 @RequestBody String userId) throws MomentLikeServiceException, SQLException {
+                                 String userId) throws MomentLikeServiceException, SQLException {
         momentLikeService.delete(momentId, userId);
         return ResponseEntity.noContent().build();
     }

@@ -13,11 +13,11 @@ import java.util.*;
 @Repository
 public class CourseCategoryRepoImpl implements CourseCategoryRepo {
     private static final String KEY = "course_category";
-    private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, CourseCategory> hashOps;
+    private final RedisTemplate<String, CourseCategory> redisTemplate;
+    private HashOperations<String, Number, CourseCategory> hashOps;
 
     @Autowired
-    private CourseCategoryRepoImpl(RedisTemplate<String, Object> redisTemplate) {
+    private CourseCategoryRepoImpl(RedisTemplate<String, CourseCategory> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -53,14 +53,14 @@ public class CourseCategoryRepoImpl implements CourseCategoryRepo {
     @Override
     public List<CourseCategory> getAll() {
         List<CourseCategory> result = getAllUnsorted();
-        result.sort(Comparator.comparing(CourseCategory::getCategoryId));
+        result.sort(Comparator.comparing(CourseCategory::getName));
         return result;
     }
 
     private List<CourseCategory> getAllUnsorted() {
-        Set<Long> hKeys = hashOps.keys(KEY);
-        List<CourseCategory> result = new ArrayList<>(hKeys.size());
-        hKeys.parallelStream().forEach(hKey -> result.add(hashOps.get(KEY, hKey)));
+        Map<Number, CourseCategory> entries = hashOps.entries(KEY);
+        List<CourseCategory> result = new ArrayList<>(entries.size());
+        entries.entrySet().parallelStream().forEach(entry -> result.add(entry.getValue()));
         return result;
     }
 
