@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-02 21:46:33
+Date: 2018-08-03 14:58:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -85,11 +85,11 @@ CREATE TABLE `coupon` (
 -- ----------------------------
 DROP TABLE IF EXISTS `coupon_record`;
 CREATE TABLE `coupon_record` (
-  `coupon_history_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `coupon_record_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL,
   `coupon_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
-  PRIMARY KEY (`coupon_history_id`),
+  PRIMARY KEY (`coupon_record_id`),
   KEY `fk_coupon_history_user_id` (`user_id`),
   KEY `fk_coupon_history_coupon_id` (`coupon_id`),
   CONSTRAINT `fk_coupon_history_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`coupon_id`),
@@ -249,6 +249,7 @@ CREATE TABLE `order` (
   `course_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
   `status` enum('PENDING','CANCELED','AVAILABLE','REFUND_REQUESTED','REFUNDED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PENDING',
+  `paid` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`order_id`),
   KEY `fk_order_user_id` (`user_id`),
   KEY `fk_order_course_id` (`course_id`),
