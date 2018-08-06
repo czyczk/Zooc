@@ -108,12 +108,13 @@ public class CouponController {
      * Get a list of coupons that are created by the enterprise and available to the user
      * @param enterpriseId Enterprise ID
      * @param userId User ID
+     * @param price Price of the course (optional)
      * @return Success: Available coupon list; Bad request: 400; Not found: 404; Internal: 500
      */
     @GetMapping("/enterprise/{id}/coupon/user-available")
     public ResponseEntity<List<Coupon>> listUserAvailable(@PathVariable("id") String enterpriseId,
-                                                          String userId) throws SQLException, CouponServiceException {
-        List<Coupon> result = couponService.listUserAvailable(enterpriseId, userId);
+                                                          String userId, String price) throws SQLException, CouponServiceException {
+        List<Coupon> result = couponService.listUserAvailable(enterpriseId, userId, price);
         return ResponseEntity.ok(result);
     }
 }

@@ -10,6 +10,6 @@ public interface PointRepo {
      * @return The number of points
      */
     Long getByPk(long userId, long enterpriseId);
-    void incrByIfExisting(long userId, long enterpriseId, int numPoints);
-    void decrByIfExisting(long userId, long enterpriseId, int numPoints);
+    void incrByIfExisting(long userId, long enterpriseId, long numPoints);
+    void decrByIfExisting(long userId, long enterpriseId, long numPoints);
 }

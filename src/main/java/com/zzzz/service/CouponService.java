@@ -11,7 +11,8 @@ public interface CouponService {
     /**
      * Insert a new coupon and return the ID of the new coupon.
      * Redis:
-     *   Cache the coupon.
+     *   - Cache the coupon.
+     *   - Clear the cache of the user available coupons.
      * @param enterpriseId The ID of the enterprise to which the coupon belongs
      * @param value Value
      * @param threshold Threshold
@@ -24,7 +25,8 @@ public interface CouponService {
     /**
      * Disable a coupon.
      * Redis:
-     *   Delete the coupon from cache.
+     *   - Delete the coupon from cache.
+     *   - Clear the cache of the user available coupons.
      * @param couponId Coupon ID
      * @throws CouponServiceException An exception is thrown if the deletion is not successful.
      */
@@ -34,7 +36,8 @@ public interface CouponService {
      * Update a coupon. The value and the threshold is open for modification.
      * Do not pass in fields that meant to be left unchanged.
      * Redis:
-     *   Update the coupon.
+     *   - Update the coupon.
+     *   - Clear the cache of the user available coupons.
      * @param targetCouponId Target coupon ID
      * @param value New value
      * @param threshold New threshold
@@ -76,11 +79,18 @@ public interface CouponService {
                             String laterThan, String earlierThan) throws CouponServiceException, SQLException;
 
     /**
-     * List coupons that are created by the enterprise and available for the user (i.e. not used by the user).
+     * List coupons
+     *   - created by the enterprise
+     *   - available to the user (i.e. not used by the user)
+     *   - whose threshold is no greater than the price of the course
+     * Redis:
+     *   - Fetch them from the cache first.
+     *     On missing, fetch them from the DB and cache them.
      * @param enterpriseId Enterprise ID
      * @param userId User ID
+     * @param price Price of the course
      * @return Available coupons for the user
      * @throws CouponServiceException An exception is thrown if the query is not successful.
      */
-    List<Coupon> listUserAvailable(String enterpriseId, String userId) throws CouponServiceException, SQLException;
+    List<Coupon> listUserAvailable(String enterpriseId, String userId, String price) throws CouponServiceException, SQLException;
 }

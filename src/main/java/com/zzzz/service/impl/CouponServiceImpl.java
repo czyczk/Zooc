@@ -75,7 +75,9 @@ public class CouponServiceImpl implements CouponService {
 
         couponDao.insert(coupon);
         long lastId = generalDao.getLastInsertId();
+        coupon.setCouponId(lastId);
         couponRepo.save(coupon);
+        couponRepo.deleteUserAvailableCoupons(enterpriseIdLong);
 
         return lastId;
     }
@@ -99,6 +101,7 @@ public class CouponServiceImpl implements CouponService {
         coupon.setStatus(CouponStatusEnum.DISABLED);
         couponDao.update(coupon);
         couponRepo.delete(couponIdLong);
+        couponRepo.deleteUserAvailableCoupons(coupon.getEnterpriseId());
     }
 
     @Override
@@ -129,6 +132,7 @@ public class CouponServiceImpl implements CouponService {
 
         couponDao.update(coupon);
         couponRepo.update(coupon);
+        couponRepo.deleteUserAvailableCoupons(coupon.getEnterpriseId());
     }
 
     @Override
@@ -138,12 +142,25 @@ public class CouponServiceImpl implements CouponService {
         long couponIdLong = checker.parseUnsignedLong(couponId, new CouponServiceException(INVALID_COUPON_ID));
 
         // Fetch the existing coupon
-        Coupon coupon = couponRepo.getById(couponIdLong);
+        Coupon coupon = getById(couponIdLong);
+        if (coupon == null)
+            throw new CouponServiceException(COUPON_NOT_EXISTING);
+        return coupon;
+    }
+
+    /**
+     * For in-package use only. Get a coupon by its ID.
+     * The parameter won't be checked. Make sure it is valid.
+     * @param couponId Coupon ID
+     * @return Coupon; null if not existing
+     */
+    Coupon getById(long couponId) throws SQLException {
+        // Fetch the existing coupon
+        Coupon coupon = couponRepo.getById(couponId);
         if (coupon == null) {
-            coupon = couponDao.getById(couponIdLong);
-            if (coupon == null)
-                throw new CouponServiceException(COUPON_NOT_EXISTING);
-            couponRepo.save(coupon);
+            coupon = couponDao.getById(couponId);
+            if (coupon != null)
+                couponRepo.save(coupon);
         }
         return coupon;
     }
@@ -217,12 +234,15 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<Coupon> listUserAvailable(String enterpriseId, String userId) throws CouponServiceException, SQLException {
+    public List<Coupon> listUserAvailable(String enterpriseId, String userId, String price) throws CouponServiceException, SQLException {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(enterpriseId, new CouponServiceException(EMPTY_ENTERPRISE_ID));
         checker.rejectIfNullOrEmpty(userId, new CouponServiceException(EMPTY_USER_ID));
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CouponServiceException(INVALID_ENTERPRISE_ID));
         long userIdLong = checker.parseUnsignedLong(userId, new CouponServiceException(INVALID_USER_ID));
+        BigDecimal priceBd = null;
+        if (price == null || price.isEmpty())
+            priceBd = checker.parseUnsignedBigDecimal(price, new CouponServiceException(INVALID_COURSE_PRICE));
 
         // Check if the enterprise and the user exist
         boolean isExisting = enterpriseRepo.isCached(enterpriseIdLong) || enterpriseDao.checkExistenceById(enterpriseIdLong);
@@ -232,19 +252,53 @@ public class CouponServiceImpl implements CouponService {
         if (!isExisting)
             throw new CouponServiceException(COUPON_NOT_EXISTING);
 
-        // Fetch all coupons of the enterprise
-        List<Coupon> allCoupons = couponDao.list(false, null, null, enterpriseIdLong,
-                null, null, null, null, null,
-                null, null);
-        List<CouponRecord> allRecords = couponRecordDao.list(false, null, null,
-                userIdLong, enterpriseIdLong, null, null);
+        return listUserAvailable(enterpriseIdLong, userIdLong, priceBd);
+    }
 
-        Map<Long, Coupon> availableCouponsMap = new HashMap<>();
-        allCoupons.parallelStream().forEach(it -> availableCouponsMap.put(it.getCouponId(), it));
-        allRecords.parallelStream().forEach(it -> availableCouponsMap.remove(it.getCouponId()));
+    /**
+     * For in-package use only!
+     * List user available coupons.
+     * Beware that the parameters won't be checked.
+     * @param enterpriseId Enterprise ID
+     * @param userId User ID
+     * @param price Price
+     * @return User available coupons
+     */
+    List<Coupon> listUserAvailable(long enterpriseId, long userId, BigDecimal price) throws SQLException {
+        // Try to fetch it from the cache first
+        List<Coupon> notUsedCoupons = couponRepo.getUserAvailableCoupons(enterpriseId, userId);
+        // On missing,
+        if (notUsedCoupons == null || notUsedCoupons.isEmpty()) {
+            // Fetch all coupons of the enterprise
+            List<Coupon> allCoupons = couponDao.list(false, null, null, enterpriseId,
+                    null, null, null, null, null,
+                    null, null);
+            // Fetch all coupon records in the enterprise of the user
+            List<CouponRecord> allRecords = couponRecordDao.list(false, null, null,
+                    userId, enterpriseId, null, null);
+            // Put them to maps in order to speed up the filter process
+            Map<Long, Coupon> availableCouponsMap = new HashMap<>();
+            allCoupons.parallelStream().forEach(it -> availableCouponsMap.put(it.getCouponId(), it));
+            allRecords.parallelStream().forEach(it -> availableCouponsMap.remove(it.getCouponId()));
 
-        List<Coupon> availableCoupons = new ArrayList<>(availableCouponsMap.values());
-        availableCoupons.sort(Comparator.comparing(Coupon::getCouponId));
+            // Filter those that haven't been used by the user
+            notUsedCoupons = new ArrayList<>(availableCouponsMap.values());
+            notUsedCoupons.sort(Comparator.comparing(Coupon::getCouponId));
+
+            couponRepo.saveUserAvailableCoupons(enterpriseId, userId, notUsedCoupons);
+        }
+
+        // Filter those with thresholds no greater the the price (optional)
+        List<Coupon> availableCoupons;
+        if (price == null)
+            availableCoupons = notUsedCoupons;
+        else {
+            availableCoupons = new ArrayList<>();
+            notUsedCoupons.forEach(it -> {
+                if (it.getThreshold().compareTo(price) <= 0)
+                    availableCoupons.add(it);
+            });
+        }
         return availableCoupons;
     }
 }

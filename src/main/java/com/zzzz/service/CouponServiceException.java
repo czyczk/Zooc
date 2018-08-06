@@ -19,6 +19,7 @@ public class CouponServiceException extends ServiceException {
         INVALID_VALUE("价值不合法。", HttpStatus.BAD_REQUEST),
         INVALID_THRESHOLD("门槛不合法。", HttpStatus.BAD_REQUEST),
         INVALID_COUPON_ID("优惠券不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_COURSE_PRICE("课程价格不合法。", HttpStatus.BAD_REQUEST),
         COUPON_DISABLED("该优惠券已禁用。", HttpStatus.BAD_REQUEST),
         INVALID_VALUE_RANGE("价值范围不合法。", HttpStatus.BAD_REQUEST),
         INVALID_THRESHOLD_RANGE("门槛范围不合法。", HttpStatus.BAD_REQUEST),

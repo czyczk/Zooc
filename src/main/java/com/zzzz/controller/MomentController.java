@@ -91,7 +91,7 @@ public class MomentController {
      * Like a moment.
      * @param momentId Moment ID
      * @param param userId
-     * @return Success: 204; Bad request: 400; Not found: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @PostMapping("/moment/{id}/like")
     public ResponseEntity<Long> like(@PathVariable("id") String momentId,
@@ -104,7 +104,7 @@ public class MomentController {
      * Unlike a moment.
      * @param momentId Moment ID
      * @param userId User ID
-     * @return Success: 204; Bad request: 400; Not found: 400; Internal: 500
+     * @return Success: 204; Bad request: 400; Not found: 404; Internal: 500
      */
     @DeleteMapping("/moment/{id}/like")
     public ResponseEntity unlike(@PathVariable("id") String momentId,

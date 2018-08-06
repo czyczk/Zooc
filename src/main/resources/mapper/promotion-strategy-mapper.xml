@@ -20,7 +20,7 @@
     where enterprise_id=#{enterpriseId}
   </update>
   <select id="getByEnterpriseId" parameterType="long" resultType="PromotionStrategy">
-    select (enterprise_id, use_coupons, use_points, points_per_yuan, checkin_points)
+    select enterprise_id, use_coupons, use_points, points_per_yuan, checkin_points
     from promotion_strategy
     where enterprise_id=#{enterpriseId}
   </select>

@@ -8,6 +8,7 @@ import com.zzzz.service.RefundService;
 import com.zzzz.service.RefundServiceException;
 import com.zzzz.vo.ListResult;
 import com.zzzz.vo.OrderDetail;
+import com.zzzz.vo.OrderPreview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +29,32 @@ public class OrderController {
     }
 
     /**
+     * Preview an order. Open for users who have logged in.
+     * @param courseId Course ID
+     * @param userId User ID
+     * @param couponId Coupon ID (optional)
+     * @param usePoints Use points or not (`false` by default)
+     * @return Success: Order preview; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/course/{id}/order-preview")
+    public ResponseEntity<OrderPreview> previewOrder(@PathVariable("id") String courseId,
+                                                     String userId, String couponId, String usePoints) throws SQLException, OrderServiceException {
+        // TODO authentication not implemented yet
+        OrderPreview preview = orderService.preview(userId, courseId, couponId, usePoints);
+        return ResponseEntity.ok(preview);
+    }
+
+    /**
      * Place an order. Open for users who have logged in. An order is by default created to be `PENDING` (not yet paid).
      * @param courseId Course ID
-     * @param param userId
+     * @param param userId, couponId (optional), usePoints (`false` by default)
      * @return Success: New order ID; Bad request: 400; Not found: 404; Internal: 500
      */
     @PostMapping("/course/{id}/order")
     public ResponseEntity<Long> create(@PathVariable("id") String courseId,
                                        @RequestBody OrderParam param) throws SQLException, OrderServiceException {
         // TODO authentication not implemented yet
-        long lastId = orderService.insert(param.getUserId(), courseId, new Date());
+        long lastId = orderService.insert(param.getUserId(), courseId, param.getCouponId(), param.getUsePoints(), new Date());
         return ResponseEntity.ok(lastId);
     }
 

@@ -10,6 +10,7 @@ public class OrderServiceException extends ServiceException {
         EMPTY_ORDER_ID("订单编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_USER_ID("用户编号为空。", HttpStatus.BAD_REQUEST),
         EMPTY_COURSE_ID("课程编号为空。", HttpStatus.BAD_REQUEST),
+        EMPTY_STATUS_OF_USING_POINTS("是否使用积分状态为空。", HttpStatus.BAD_REQUEST),
         EMPTY_TIME("下单时间为空。", HttpStatus.BAD_REQUEST),
         EMPTY_STATUS("状态为空。", HttpStatus.BAD_REQUEST),
         INVALID_TARGET_PAGE("目标页码不合法。", HttpStatus.BAD_REQUEST),
@@ -18,11 +19,14 @@ public class OrderServiceException extends ServiceException {
         INVALID_USER_ID("用户编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_ENTERPRISE_ID("企业编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_COURSE_ID("课程编号不合法。", HttpStatus.BAD_REQUEST),
+        INVALID_COUPON_ID("优惠券编号不合法。", HttpStatus.BAD_REQUEST),
         INVALID_TIME("下单时间不合法。", HttpStatus.BAD_REQUEST),
         INVALID_STATUS("状态不合法。", HttpStatus.BAD_REQUEST),
+        COUPON_NOT_AVAILABLE("该优惠券不可用。", HttpStatus.BAD_REQUEST),
         ORDER_NOT_EXISTING("该订单不存在。", HttpStatus.NOT_FOUND),
         USER_NOT_EXISTING("该用户不存在。", HttpStatus.NOT_FOUND),
         ENTERPRISE_NOT_EXISTING("该企业不存在。", HttpStatus.NOT_FOUND),
+        COUPON_NOT_EXISTING("该优惠券不存在。", HttpStatus.NOT_FOUND),
         COURSE_NOT_EXISTING("该课程不存在。", HttpStatus.NOT_FOUND)
         ;
 
