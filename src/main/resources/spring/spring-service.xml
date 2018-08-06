@@ -17,5 +17,5 @@
   </bean>
 
   <!-- Annotation-driver transaction manager -->
-  <tx:annotation-driven transaction-manager="transactionManager" />
+  <tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
 </beans>

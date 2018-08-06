@@ -1,5 +1,6 @@
 package com.zzzz.controller;
 
+import com.zzzz.controller.util.CookieUtil;
 import com.zzzz.dto.UserParam;
 import com.zzzz.po.User;
 import com.zzzz.service.UserService;
@@ -10,14 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * Create a new user.
@@ -63,19 +69,31 @@ public class UserController {
     /**
      * Log in. After a successful login, the user ID will be returned.
      * The state of login and the ID of the authenticated user
-     * will also be stored in the session with attributes `isLoggedIn: boolean`
-     * and `userId: long` respectively.
+     * will also be returned along with Cookies with attributes `userId: long`
+     * and `password: String` respectively.
      * @param req HttpServletRequest
-     * @param userParam email, password
-     * @return Success: user without its password; Bad request: 400; User not found: 404; Incorrect password: 401; Internal: 500
+     * @param userParam email, password, rememberMe: boolean
+     * @return Success: User without the password; Bad request: 400; User not found: 404; Incorrect password: 401; Internal: 500
      */
     @PostMapping(value = "/login/email")
-    public ResponseEntity<User> logInByEmail(HttpServletRequest req,
-                                       @RequestBody UserParam userParam) throws UserServiceException, SQLException {
+    public ResponseEntity<User> logInByEmail(HttpServletRequest req, HttpServletResponse resp,
+                                             @RequestBody UserParam userParam) throws UserServiceException, SQLException {
         User user = userService.logInByEmail(userParam.getEmail(), userParam.getPassword());
-        HttpSession session = req.getSession();
-        session.setAttribute("isLoggedIn", true);
-        session.setAttribute("userId", user.getUserId());
+        CookieUtil.addUserLoginCookie(req, resp,
+                user.getUserId(), userParam.getPassword(), Boolean.parseBoolean(userParam.getRememberMe()));
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * Log in using the user login cookie.
+     * Triggered when a page attempts to log in using the stored cookie.
+     * @param req HttpServletRequest
+     * @return Success: User without the password; Bad request: 400; User not found: 404; Incorrect password: 401; Internal: 500
+     */
+    @PostMapping("/login/cookie")
+    public ResponseEntity<User> logInByCookie(HttpServletRequest req) throws UserServiceException, SQLException {
+        UserParam param = CookieUtil.parseUserLoginCookie(req);
+        User user = userService.logInById(param.getUserId(), param.getPassword());
         return ResponseEntity.ok(user);
     }
 }

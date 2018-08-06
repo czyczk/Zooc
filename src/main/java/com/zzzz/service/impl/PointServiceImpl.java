@@ -61,6 +61,7 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
+    @Transactional(rollbackFor = { PointServiceException.class, SQLException.class })
     public void decrBy(String userId, String enterpriseId, String numPoints) throws PointServiceException, SQLException {
         long userIdLong = parseUserId(userId);
         long enterpriseIdLong = parseEnterpriseId(enterpriseId);
@@ -75,6 +76,14 @@ public class PointServiceImpl implements PointService {
         }
     }
 
+    /**
+     * For in-package use only.
+     * Decrease the point of the user in the enterprise by the number of points specified.
+     * Parameters won't be checked. Make sure they're valid.
+     * @param userId User ID
+     * @param enterpriseId Enterprise ID
+     * @param numPoints Number of points to be decremented
+     */
     void decrBy(long userId, long enterpriseId, long numPoints) throws SQLException {
         // Decrement it
         Long point = pointRepo.getByPk(userId, enterpriseId);
@@ -91,6 +100,7 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getByPk(String userId, String enterpriseId) throws PointServiceException, SQLException {
         long userIdLong = parseUserId(userId);
         long enterpriseIdLong = parseEnterpriseId(enterpriseId);
