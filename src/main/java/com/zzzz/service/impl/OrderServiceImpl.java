@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // If the user uses points, update the points
-        if (orderPreview.getNumPointsUsed() > 0) {
+        if (orderPreview.getNumPointsUsed() != null && orderPreview.getNumPointsUsed() > 0) {
             pointService.decrBy(orderPreview.getUserId(), orderPreview.getEnterpriseId(), orderPreview.getNumPointsUsed());
         }
 
