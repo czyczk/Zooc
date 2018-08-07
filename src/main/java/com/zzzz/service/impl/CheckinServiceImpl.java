@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.zzzz.service.CheckinServiceException.ExceptionTypeEnum.*;
@@ -68,7 +70,10 @@ public class CheckinServiceImpl implements CheckinService {
         int checkinPoints = strategy.getCheckinPoints();
 
         // Insert checkin record
-        CheckinRecord record = new CheckinRecord();
+        CheckinRecord record = getCheckinRecord(userIdLong, enterpriseIdLong, DateUtil.getToday(), false);
+        if (record != null)
+            throw new CheckinServiceException(ALREADY_CHECKED_IN_TODAY);
+        record = new CheckinRecord();
         record.setUserId(userIdLong);
         record.setEnterpriseId(enterpriseIdLong);
         record.setDate(DateUtil.getToday());
@@ -77,6 +82,21 @@ public class CheckinServiceImpl implements CheckinService {
         // Assign corresponding points to the user in the enterprise
         pointDao.incrBy(userIdLong, enterpriseIdLong, checkinPoints);
         pointRepo.incrByIfExisting(userIdLong, enterpriseIdLong, checkinPoints);
+    }
+
+    @Override
+    public boolean checkCheckedInOrNot(String userId, String enterpriseId, String date) throws CheckinServiceException, SQLException {
+        // Check if the parameters are valid
+        long userIdLong = parseUserId(userId);
+        long enterpriseIdLong = parseEnterpriseId(enterpriseId);
+
+        // Check if the user and the enterprise exist
+        checkIfTheUserExists(userIdLong);
+        checkIfTheEnterpriseExists(enterpriseIdLong);
+
+        Date targetDate = DateUtil.toStartOfDay(parseDate(date));
+        CheckinRecord record = getCheckinRecord(userIdLong, enterpriseIdLong, targetDate, false);
+        return record != null;
     }
 
     @Override
@@ -120,6 +140,12 @@ public class CheckinServiceImpl implements CheckinService {
         return (short) monthInt;
     }
 
+    private Calendar parseDate(String date) throws CheckinServiceException {
+        checker.rejectIfNullOrEmpty(date, new CheckinServiceException(EMPTY_DATE));
+        long timeLong = checker.parseUnsignedLong(date, new CheckinServiceException(INVALID_DATE));
+        return DateUtil.toCalendar(timeLong);
+    }
+
     private void checkIfTheUserExists(long userId) throws SQLException, CheckinServiceException {
         boolean isExisting = userRepo.isCached(userId) || userDao.checkExistenceById(userId);
         if (!isExisting)
@@ -130,5 +156,12 @@ public class CheckinServiceImpl implements CheckinService {
         boolean isExisting = enterpriseRepo.isCached(enterpriseId) || enterpriseDao.checkExistenceById(enterpriseId);
         if (!isExisting)
             throw new CheckinServiceException(ENTERPRISE_NOT_EXISTING);
+    }
+
+    private CheckinRecord getCheckinRecord(long userId, long enterpriseId, Date date, boolean throwException) throws SQLException, CheckinServiceException {
+        CheckinRecord result = checkinRecordDao.getByPk(userId, enterpriseId, DateUtil.toDateString(date));
+        if (throwException && result == null)
+            throw new CheckinServiceException(CHECKIN_RECORD_NOT_EXISTING);
+        return result;
     }
 }

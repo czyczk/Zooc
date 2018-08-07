@@ -11,7 +11,7 @@ public interface CheckinRecordDao {
     int insert(CheckinRecord checkinRecord) throws SQLException;
     CheckinRecord getByPk(@Param("userId") long userId,
                           @Param("enterpriseId") long enterpriseId,
-                          @Param("date")Date date) throws SQLException;
+                          @Param("date") String date) throws SQLException;
     List<CheckinRecord> list(@Param("userId") long userId,
               @Param("enterpriseId") long enterpriseId,
               @Param("year") int year,

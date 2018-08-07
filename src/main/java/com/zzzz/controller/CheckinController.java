@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,6 +32,19 @@ public class CheckinController {
     public ResponseEntity checkin(@RequestBody CheckinParam param) throws SQLException, CheckinServiceException {
         checkinService.checkIn(param.getUserId(), param.getEnterpriseId());
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Check if the user has checked in in the enterprise on the day specified.
+     * @param userId User ID
+     * @param enterpriseId Enterprise ID
+     * @param date Unix epoch
+     * @return Success: boolean; Bad request: 400; Not found: 404; Internal: 500
+     */
+    @GetMapping("/checkin")
+    public ResponseEntity<Boolean> checkCheckedInOrNot(String userId, String enterpriseId, String date) throws SQLException, CheckinServiceException {
+        boolean result = checkinService.checkCheckedInOrNot(userId, enterpriseId, date);
+        return ResponseEntity.ok(result);
     }
 
     /**
