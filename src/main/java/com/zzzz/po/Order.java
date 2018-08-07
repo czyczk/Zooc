@@ -1,5 +1,6 @@
 package com.zzzz.po;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Order {
@@ -7,6 +8,7 @@ public class Order {
     private long userId;
     private long courseId;
     private Date time;
+    private BigDecimal paid;
     private OrderStatusEnum status;
 
     public long getOrderId() {
@@ -41,6 +43,14 @@ public class Order {
         this.time = time;
     }
 
+    public BigDecimal getPaid() {
+        return paid;
+    }
+
+    public void setPaid(BigDecimal paid) {
+        this.paid = paid;
+    }
+
     public OrderStatusEnum getStatus() {
         return status;
     }
@@ -51,13 +61,13 @@ public class Order {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Order{");
-        sb.append("orderId=").append(orderId);
-        sb.append(", userId=").append(userId);
-        sb.append(", courseId=").append(courseId);
-        sb.append(", time=").append(time);
-        sb.append(", status=").append(status);
-        sb.append('}');
-        return sb.toString();
+        return "Order{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", courseId=" + courseId +
+                ", time=" + time +
+                ", paid=" + paid +
+                ", status=" + status +
+                '}';
     }
 }
