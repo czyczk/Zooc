@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-07-18 15:12:04
+Date: 2018-08-07 10:02:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -63,6 +63,64 @@ INSERT INTO `branch` VALUES ('2', '1', '东软第二分部', '沈阳市浑南区
 INSERT INTO `branch` VALUES ('3', '1', '东软第三分部', '东软睿道', '41.70739500', '123.43822000', '12345678910', '\0');
 
 -- ----------------------------
+-- Table structure for checkin_record
+-- ----------------------------
+DROP TABLE IF EXISTS `checkin_record`;
+CREATE TABLE `checkin_record` (
+  `user_id` bigint(20) unsigned NOT NULL,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`user_id`,`enterprise_id`,`date`),
+  KEY `fk_checkin_history_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_checkin_history_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`),
+  CONSTRAINT `fk_checkin_history_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of checkin_record
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for coupon
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon`;
+CREATE TABLE `coupon` (
+  `coupon_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `value` decimal(10,2) unsigned NOT NULL,
+  `threshold` decimal(10,2) unsigned NOT NULL DEFAULT '0.00',
+  `time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `status` enum('ENABLED','DISABLED') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ENABLED',
+  PRIMARY KEY (`coupon_id`),
+  KEY `idx_coupon_enterprise_id_status` (`enterprise_id`,`status`),
+  CONSTRAINT `fk_coupon_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of coupon
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for coupon_record
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon_record`;
+CREATE TABLE `coupon_record` (
+  `coupon_record_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `coupon_id` bigint(20) unsigned NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`coupon_record_id`),
+  KEY `fk_coupon_history_user_id` (`user_id`),
+  KEY `fk_coupon_history_coupon_id` (`coupon_id`),
+  CONSTRAINT `fk_coupon_history_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`coupon_id`),
+  CONSTRAINT `fk_coupon_history_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of coupon_record
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for course
 -- ----------------------------
 DROP TABLE IF EXISTS `course`;
@@ -83,7 +141,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course
@@ -93,6 +151,10 @@ INSERT INTO `course` VALUES ('2', '1', 'React 全家桶 + AntD 共享单车后�
 INSERT INTO `course` VALUES ('3', '1', 'TestNG 测试框架入门到实战', '关于TestNG的资料网上有许多，但并不系统和完善，本课程将给你最系统的TestNG知识，由浅入深，通过详细的基础知识讲解， 清晰的场景应用式案例实战，助你掌握这一火热的软测框架，并最终实现出自己的自动化测试框架', 'https://img1.mukewang.com/szimg/5b39eb5a00016c4205400300.jpg', '9', '2018-07-15 23:35:46', '199.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('4', '1', 'SpringBoot 仿抖音短视频小程序开发 全栈式实战项目', '本课程基于微信小程序和目前主流的后端技术SpringBoot/SpringMvc来实现一个完整的短视频小程序App。通过对本套课程的学习，可以使你独立开发一个短视频小程序并部署到腾讯云上，掌握全栈式开发，更是毕业设计利器！', 'https://img2.mukewang.com/szimg/5afb8aa900014cc705400300.jpg', '1', '2018-07-15 23:38:07', '348.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('5', '1', 'Google 资深工程师深度讲解 Go 语言', 'Go作为专门为并发和大数据设计的语言，在编程界占据越来越重要的地位！不论是c/c++，php，java，重构首选语言就是Go~本次课程特邀谷歌资深工程师，将Go语言使用经验总结归纳，从Go语言基本语法到函数式编程、并发编程，最后构建分布式爬虫系统，步步深入，带你快速掌握Go语言！', 'https://img2.mukewang.com/szimg/5a7127370001a8fa05400300.jpg', '10', '2018-07-15 23:41:55', '399.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('6', '1', 'React 16.4 开发简书项目 从零基础入门到实战', '本课程通过对简书项目进行实战开发，从基础原理逐步深入讲解React中的主流技术以及实战中的应用。课程讲解全部使用React16最新语法，让同学们全方位理解应用React构建项目，直接上手中级以上难度React项目开发。', 'https://img4.sycdn.imooc.com/szimg/5b3082da0001d7e905400300.jpg', '11', '2018-08-06 15:53:40', '299.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('7', '1', 'GO 实现千万级 WebSocket 消息推送服务', '随着互联网的发展，网络直播已然成为各大新媒体平台的宠儿。如果，你对直播中的 “弹幕聊天” 服务的实现原理感兴趣，就请进入课程，随着老师的脚步进入他的“主控室”。 在本课程中，老师会依次带领大家分析弹幕系统的技术难点、如何快速掌握WebSocket的协议与交互流程、如何用GO封装一个具有工程化实践意义的WebSocket服务端完成信息交互，并在课程最后，揭秘高并发分布式系统架构技术中难点的解决方案！', 'https://img1.sycdn.imooc.com/5b55b3f400017b9906000338-240-135.jpg', '10', '2018-08-06 21:00:56', '0.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('8', '1', 'Java仿微信全栈\r\nJava 仿微信全栈高性能后台+移动客户端', '课程中讲师将带你从无到有的开发一个仿微信的聊天App，其中涉及 Netty的websocket开发、SpringBoot开发、MUI与H5Plus（H5+）相关知识点开发和Nginx+FastDFS分布式文件系统搭建与使用等，整个课程一气呵成。学习之后自己也能开发出一个高颜值高水平的App，并且发布上线。', 'https://img4.sycdn.imooc.com/szimg/5b5ad11b0001261305400300.jpg', '1', '2018-08-06 21:05:41', '348.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('9', '1', '深度学习之神经网络（CNN/RNN/GAN）算法原理+实战', '本课程使用原理讲解加实战的方式对深度学习中的卷积神经网络（CNN）、循环神经网络（RNN）、对抗神经网络（GAN）进行深入浅出的讲解。通过图像分类、文本分类、图像风格转换、图像文本生成、图像翻译等项目，让学员获得灵活使用CNN、RNN、GAN的能力、深度学习算法调参的能力和使用Tensorflow进行编程的能力，提升深度学习算法能力与项目开发经验。', 'https://img4.sycdn.imooc.com/szimg/5b56952600014eb005400300.jpg', '12', '2018-08-06 21:07:55', '366.00', 'AVAILABLE');
 
 -- ----------------------------
 -- Table structure for course_category
@@ -103,7 +165,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course_category
@@ -114,9 +176,11 @@ INSERT INTO `course_category` VALUES ('3', 'HTML');
 INSERT INTO `course_category` VALUES ('1', 'Java');
 INSERT INTO `course_category` VALUES ('4', 'Javascript');
 INSERT INTO `course_category` VALUES ('2', 'Python');
+INSERT INTO `course_category` VALUES ('11', 'React');
 INSERT INTO `course_category` VALUES ('8', 'Swift');
 INSERT INTO `course_category` VALUES ('7', 'Vue.js');
 INSERT INTO `course_category` VALUES ('6', '分布式系统');
+INSERT INTO `course_category` VALUES ('12', '深度学习');
 INSERT INTO `course_category` VALUES ('9', '软件测试');
 
 -- ----------------------------
@@ -135,7 +199,7 @@ CREATE TABLE `course_offering` (
   CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course_offering
@@ -147,6 +211,10 @@ INSERT INTO `course_offering` VALUES ('4', '4', '1', '3');
 INSERT INTO `course_offering` VALUES ('5', '5', '1', '4');
 INSERT INTO `course_offering` VALUES ('6', '5', '2', '4');
 INSERT INTO `course_offering` VALUES ('7', '1', '2', '5');
+INSERT INTO `course_offering` VALUES ('8', '6', '1', '6');
+INSERT INTO `course_offering` VALUES ('9', '7', '1', '7');
+INSERT INTO `course_offering` VALUES ('10', '8', '1', '3');
+INSERT INTO `course_offering` VALUES ('11', '9', '3', '8');
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -183,7 +251,7 @@ CREATE TABLE `lecturer` (
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of lecturer
@@ -193,6 +261,9 @@ INSERT INTO `lecturer` VALUES ('2', '1', '康愈圆', 'https://img.mukewang.com/
 INSERT INTO `lecturer` VALUES ('3', '1', '风间影月', 'https://img.mukewang.com/user/5a0c5df20001a1cb05800580-100-100.jpg', 'imooc.com 后端架构师', '\0');
 INSERT INTO `lecturer` VALUES ('4', '1', 'ccmouse', 'https://img.mukewang.com/user/598bcaf70001f13309600960-100-100.jpg', 'Google 高级软件工程师', '\0');
 INSERT INTO `lecturer` VALUES ('5', '1', '陈子康', 'https://img.moegirl.org/common/e/e0/9694490.jpg', '陈子康牛逼', '\0');
+INSERT INTO `lecturer` VALUES ('6', '1', 'DellLee', 'https://img.mukewang.com/user/5abe468b0001664107390741.jpg', 'BAT资深前端工程师，负责数据平台技术研发。曾任去哪儿网高级前端工程师，主导去哪儿网内部前端监控系统设计，负责去哪儿网门票用户端的前端设计开发。曾任国内知名培训机构高级前端讲师，负责', '\0');
+INSERT INTO `lecturer` VALUES ('7', '1', '小鱼儿老师', 'https://img4.mukewang.com/5b56967200018f7a08781240-140-140.jpg', 'BAT资深研发工程师，现任应用架构师与公司内训讲师，负责应用架构设计与研发，具有丰富的高性能程序设计、分布式海量服务研发经验。擅长C/C /GO等服务端研发技术，对大数据、推荐系统等方向具备一定的实', '\0');
+INSERT INTO `lecturer` VALUES ('8', '1', '正十七_卢云', 'https://img.mukewang.com/user/5b508dd00001630307410721.jpg', '目前供职于Google，技术方向是深度学习，具有五年工作经验，曾先后在百度、腾讯工作。对机器学习算法抱有强烈的兴趣，先后从事过图像检索与分类、文本分类、人脸识别、广告点击率预估、图像翻译等方面的项目，有丰富的炼丹经验。讲课风格干货满满，希望大家能通过我的课程得到成长进步。', '\0');
 
 -- ----------------------------
 -- Table structure for moment
@@ -280,6 +351,7 @@ CREATE TABLE `order` (
   `course_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
   `status` enum('PENDING','CANCELED','AVAILABLE','REFUND_REQUESTED','REFUNDED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'PENDING',
+  `paid` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`order_id`),
   KEY `fk_order_user_id` (`user_id`),
   KEY `fk_order_course_id` (`course_id`),
@@ -290,8 +362,44 @@ CREATE TABLE `order` (
 -- ----------------------------
 -- Records of order
 -- ----------------------------
-INSERT INTO `order` VALUES ('12', '1', '2', '2018-07-15 15:27:53', 'AVAILABLE');
-INSERT INTO `order` VALUES ('14', '1', '1', '2018-07-16 11:12:25', 'REFUNDED');
+INSERT INTO `order` VALUES ('12', '1', '2', '2018-07-15 15:27:53', 'AVAILABLE', '388.00');
+INSERT INTO `order` VALUES ('14', '1', '1', '2018-07-16 11:12:25', 'REFUNDED', '488.00');
+
+-- ----------------------------
+-- Table structure for point
+-- ----------------------------
+DROP TABLE IF EXISTS `point`;
+CREATE TABLE `point` (
+  `user_id` bigint(20) unsigned NOT NULL,
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `point` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`enterprise_id`),
+  KEY `fk_point_enterprise_id` (`enterprise_id`),
+  CONSTRAINT `fk_point_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`),
+  CONSTRAINT `fk_point_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of point
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for promotion_strategy
+-- ----------------------------
+DROP TABLE IF EXISTS `promotion_strategy`;
+CREATE TABLE `promotion_strategy` (
+  `enterprise_id` bigint(20) unsigned NOT NULL,
+  `use_coupons` bit(1) NOT NULL DEFAULT b'0',
+  `use_points` bit(1) NOT NULL DEFAULT b'0',
+  `points_per_yuan` int(11) unsigned NOT NULL DEFAULT '100',
+  `checkin_points` int(10) unsigned NOT NULL DEFAULT '5',
+  PRIMARY KEY (`enterprise_id`),
+  CONSTRAINT `fk_promotion_strategy_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of promotion_strategy
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for refund
@@ -395,6 +503,12 @@ INSERT INTO `user` VALUES ('1', 'zenas', 'zzzz', 'czyczk@qq.com', '12345678901',
 -- ----------------------------
 DROP VIEW IF EXISTS `view_available_branch`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_branch` AS select `branch`.`branch_id` AS `branch_id`,`branch`.`enterprise_id` AS `enterprise_id`,`branch`.`name` AS `name`,`branch`.`address` AS `address`,`branch`.`latitude` AS `latitude`,`branch`.`longitude` AS `longitude`,`branch`.`telephone` AS `telephone`,`branch`.`is_disabled` AS `is_disabled` from `branch` where (`branch`.`is_disabled` = 0x00) ;
+
+-- ----------------------------
+-- View structure for view_available_coupon
+-- ----------------------------
+DROP VIEW IF EXISTS `view_available_coupon`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_available_coupon` AS select `coupon`.`coupon_id` AS `coupon_id`,`coupon`.`enterprise_id` AS `enterprise_id`,`coupon`.`value` AS `value`,`coupon`.`threshold` AS `threshold`,`coupon`.`time` AS `time`,`coupon`.`status` AS `status` from `coupon` where (`coupon`.`status` = 'ENABLED') ;
 
 -- ----------------------------
 -- View structure for view_available_course
