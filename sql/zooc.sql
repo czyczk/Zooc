@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-03 14:58:39
+Date: 2018-08-08 00:33:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -117,7 +117,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_category
@@ -128,7 +128,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -146,7 +146,7 @@ CREATE TABLE `course_offering` (
   CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -177,7 +177,7 @@ CREATE TABLE `lecturer` (
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment
@@ -191,7 +191,7 @@ CREATE TABLE `moment` (
   PRIMARY KEY (`moment_id`),
   KEY `fk_moment_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_moment_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment_comment
@@ -396,13 +396,13 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- View structure for view_order_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_order_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_order_detail` AS select `order`.`order_id` AS `order_id`,`course`.`enterprise_id` AS `enterprise_id`,`order`.`user_id` AS `user_id`,`user`.`username` AS `username`,`user`.`email` AS `user_email`,`user`.`mobile` AS `user_mobile`,`order`.`course_id` AS `course_id`,`course`.`name` AS `course_name`,`course`.`price` AS `course_price`,`order`.`time` AS `time`,`order`.`status` AS `status`,`refund`.`refund_id` AS `refund_id`,`refund`.`time` AS `refund_time`,`refund`.`reason` AS `refund_reason` from (((`order` join `user` on((`order`.`user_id` = `user`.`user_id`))) join `course` on((`order`.`course_id` = `course`.`course_id`))) left join `refund` on((`refund`.`order_id` = `order`.`order_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_order_detail` AS select `order`.`order_id` AS `order_id`,`course`.`enterprise_id` AS `enterprise_id`,`order`.`user_id` AS `user_id`,`user`.`username` AS `username`,`user`.`email` AS `user_email`,`user`.`mobile` AS `user_mobile`,`order`.`course_id` AS `course_id`,`course`.`name` AS `course_name`,`course`.`price` AS `course_price`,`order`.`time` AS `time`,`order`.`paid` AS `paid`,`order`.`status` AS `status`,`refund`.`refund_id` AS `refund_id`,`refund`.`time` AS `refund_time`,`refund`.`reason` AS `refund_reason` from (((`order` join `user` on((`order`.`user_id` = `user`.`user_id`))) join `course` on((`order`.`course_id` = `course`.`course_id`))) left join `refund` on((`refund`.`order_id` = `order`.`order_id`))) ;
 
 -- ----------------------------
 -- View structure for view_refund_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_refund_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_refund_detail` AS select `view_order_detail`.`order_id` AS `order_id`,`view_order_detail`.`enterprise_id` AS `enterprise_id`,`view_order_detail`.`user_id` AS `user_id`,`view_order_detail`.`username` AS `username`,`view_order_detail`.`user_email` AS `user_email`,`view_order_detail`.`user_mobile` AS `user_mobile`,`view_order_detail`.`course_id` AS `course_id`,`view_order_detail`.`course_name` AS `course_name`,`view_order_detail`.`course_price` AS `course_price`,`view_order_detail`.`time` AS `time`,`view_order_detail`.`status` AS `status`,`view_order_detail`.`refund_id` AS `refund_id`,`view_order_detail`.`refund_time` AS `refund_time`,`view_order_detail`.`refund_reason` AS `refund_reason` from `view_order_detail` where ((`view_order_detail`.`status` = 'REFUND_REQUESTED') or (`view_order_detail`.`status` = 'REFUNDED')) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_refund_detail` AS select `view_order_detail`.`order_id` AS `order_id`,`view_order_detail`.`enterprise_id` AS `enterprise_id`,`view_order_detail`.`user_id` AS `user_id`,`view_order_detail`.`username` AS `username`,`view_order_detail`.`user_email` AS `user_email`,`view_order_detail`.`user_mobile` AS `user_mobile`,`view_order_detail`.`course_id` AS `course_id`,`view_order_detail`.`course_name` AS `course_name`,`view_order_detail`.`course_price` AS `course_price`,`view_order_detail`.`time` AS `time`,`view_order_detail`.`paid` AS `paid`,`view_order_detail`.`status` AS `status`,`view_order_detail`.`refund_id` AS `refund_id`,`view_order_detail`.`refund_time` AS `refund_time`,`view_order_detail`.`refund_reason` AS `refund_reason` from `view_order_detail` where ((`view_order_detail`.`status` = 'REFUND_REQUESTED') or (`view_order_detail`.`status` = 'REFUNDED')) ;
 
 -- ----------------------------
 -- View structure for view_trial_detail
