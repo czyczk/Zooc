@@ -83,16 +83,19 @@ public class OrderServiceImpl implements OrderService {
         Course course = getCourse(courseIdLong);
         long enterpriseId = course.getEnterpriseId();
         BigDecimal price = course.getPrice();
+        // Get the point of the user
+        BigDecimal point = new BigDecimal(pointService.getByPk(userIdLong, enterpriseId));
 
         orderPreview.setEnterpriseId(enterpriseId);
         orderPreview.setUserId(userIdLong);
         orderPreview.setCourseId(courseIdLong);
         orderPreview.setCourseName(course.getName());
+        orderPreview.setTotalPoints(point.longValue());
         orderPreview.setOriginalPrice(new BigDecimal(price.toString()));
         orderPreview.setActualPayment(new BigDecimal(price.toString()));
 
         // Check validity and discount with the coupon if the user uses one
-        if (couponId != null) {
+        if (couponIdLong != null) {
             // Check if the coupon exists
             Coupon coupon = getCoupon(couponIdLong);
             // Check if the coupon is in the available list
@@ -109,8 +112,6 @@ public class OrderServiceImpl implements OrderService {
 
         // Discount if the user wishes to use points
         if (usePointsBool) {
-            // Get the point of the user
-            BigDecimal point = new BigDecimal(pointService.getByPk(userIdLong, enterpriseId));
             // Calculate the value the points can offset
             PromotionStrategy strategy = promotionStrategyService.getByEnterpriseId(enterpriseId);
             BigDecimal pointsPerYuan = new BigDecimal(strategy.getPointsPerYuan());

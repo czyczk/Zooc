@@ -10,6 +10,7 @@ public class OrderPreview {
     private BigDecimal originalPrice;
     private long couponId;
     private BigDecimal discountedByCoupon;
+    private long totalPoints;
     private long numPointsUsed;
     private BigDecimal discountedByPoints;
     private BigDecimal actualPayment;
@@ -68,6 +69,14 @@ public class OrderPreview {
 
     public void setDiscountedByCoupon(BigDecimal discountedByCoupon) {
         this.discountedByCoupon = discountedByCoupon;
+    }
+
+    public long getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void setTotalPoints(long totalPoints) {
+        this.totalPoints = totalPoints;
     }
 
     public long getNumPointsUsed() {

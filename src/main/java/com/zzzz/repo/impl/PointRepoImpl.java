@@ -36,7 +36,8 @@ public class PointRepoImpl implements PointRepo {
 
     @Override
     public Long getByPk(long userId, long enterpriseId) {
-        return hashOps.get(KEY, getHashKey(userId, enterpriseId));
+        Number result = hashOps.get(KEY, getHashKey(userId, enterpriseId));
+        return result == null ? null : result.longValue();
     }
 
     @Override
