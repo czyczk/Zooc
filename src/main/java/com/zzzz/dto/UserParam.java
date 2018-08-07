@@ -1,11 +1,21 @@
 package com.zzzz.dto;
 
 public class UserParam {
+    private String userId;
     private String username;
     private String password;
     private String email;
     private String mobile;
     private String avatarUrl;
+    private String rememberMe;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;
@@ -45,5 +55,13 @@ public class UserParam {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(String rememberMe) {
+        this.rememberMe = rememberMe;
     }
 }

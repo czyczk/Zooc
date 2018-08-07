@@ -1,8 +1,8 @@
 package com.zzzz.service.impl;
 
 import com.zzzz.dao.*;
-import com.zzzz.po.Order;
-import com.zzzz.po.OrderStatusEnum;
+import com.zzzz.po.*;
+import com.zzzz.repo.CouponRepo;
 import com.zzzz.repo.EnterpriseRepo;
 import com.zzzz.repo.UserRepo;
 import com.zzzz.service.OrderService;
@@ -11,10 +11,13 @@ import com.zzzz.service.util.PaginationUtil;
 import com.zzzz.service.util.ParameterChecker;
 import com.zzzz.vo.ListResult;
 import com.zzzz.vo.OrderDetail;
+import com.zzzz.vo.OrderPreview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -27,57 +30,149 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final EnterpriseDao enterpriseDao;
+    private final CouponDao couponDao;
     private final CourseDao courseDao;
     private final UserRepo userRepo;
     private final EnterpriseRepo enterpriseRepo;
+    private final CouponRepo couponRepo;
+    private final CouponServiceImpl couponService;
+    private final CouponRecordServiceImpl couponRecordService;
+    private final PointServiceImpl pointService;
+    private final PromotionStrategyServiceImpl promotionStrategyService;
     private final ParameterChecker<OrderServiceException> checker = new ParameterChecker<>();
 
     @Autowired
     public OrderServiceImpl(GeneralDao generalDao,
-                            OrderDao orderDao, UserDao userDao, EnterpriseDao enterpriseDao, CourseDao courseDao,
-                            UserRepo userRepo, EnterpriseRepo enterpriseRepo) {
+                            OrderDao orderDao, UserDao userDao,
+                            EnterpriseDao enterpriseDao, CourseDao courseDao,
+                            CouponDao couponDao,
+                            UserRepo userRepo, EnterpriseRepo enterpriseRepo,
+                            CouponRepo couponRepo,
+                            CouponServiceImpl couponService, CouponRecordServiceImpl couponRecordService,
+                            PointServiceImpl pointService, PromotionStrategyServiceImpl promotionStrategyService) {
         this.generalDao = generalDao;
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.enterpriseDao = enterpriseDao;
         this.courseDao = courseDao;
+        this.couponDao = couponDao;
         this.userRepo = userRepo;
         this.enterpriseRepo = enterpriseRepo;
+        this.couponRepo = couponRepo;
+        this.couponService = couponService;
+        this.couponRecordService = couponRecordService;
+        this.pointService = pointService;
+        this.promotionStrategyService = promotionStrategyService;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderPreview preview(String userId, String courseId, String couponId, String usePoints) throws SQLException, OrderServiceException {
+        // Order preview
+        OrderPreview orderPreview = new OrderPreview();
+
+        // Check if the parameters are valid
+        long userIdLong = parseUserId(userId);
+        long courseIdLong = parseCourseId(courseId);
+        Long couponIdLong = parseCouponId(couponId);
+        boolean usePointsBool = Boolean.parseBoolean(usePoints);
+
+        // Check if the user exists
+        checkIfTheUserExists(userIdLong);
+        // Fetch the course (exception thrown if not existing)
+        Course course = getCourse(courseIdLong);
+        long enterpriseId = course.getEnterpriseId();
+        BigDecimal price = course.getPrice();
+
+        orderPreview.setEnterpriseId(enterpriseId);
+        orderPreview.setUserId(userIdLong);
+        orderPreview.setCourseId(courseIdLong);
+        orderPreview.setCourseName(course.getName());
+        orderPreview.setOriginalPrice(new BigDecimal(price.toString()));
+        orderPreview.setActualPayment(new BigDecimal(price.toString()));
+
+        // Check validity and discount with the coupon if the user uses one
+        if (couponId != null) {
+            // Check if the coupon exists
+            Coupon coupon = getCoupon(couponIdLong);
+            // Check if the coupon is in the available list
+            // - created by the enterprise
+            // - not used by the user
+            // - with thresholds no greater than the price of the course
+            checkIfTheCouponIsAvailable(userIdLong, course, couponIdLong);
+
+            // Discount if the user wishes to use the coupon
+            price = discountUsingCoupon(price, coupon);
+            orderPreview.setDiscountedByCoupon(coupon.getValue());
+            orderPreview.setActualPayment(new BigDecimal(price.toString()));
+        }
+
+        // Discount if the user wishes to use points
+        if (usePointsBool) {
+            // Get the point of the user
+            BigDecimal point = new BigDecimal(pointService.getByPk(userIdLong, enterpriseId));
+            // Calculate the value the points can offset
+            PromotionStrategy strategy = promotionStrategyService.getByEnterpriseId(enterpriseId);
+            BigDecimal pointsPerYuan = new BigDecimal(strategy.getPointsPerYuan());
+            BigDecimal offset = point.divide(pointsPerYuan, 2, RoundingMode.HALF_UP);
+
+            BigDecimal numPointsUsed;
+            BigDecimal discountedByPoints;
+            // If offset > price, pointUsed = price * pointsPerYuan & price = 0
+            if (offset.compareTo(price) > 0) {
+                numPointsUsed = price.multiply(pointsPerYuan);
+                discountedByPoints = new BigDecimal(price.toString());
+                price = BigDecimal.ZERO;
+            }
+            // else, price -= offset & pointUsed = all
+            else {
+                price = price.subtract(offset);
+                discountedByPoints = new BigDecimal(offset.toString());
+                numPointsUsed = new BigDecimal(point.longValue());
+            }
+            orderPreview.setActualPayment(price);
+            orderPreview.setDiscountedByPoints(discountedByPoints);
+            orderPreview.setNumPointsUsed(numPointsUsed.longValue());
+        }
+
+        return orderPreview;
     }
 
     @Override
     @Transactional(rollbackFor = { OrderServiceException.class, SQLException.class })
-    public long insert(String userId, String courseId, Date time) throws SQLException, OrderServiceException {
+    public long insert(String userId, String courseId, String couponId, String usePoints, Date time) throws SQLException, OrderServiceException {
         // Check if the parameters are valid
-        checker.rejectIfNullOrEmpty(userId, new OrderServiceException(EMPTY_USER_ID));
-        checker.rejectIfNullOrEmpty(courseId, new OrderServiceException(EMPTY_COURSE_ID));
         if (time == null)
             throw new OrderServiceException(EMPTY_TIME);
-
-        long userIdLong = checker.parseUnsignedLong(userId, new OrderServiceException(INVALID_USER_ID));
-        long courseIdLong = checker.parseUnsignedLong(courseId, new OrderServiceException(INVALID_COURSE_ID));
-
-        // Check if the user exists
-        boolean isExisting = userRepo.isCached(userIdLong) || userDao.checkExistenceById(userIdLong);
-        if (!isExisting)
-            throw new OrderServiceException(USER_NOT_EXISTING);
-        // Check if the course exists
-        isExisting = courseDao.checkExistenceById(courseIdLong);
-        if (!isExisting)
-            throw new OrderServiceException(COURSE_NOT_EXISTING);
+        // Check other parameters and get a preview
+        OrderPreview orderPreview = preview(userId, courseId, couponId, usePoints);
 
         // Prepare a new order
         Order order = new Order();
-        order.setUserId(userIdLong);
-        order.setCourseId(courseIdLong);
+        order.setUserId(orderPreview.getUserId());
+        order.setCourseId(orderPreview.getCourseId());
         order.setTime(time);
         // An order is created to be `PENDING` (Not paid yet) by default
         order.setStatus(OrderStatusEnum.PENDING);
 
-        // Insert
+        // Insert the order
         orderDao.insert(order);
-        long lastId = generalDao.getLastInsertId();
-        return lastId;
+        long newOrderId = generalDao.getLastInsertId();
+
+        // If the user uses a coupon, insert a coupon record
+        if (couponId != null) {
+            couponRecordService.insert(orderPreview.getUserId(),
+                    orderPreview.getCouponId(),
+                    orderPreview.getEnterpriseId(),
+                    time);
+        }
+
+        // If the user uses points, update the points
+        if (orderPreview.getNumPointsUsed() > 0) {
+            pointService.decrBy(orderPreview.getUserId(), orderPreview.getEnterpriseId(), orderPreview.getNumPointsUsed());
+        }
+
+        return newOrderId;
     }
 
     @Override
@@ -290,5 +385,73 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> list = orderDao.listRefund(usePaginationBool, starting, pageSizeLong, enterpriseIdLong, orderIdLong, userIdLong, userEmail, userMobile, courseIdLong, courseNameContaining, statusEnum);
         result.setList(list);
         return result;
+    }
+
+    private long parseUserId(String userId) throws OrderServiceException {
+        checker.rejectIfNullOrEmpty(userId, new OrderServiceException(EMPTY_USER_ID));
+        return checker.parseUnsignedLong(userId, new OrderServiceException(INVALID_USER_ID));
+    }
+
+    private long parseCourseId(String courseId) throws OrderServiceException {
+        checker.rejectIfNullOrEmpty(courseId, new OrderServiceException(EMPTY_COURSE_ID));
+        return checker.parseUnsignedLong(courseId, new OrderServiceException(INVALID_COURSE_ID));
+    }
+
+    private Long parseCouponId(String couponId) throws OrderServiceException {
+        if (couponId == null || couponId.isEmpty())
+            return null;
+        return checker.parseUnsignedLong(couponId, new OrderServiceException(INVALID_COUPON_ID));
+    }
+
+    private void checkIfTheUserExists(long userId) throws OrderServiceException, SQLException {
+        boolean isExisting = userRepo.isCached(userId) || userDao.checkExistenceById(userId);
+        if (!isExisting)
+            throw new OrderServiceException(USER_NOT_EXISTING);
+    }
+
+    private void checkIfTheCourseExists(long courseId) throws OrderServiceException, SQLException {
+        boolean isExisting = courseDao.checkExistenceById(courseId);
+        if (!isExisting)
+            throw new OrderServiceException(COURSE_NOT_EXISTING);
+    }
+
+//    private void checkIfTheCouponExists(long couponId) throws SQLException, OrderServiceException {
+//        boolean isExisting = couponRepo.isCached(couponId) || couponDao.checkExistenceById(couponId);
+//        if (!isExisting)
+//            throw new OrderServiceException(COUPON_NOT_EXISTING);
+//    }
+
+    private void checkIfTheCouponIsAvailable(long userId, Course course, long couponId) throws SQLException, OrderServiceException {
+        List<Coupon> availableCoupons = couponService.listUserAvailable(
+                course.getEnterpriseId(),
+                userId, course.getPrice());
+        if (availableCoupons.parallelStream().noneMatch(
+                it -> it.getCouponId() == couponId
+        ))
+            throw new OrderServiceException(COUPON_NOT_AVAILABLE);
+    }
+
+    private Course getCourse(long courseId) throws SQLException, OrderServiceException {
+        Course result = courseDao.getById(courseId);
+        if (result == null)
+            throw new OrderServiceException(COURSE_NOT_EXISTING);
+        return result;
+    }
+
+    private Coupon getCoupon(long couponId) throws SQLException, OrderServiceException {
+        Coupon result = couponService.getById(couponId);
+        if (result == null)
+            throw new OrderServiceException(COUPON_NOT_EXISTING);
+        return result;
+    }
+
+    private BigDecimal discountUsingCoupon(BigDecimal price, Coupon coupon) {
+        // If the value >= the price, the price will be 0
+        if (coupon.getValue().compareTo(price) >= 0)
+            price = BigDecimal.ZERO;
+        // Else, price = price - value
+        else
+            price = price.subtract(coupon.getValue());
+        return price;
     }
 }

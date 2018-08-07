@@ -47,6 +47,7 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
         long lastId = generalDao.getLastInsertId();
 
         // Redis: cache the new one
+        category.setCategoryId(lastId);
         courseCategoryRepo.save(category);
         return generalDao.getLastInsertId();
     }

@@ -26,7 +26,7 @@ public interface PointDao {
      */
     int incrBy(@Param("userId") long userId,
                @Param("enterpriseId") long enterpriseId,
-               @Param("numPoints") int numPoints) throws SQLException;
+               @Param("numPoints") long numPoints) throws SQLException;
 
     /**
      * Decrement a point entry by the number specified.
@@ -38,7 +38,7 @@ public interface PointDao {
      */
     int decrBy(@Param("userId") long userId,
                @Param("enterpriseId") long enterpriseId,
-               @Param("numPoints") int numPoints) throws SQLException;
+               @Param("numPoints") long numPoints) throws SQLException;
 
     /**
      * Get the number of points of the user in the enterprise.

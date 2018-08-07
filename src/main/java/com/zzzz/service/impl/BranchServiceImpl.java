@@ -75,6 +75,7 @@ public class BranchServiceImpl implements BranchService {
         long lastId = generalDao.getLastInsertId();
 
         // Redis: cache the branch
+        branch.setBranchId(lastId);
         branchRepo.saveBranch(branch);
         return lastId;
 

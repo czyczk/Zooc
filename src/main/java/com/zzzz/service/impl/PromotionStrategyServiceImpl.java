@@ -95,12 +95,19 @@ public class PromotionStrategyServiceImpl implements PromotionStrategyService {
         if (!isExisting)
             throw new PromotionStrategyServiceException(ENTERPRISE_NOT_EXISTING);
 
-        // Fetch the existing strategy
-        PromotionStrategy strategy = promotionStrategyRepo.getByEnterpriseId(enterpriseIdLong);
-        if (strategy == null)
-            strategy = promotionStrategyDao.getByEnterpriseId(enterpriseIdLong);
+        return getByEnterpriseId(enterpriseIdLong);
+    }
 
-        PromotionStrategy result = promotionStrategyRepo.getByEnterpriseId(enterpriseIdLong);
-        return result == null ? promotionStrategyDao.getByEnterpriseId(enterpriseIdLong) : result;
+    /**
+     * For in-package use only.
+     * Get the promotion strategy of an enterprise.
+     * The parameter won't be checked. Make sure it's valid.
+     * @param enterpriseId Enterprise ID
+     * @return Promotion strategy of the enterprise
+     */
+    PromotionStrategy getByEnterpriseId(long enterpriseId) throws SQLException {
+        // Fetch the existing strategy
+        PromotionStrategy result = promotionStrategyRepo.getByEnterpriseId(enterpriseId);
+        return result == null ? promotionStrategyDao.getByEnterpriseId(enterpriseId) : result;
     }
 }

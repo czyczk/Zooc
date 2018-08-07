@@ -73,34 +73,19 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User getById(String userId) throws UserServiceException, SQLException {
         // Check if the ID is invalid
-        checker.rejectIfNullOrEmpty(userId, new UserServiceException(EMPTY_USER_ID));
-        long userIdLong = checker.parseUnsignedLong(userId, new UserServiceException(INVALID_USER_ID));
-
-        // Attempt to get it from Redis first
-        // On miss, fetch it from the database and cache it
-        User result = userRepo.getUser(userIdLong);
-        if (result == null) {
-            result = userDao.getById(userIdLong);
-            userRepo.saveUser(result);
-        }
-        return result;
+        long userIdLong = parseUserId(userId);
+        // Fetch it
+        return getUser(userIdLong);
     }
 
     @Override
     @Transactional(rollbackFor = { UserServiceException.class, SQLException.class })
     public void update(String targetUserId, String username, String password, String email, String mobile, String avatarUrl) throws UserServiceException, SQLException {
         // Check if the ID is invalid
-        checker.rejectIfNullOrEmpty(targetUserId, new UserServiceException(EMPTY_USER_ID));
-        long targetUserIdLong = checker.parseUnsignedLong(targetUserId, new UserServiceException(INVALID_USER_ID));
+        long targetUserIdLong = parseUserId(targetUserId);
 
         // Check if the target exists
-        User user = userRepo.getUser(targetUserIdLong);
-        if (user == null) {
-            user = userDao.getById(targetUserIdLong);
-            if (user == null)
-                throw new UserServiceException(USER_NOT_EXISTING);
-        }
-
+        User user = getUser(targetUserIdLong);
 
         // Check validity if the information is specified
         if (username != null) {
@@ -152,8 +137,7 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException(USER_NOT_EXISTING);
 
         // Check if the password is correct
-        if (!user.getPassword().equals(password))
-            throw new UserServiceException(INCORRECT_PASSWORD);
+        checkIfPasswordIsCorrect(user.getPassword(), password);
 
         user.setPassword(null);
         return user;
@@ -164,5 +148,45 @@ public class UserServiceImpl implements UserService {
     public User logInByMobile(String mobile, String validationCode) throws UserServiceException {
         // TODO not implemented yet
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User logInById(String userId, String password) throws UserServiceException, SQLException {
+        // Check if the parameters are valid
+        long userIdLong = parseUserId(userId);
+        checker.rejectIfNullOrEmpty(password, new UserServiceException(EMPTY_PASSWORD));
+
+        // Check if the user exists
+        User user = getUser(userIdLong);
+
+        // Check if the password is correct
+        checkIfPasswordIsCorrect(user.getPassword(), password);
+
+        user.setPassword(null);
+        return user;
+    }
+
+    private long parseUserId(String userId) throws UserServiceException {
+        checker.rejectIfNullOrEmpty(userId, new UserServiceException(EMPTY_USER_ID));
+        return checker.parseUnsignedLong(userId, new UserServiceException(INVALID_USER_ID));
+    }
+
+    private User getUser(long userId) throws SQLException, UserServiceException {
+        // Attempt to get it from Redis first
+        // On miss, fetch it from the database and cache it
+        User result = userRepo.getUser(userId);
+        if (result == null) {
+            result = userDao.getById(userId);
+            if (result == null)
+                throw new UserServiceException(USER_NOT_EXISTING);
+            userRepo.saveUser(result);
+        }
+        return result;
+    }
+
+    private void checkIfPasswordIsCorrect(String actual, String input) throws UserServiceException {
+        if (!input.equals(actual))
+            throw new UserServiceException(INCORRECT_PASSWORD);
     }
 }

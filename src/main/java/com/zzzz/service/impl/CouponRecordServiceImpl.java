@@ -1,6 +1,7 @@
 package com.zzzz.service.impl;
 
 import com.zzzz.dao.*;
+import com.zzzz.po.Coupon;
 import com.zzzz.po.CouponRecord;
 import com.zzzz.repo.CouponRepo;
 import com.zzzz.repo.EnterpriseRepo;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import static com.zzzz.service.CouponRecordServiceException.ExceptionTypeEnum.*;
@@ -53,6 +55,26 @@ public class CouponRecordServiceImpl implements CouponRecordService {
         if (record == null)
             throw new CouponRecordServiceException(COUPON_RECORD_NOT_EXISTING);
         return record;
+    }
+
+    /**
+     * For in-package use only.
+     * Insert a coupon record.
+     * The parameters won't be checked. Make sure they are valid.
+     * @param userId User ID
+     * @param couponId Coupon ID
+     * @param enterpriseId The ID of the enterprise to which the coupon belongs
+     * @param time Time
+     * @return New coupon record ID
+     */
+    long insert(long userId, long couponId, long enterpriseId, Date time) throws SQLException {
+        CouponRecord record = new CouponRecord();
+        record.setUserId(userId);
+        record.setCouponId(couponId);
+        record.setTime(time);
+        couponRecordDao.insert(record);
+        couponRepo.deleteUserAvailableCoupons(enterpriseId, userId);
+        return generalDao.getLastInsertId();
     }
 
     @Override

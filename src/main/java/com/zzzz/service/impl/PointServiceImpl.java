@@ -44,64 +44,95 @@ public class PointServiceImpl implements PointService {
     public void incrBy(String userId, String enterpriseId, String numPoints) throws PointServiceException, SQLException {
         long userIdLong = parseUserId(userId);
         long enterpriseIdLong = parseEnterpriseId(enterpriseId);
-        int numPointsInt = parseNumPoints(numPoints);
+        long numPointsLong = parseNumPoints(numPoints);
         checkIfTheUserExists(userIdLong);
         checkIfTheEnterpriseExists(enterpriseIdLong);
 
         // Increment it
-        pointDao.incrBy(userIdLong, enterpriseIdLong, numPointsInt);
+        pointDao.incrBy(userIdLong, enterpriseIdLong, numPointsLong);
         // Cache it if not done
         Long point = pointRepo.getByPk(userIdLong, enterpriseIdLong);
         if (point == null) {
             point = pointDao.getByPk(userIdLong, enterpriseIdLong).getPoint();
             pointRepo.save(userIdLong, enterpriseIdLong, point);
         } else {
-            pointRepo.incrByIfExisting(userIdLong, enterpriseIdLong, numPointsInt);
+            pointRepo.incrByIfExisting(userIdLong, enterpriseIdLong, numPointsLong);
         }
     }
 
     @Override
+    @Transactional(rollbackFor = { PointServiceException.class, SQLException.class })
     public void decrBy(String userId, String enterpriseId, String numPoints) throws PointServiceException, SQLException {
         long userIdLong = parseUserId(userId);
         long enterpriseIdLong = parseEnterpriseId(enterpriseId);
-        int numPointsInt = parseNumPoints(numPoints);
+        long numPointsLong = parseNumPoints(numPoints);
         checkIfTheUserExists(userIdLong);
         checkIfTheEnterpriseExists(enterpriseIdLong);
 
+        try {
+            decrBy(userIdLong, enterpriseIdLong, numPointsLong);
+        } catch (IllegalArgumentException e) {
+            throw new PointServiceException(NOT_ENOUGH_POINTS);
+        }
+    }
+
+    /**
+     * For in-package use only.
+     * Decrease the point of the user in the enterprise by the number of points specified.
+     * Parameters won't be checked. Make sure they're valid.
+     * @param userId User ID
+     * @param enterpriseId Enterprise ID
+     * @param numPoints Number of points to be decremented
+     */
+    void decrBy(long userId, long enterpriseId, long numPoints) throws SQLException {
         // Decrement it
-        Long point = pointRepo.getByPk(userIdLong, enterpriseIdLong);
+        Long point = pointRepo.getByPk(userId, enterpriseId);
         if (point == null) {
-            point = pointDao.getByPk(userIdLong, enterpriseIdLong).getPoint();
-            pointRepo.save(userIdLong, enterpriseIdLong, point);
+            point = pointDao.getByPk(userId, enterpriseId).getPoint();
+            pointRepo.save(userId, enterpriseId, point);
         }
 
-        if (point - numPointsInt < 0)
-            throw new PointServiceException(NOT_ENOUGH_POINTS);
-        pointDao.decrBy(userIdLong, enterpriseIdLong, numPointsInt);
-        pointRepo.decrByIfExisting(userIdLong, enterpriseIdLong, numPointsInt);
+        if (point - numPoints < 0)
+            throw new IllegalArgumentException();
+
+        pointDao.decrBy(userId, enterpriseId, numPoints);
+        pointRepo.decrByIfExisting(userId, enterpriseId, numPoints);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getByPk(String userId, String enterpriseId) throws PointServiceException, SQLException {
         long userIdLong = parseUserId(userId);
         long enterpriseIdLong = parseEnterpriseId(enterpriseId);
         checkIfTheUserExists(userIdLong);
         checkIfTheEnterpriseExists(enterpriseIdLong);
 
+        return getByPk(userIdLong, enterpriseIdLong);
+    }
+
+    /**
+     * For in-package use only.
+     * Get the number of points of the user in the enterprise
+     * The parameters won't be checked. Make sure they are valid.
+     * @param userId User ID
+     * @param enterpriseId Enterprise ID
+     * @return The number of points of the user in the enterprise
+     */
+    long getByPk(long userId, long enterpriseId) throws SQLException {
         // Try to get it from cache
-        Long point = pointRepo.getByPk(userIdLong, enterpriseIdLong);
+        Long point = pointRepo.getByPk(userId, enterpriseId);
         if (point == null) {
             // Try to get it from the database
-            Point pointEntry = pointDao.getByPk(userIdLong, enterpriseIdLong);
+            Point pointEntry = pointDao.getByPk(userId, enterpriseId);
             if (pointEntry == null) {
                 // Create a new point entry with the default values
-                pointDao.insertWithDefaultValues(userIdLong, enterpriseIdLong);
+                pointDao.insertWithDefaultValues(userId, enterpriseId);
                 point = 0L;
             } else {
                 point = pointEntry.getPoint();
             }
             // Cache it
-            pointRepo.save(userIdLong, enterpriseIdLong, point);
+            pointRepo.save(userId, enterpriseId, point);
         }
         return point;
     }
@@ -116,9 +147,9 @@ public class PointServiceImpl implements PointService {
         return checker.parseUnsignedLong(enterpriseId, new PointServiceException(INVALID_ENTERPRISE_ID));
     }
 
-    private int parseNumPoints(String numPoints) throws PointServiceException {
+    private long parseNumPoints(String numPoints) throws PointServiceException {
         checker.rejectIfNullOrEmpty(numPoints, new PointServiceException(EMPTY_POINT_DELTA));
-        return checker.parseUnsignedInt(numPoints, new PointServiceException(INVALID_POINT_DELTA));
+        return checker.parseUnsignedLong(numPoints, new PointServiceException(INVALID_POINT_DELTA));
     }
 
     private void checkIfTheUserExists(long userId) throws SQLException, PointServiceException {

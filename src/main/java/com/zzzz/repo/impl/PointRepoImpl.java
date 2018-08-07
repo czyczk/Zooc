@@ -40,7 +40,7 @@ public class PointRepoImpl implements PointRepo {
     }
 
     @Override
-    public void incrByIfExisting(long userId, long enterpriseId, int numPoints) {
+    public void incrByIfExisting(long userId, long enterpriseId, long numPoints) {
         String hashKey = getHashKey(userId, enterpriseId);
         if (hashOps.hasKey(KEY, hashKey)) {
             hashOps.increment(KEY, hashKey, numPoints);
@@ -48,7 +48,7 @@ public class PointRepoImpl implements PointRepo {
     }
 
     @Override
-    public void decrByIfExisting(long userId, long enterpriseId, int numPoints) {
+    public void decrByIfExisting(long userId, long enterpriseId, long numPoints) {
         String hashKey = getHashKey(userId, enterpriseId);
         if (hashOps.hasKey(KEY, hashKey)) {
             hashOps.increment(KEY, hashKey, -numPoints);
