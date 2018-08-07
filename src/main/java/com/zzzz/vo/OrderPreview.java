@@ -8,10 +8,10 @@ public class OrderPreview {
     private long courseId;
     private String courseName;
     private BigDecimal originalPrice;
-    private long couponId;
+    private Long couponId;
     private BigDecimal discountedByCoupon;
     private long totalPoints;
-    private long numPointsUsed;
+    private Long numPointsUsed;
     private BigDecimal discountedByPoints;
     private BigDecimal actualPayment;
 
@@ -47,12 +47,16 @@ public class OrderPreview {
         this.courseName = courseName;
     }
 
-    public long getCouponId() {
+    public Long getCouponId() {
         return couponId;
     }
 
-    public void setCouponId(long couponId) {
+    public void setCouponId(Long couponId) {
         this.couponId = couponId;
+    }
+
+    public void setNumPointsUsed(Long numPointsUsed) {
+        this.numPointsUsed = numPointsUsed;
     }
 
     public BigDecimal getOriginalPrice() {
@@ -79,12 +83,8 @@ public class OrderPreview {
         this.totalPoints = totalPoints;
     }
 
-    public long getNumPointsUsed() {
+    public Long getNumPointsUsed() {
         return numPointsUsed;
-    }
-
-    public void setNumPointsUsed(long numPointsUsed) {
-        this.numPointsUsed = numPointsUsed;
     }
 
     public BigDecimal getDiscountedByPoints() {
