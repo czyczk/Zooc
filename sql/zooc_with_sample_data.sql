@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-07 10:02:45
+Date: 2018-08-07 15:28:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -277,11 +277,16 @@ CREATE TABLE `moment` (
   PRIMARY KEY (`moment_id`),
   KEY `fk_moment_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_moment_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of moment
 -- ----------------------------
+INSERT INTO `moment` VALUES ('1', '1', 'This will install a package under a custom alias. Aliasing, allows multiple versions of the same dependency to be installed, each referenced via the alias-package name given. For example, yarn add my-foo@npm:foo will install the package foo (at the latest version) in your dependencies under the specified alias my-foo. Also, yarn add my-foo@npm:foo@1.0.1 allows a specific version of foo to be installed.', '2018-08-07 15:24:32');
+INSERT INTO `moment` VALUES ('2', '1', '幸福是一种心境，和你住什么样的房子、开什么样的车、有多少钱都没有关系。去主动选择自己喜欢的生活方式，而不是被动地被生活选择，因为聪明的人都知道，生活并不是活给别人看的，而是给自己过的。', '2018-08-07 15:26:49');
+INSERT INTO `moment` VALUES ('3', '1', '每个人都应该学会丰盈自己，拥有属于自己的独处方式。只有这样才不会总被无聊与空虚侵袭，才不会总将生活的希望寄托于他人的陪伴与填充，才不会总在聚散离合中心怀忐忑。', '2018-08-07 15:27:04');
+INSERT INTO `moment` VALUES ('4', '1', '痛苦来临时不要总问：“为什么偏偏是我？” 因为快乐降临时你可没有问过这个问题。', '2018-08-07 15:27:24');
+INSERT INTO `moment` VALUES ('5', '1', '舍不得孩子套不住狼，要得到总要付出的，想想你的付出值不值，如果你觉得值就去做，别理会别人说什么，他们不是你。', '2018-08-07 15:27:44');
 
 -- ----------------------------
 -- Table structure for moment_comment
@@ -320,6 +325,7 @@ CREATE TABLE `moment_img` (
 -- ----------------------------
 -- Records of moment_img
 -- ----------------------------
+INSERT INTO `moment_img` VALUES ('1', '1', 'http://www.59xihuan.cn/uploads/allimg/201309/97621379293638-lp.jpg');
 
 -- ----------------------------
 -- Table structure for moment_like
@@ -382,6 +388,7 @@ CREATE TABLE `point` (
 -- ----------------------------
 -- Records of point
 -- ----------------------------
+INSERT INTO `point` VALUES ('1', '1', '200');
 
 -- ----------------------------
 -- Table structure for promotion_strategy
@@ -400,6 +407,7 @@ CREATE TABLE `promotion_strategy` (
 -- ----------------------------
 -- Records of promotion_strategy
 -- ----------------------------
+INSERT INTO `promotion_strategy` VALUES ('1', '', '', '100', '5');
 
 -- ----------------------------
 -- Table structure for refund
