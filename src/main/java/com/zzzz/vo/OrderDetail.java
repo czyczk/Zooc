@@ -16,6 +16,7 @@ public class OrderDetail {
     private String courseName;
     private BigDecimal coursePrice;
     private Date time;
+    private BigDecimal paid;
     private OrderStatusEnum status;
     private Long refundId;
     private Date refundTime;
@@ -99,6 +100,14 @@ public class OrderDetail {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public BigDecimal getPaid() {
+        return paid;
+    }
+
+    public void setPaid(BigDecimal paid) {
+        this.paid = paid;
     }
 
     public OrderStatusEnum getStatus() {

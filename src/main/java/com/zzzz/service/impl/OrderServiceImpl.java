@@ -106,6 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
             // Discount if the user wishes to use the coupon
             price = discountUsingCoupon(price, coupon);
+            orderPreview.setCouponId(couponIdLong);
             orderPreview.setDiscountedByCoupon(coupon.getValue());
             orderPreview.setActualPayment(new BigDecimal(price.toString()));
         }
@@ -152,9 +153,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUserId(orderPreview.getUserId());
         order.setCourseId(orderPreview.getCourseId());
+        order.setPaid(orderPreview.getActualPayment());
         order.setTime(time);
-        // An order is created to be `PENDING` (Not paid yet) by default
-        order.setStatus(OrderStatusEnum.PENDING);
+        // An order is created to be `AVAILABLE` since a purchase has been done
+        order.setStatus(OrderStatusEnum.AVAILABLE);
 
         // Insert the order
         orderDao.insert(order);
@@ -169,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // If the user uses points, update the points
-        if (orderPreview.getNumPointsUsed() > 0) {
+        if (orderPreview.getNumPointsUsed() != null && orderPreview.getNumPointsUsed() > 0) {
             pointService.decrBy(orderPreview.getUserId(), orderPreview.getEnterpriseId(), orderPreview.getNumPointsUsed());
         }
 

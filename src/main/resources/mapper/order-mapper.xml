@@ -4,16 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzzz.dao.OrderDao">
   <insert id="insert" parameterType="Order">
-    insert into `order`(user_id, course_id, time, status)
-    values(#{userId}, #{courseId}, #{time}, #{status})
+    insert into `order`(user_id, course_id, time, paid, status)
+    values(#{userId}, #{courseId}, #{time}, #{paid}, #{status})
   </insert>
   <select id="getById" parameterType="long" resultType="Order">
-    select order_id, user_id, course_id, time, status
+    select order_id, user_id, course_id, time, paid, status
     from `order`
     where order_id=#{orderId}
   </select>
   <select id="getVoById" parameterType="long" resultType="com.zzzz.vo.OrderDetail">
-    select o.order_id, o.user_id, o.course_id, c.name 'course_name', o.time, o.status
+    select o.order_id, o.user_id, o.course_id, c.name 'course_name', o.time, o.paid, o.status
     from `order` o join course c on o.course_id = c.course_id
     where order_id=#{orderId}
   </select>
@@ -55,7 +55,7 @@
   <select id="list" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
     select order_id, enterprise_id, user_id, username, user_email, user_mobile,
     course_id, course_name, course_price,
-    time, status,
+    time, paid, status,
     refund_id, refund_time, refund_reason
     from view_order_detail
     <where>
@@ -86,7 +86,7 @@
   <select id="listRefund" parameterType="map" resultType="com.zzzz.vo.OrderDetail">
     select order_id, enterprise_id, user_id, username, user_email, user_mobile,
       course_id, course_name, course_price,
-      time, status,
+      time, paid, status,
       refund_id, refund_time, refund_reason
     from view_refund_detail
     <where>
