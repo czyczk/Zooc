@@ -64,6 +64,8 @@ public class CouponRepoImpl implements CouponRepo {
 
     @Override
     public void saveUserAvailableCoupons(long enterpriseId, long userId, List<Coupon> userAvailableCoupons) {
+        if (userAvailableCoupons == null || userAvailableCoupons.isEmpty())
+            return;
         listOps.rightPushAll(getUserAvailableCouponsKey(enterpriseId, userId), userAvailableCoupons);
     }
 
