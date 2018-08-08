@@ -34,16 +34,16 @@ public class EnterpriseRepoImpl implements EnterpriseRepo {
     public void updateEnterprise(Enterprise enterprise) {
         hashOps.put(KEY, enterprise.getEnterpriseId(), enterprise);
         // Delete all courses
-        hashOps.delete(CourseDetailRepoImpl.KEY);
-        hashOps.delete(CourseDetailRepoImpl.KEY_LATEST);
+        redisTemplate.delete(CourseDetailRepoImpl.KEY);
+        redisTemplate.delete(CourseDetailRepoImpl.KEY_LATEST);
     }
 
     @Override
     public void deleteEnterprise(long enterpriseId) {
         hashOps.delete(KEY, enterpriseId);
         // Delete all courses
-        hashOps.delete(CourseDetailRepoImpl.KEY);
-        hashOps.delete(CourseDetailRepoImpl.KEY_LATEST);
+        redisTemplate.delete(CourseDetailRepoImpl.KEY);
+        redisTemplate.delete(CourseDetailRepoImpl.KEY_LATEST);
     }
 
     @Override

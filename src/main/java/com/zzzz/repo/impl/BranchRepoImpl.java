@@ -40,16 +40,16 @@ public class BranchRepoImpl implements BranchRepo {
     public void updateBranch(Branch branch) {
         hashOps.put(KEY, branch.getBranchId(), branch);
         // Delete related trials
-        hashOps.delete(TrialDetailRepoImpl.KEY);
-        hashOps.delete(TrialDetailRepoImpl.KEY_LATEST);
+        redisTemplate.delete(TrialDetailRepoImpl.KEY);
+        redisTemplate.delete(TrialDetailRepoImpl.KEY_LATEST);
     }
 
     @Override
     public void deleteBranch(long branchId) {
         hashOps.delete(KEY, branchId);
         // Delete related trials
-        hashOps.delete(TrialDetailRepoImpl.KEY);
-        hashOps.delete(TrialDetailRepoImpl.KEY_LATEST);
+        redisTemplate.delete(TrialDetailRepoImpl.KEY);
+        redisTemplate.delete(TrialDetailRepoImpl.KEY_LATEST);
     }
 
     @Override
