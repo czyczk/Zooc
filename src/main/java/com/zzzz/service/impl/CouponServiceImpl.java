@@ -241,7 +241,7 @@ public class CouponServiceImpl implements CouponService {
         long enterpriseIdLong = checker.parseUnsignedLong(enterpriseId, new CouponServiceException(INVALID_ENTERPRISE_ID));
         long userIdLong = checker.parseUnsignedLong(userId, new CouponServiceException(INVALID_USER_ID));
         BigDecimal priceBd = null;
-        if (price == null || price.isEmpty())
+        if (price != null && !price.isEmpty())
             priceBd = checker.parseUnsignedBigDecimal(price, new CouponServiceException(INVALID_COURSE_PRICE));
 
         // Check if the enterprise and the user exist
