@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-09 20:55:29
+Date: 2018-08-10 02:47:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -165,7 +165,7 @@ INSERT INTO `course` VALUES ('9', '1', '深度学习之神经网络（CNN/RNN/GA
 INSERT INTO `course` VALUES ('10', '1', '纯正商业级应用-微信小程序开发实战', '小程序的成功，让广大程序员早已不再纠结该不该学习小程序开发 ，但会纠结如何学习小程序开发，直到他们遇到了 “七月”老师，你可以自行看看七月老师其它课程的学员对他课程的真实评价，选择他的课，不需要纠结，更不需要犹豫', 'http://img.mukewang.com/szimg/5b4bfb86000183eb09000500.jpg', '13', '2018-08-08 14:46:07', '366.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('11', '1', 'Python Flask 构建微信小程序订餐系统', '本课程是python flask+微信小程序完美结合，从项目搭建到腾讯云部署上线，打造一个全栈订餐系统。从基础语法入手，易于掌握，构建MVC架构，增进对小程序和后端API的理解认识。深入浅出带你进阶全栈工程师课程，帮助你快速提升项目经验，掌握项目开发技巧，提高项目中解决问题的能力。', 'https://img3.mukewang.com/szimg/5b67a8a10001d05905400300.jpg', '2', '2018-08-08 14:54:26', '348.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('12', '1', 'Java 从零到企业级电商项目实战-服务端', '本课程将手把手的，由浅入深的，带你从零到项目发布上线与运维，让你体验真实的企业级项目开发过程，掌握大牛的编码思维、经验与技巧，并拥有一个属于自己的高质量的线上作品。（特别说明：本课程并非从Java语法开始的，毕竟是项目实战课程，不会讲语法层面的内容，实战前需具备Java，SSM，Linux等基础）【二期课程已上线】', 'https://img4.mukewang.com/szimg/58f57d200001461105400300.jpg', '1', '2018-08-08 15:05:00', '348.00', 'AVAILABLE');
-INSERT INTO `course` VALUES ('13', '1', 'RabbitMQ 消息中间件技术精讲', '<div class=\"pic-wrap\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015cb0001770607501590.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015d500019d6607501074.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015e00001d8bc07501140.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015ea0001b79b07501006.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015f500013ab507501392.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015ff0001b38707501224.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b60160800012f8707500560.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b601612000189ff07501006.jpg\">\r\n<div class=\"pic-wrap\"><img src=\"http://img.mukewang.com/szimg/5b6015cb0001770607501590.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015d500019d6607501074.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015e00001d8bc07501140.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015ea0001b79b07501006.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015f500013ab507501392.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015ff0001b38707501224.jpg\"><img src=\"http://img.mukewang.com/szimg/5b60160800012f8707500560.jpg\"><img src=\"http://img.mukewang.com/szimg/5b601612000189ff07501006.jpg\"></div>', 'https://img3.mukewang.com/szimg/5b6015ac00011ca105400300.jpg', '6', '2018-08-08 19:52:54', '348.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('13', '1', 'RabbitMQ 消息中间件技术精讲', 'RabbitMQ是目前主流的消息中间件，非常适用于高并发环境。本课程首先带你入门RabbitMQ核心概念；然后深入RabbitMQ高级特性；接着整合RabbitMQ&Spring家族；构建RabbitMQ集群架构；领略SET化架构衍化与设计，最后拓展基础组件封装思路；最终希望通过本课程的学习，让你无论在工作中的开发使用还是架构设计，都能够全面驾驭RabbitMQ。', 'https://img3.mukewang.com/szimg/5b6015ac00011ca105400300.jpg', '6', '2018-08-08 19:52:54', '348.00', 'AVAILABLE');
 
 -- ----------------------------
 -- Table structure for course_category
