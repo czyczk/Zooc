@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-08 00:33:20
+Date: 2018-08-10 02:02:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,9 +21,9 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `administrator`;
 CREATE TABLE `administrator` (
   `administrator_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
-  `type` enum('SYSTEM','ENTERPRISE') COLLATE utf8mb4_general_ci NOT NULL,
+  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('SYSTEM','ENTERPRISE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `enterprise_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`administrator_id`),
   UNIQUE KEY `unique_administrator_pk` (`administrator_id`),
@@ -38,11 +38,11 @@ DROP TABLE IF EXISTS `branch`;
 CREATE TABLE `branch` (
   `branch_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `address` varchar(127) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `address` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `latitude` decimal(11,8) NOT NULL,
   `longitude` decimal(11,8) NOT NULL,
-  `telephone` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `telephone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `is_disabled` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`branch_id`),
   UNIQUE KEY `unique_branch_pk` (`branch_id`),
@@ -74,11 +74,11 @@ CREATE TABLE `coupon` (
   `value` decimal(10,2) unsigned NOT NULL,
   `threshold` decimal(10,2) unsigned NOT NULL DEFAULT '0.00',
   `time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `status` enum('ENABLED','DISABLED') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ENABLED',
+  `status` enum('ENABLED','DISABLED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ENABLED',
   PRIMARY KEY (`coupon_id`),
   KEY `idx_coupon_enterprise_id_status` (`enterprise_id`,`status`),
   CONSTRAINT `fk_coupon_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for coupon_record
@@ -103,9 +103,9 @@ DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (
   `course_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(63) COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` text COLLATE utf8mb4_general_ci NOT NULL,
-  `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `category_id` bigint(20) unsigned NOT NULL,
   `release_time` datetime NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_category
@@ -125,10 +125,10 @@ CREATE TABLE `course` (
 DROP TABLE IF EXISTS `course_category`;
 CREATE TABLE `course_category` (
   `category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for course_offering
@@ -146,7 +146,7 @@ CREATE TABLE `course_offering` (
   CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -158,7 +158,7 @@ CREATE TABLE `enterprise` (
   `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `introduction` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `video_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `detail` text COLLATE utf8mb4_general_ci NOT NULL,
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`enterprise_id`),
   UNIQUE KEY `unique_enterprise_pk` (`enterprise_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -170,14 +170,14 @@ DROP TABLE IF EXISTS `lecturer`;
 CREATE TABLE `lecturer` (
   `lecturer_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `photo_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
-  `introduction` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `photo_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `introduction` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `is_disabled` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment
@@ -186,12 +186,12 @@ DROP TABLE IF EXISTS `moment`;
 CREATE TABLE `moment` (
   `moment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `enterprise_id` bigint(20) unsigned NOT NULL,
-  `content` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `content` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `time` datetime NOT NULL,
   PRIMARY KEY (`moment_id`),
   KEY `fk_moment_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_moment_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment_comment
@@ -201,14 +201,14 @@ CREATE TABLE `moment_comment` (
   `moment_comment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `moment_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
-  `content` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `content` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `time` datetime NOT NULL,
   PRIMARY KEY (`moment_comment_id`),
   KEY `fk_moment_comment_moment_id` (`moment_id`),
   KEY `fk_moment_comment_user_id` (`user_id`),
   CONSTRAINT `fk_moment_comment_moment_id` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`moment_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_moment_comment_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for moment_img
@@ -217,7 +217,7 @@ DROP TABLE IF EXISTS `moment_img`;
 CREATE TABLE `moment_img` (
   `moment_img_index` tinyint(20) unsigned NOT NULL,
   `moment_id` bigint(20) unsigned NOT NULL,
-  `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`moment_img_index`,`moment_id`),
   KEY `fk_moment_img_moment_id` (`moment_id`),
   CONSTRAINT `fk_moment_img_moment_id` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`moment_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -293,7 +293,7 @@ CREATE TABLE `refund` (
   `refund_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` bigint(20) unsigned NOT NULL,
   `time` datetime NOT NULL,
-  `reason` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `reason` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`refund_id`),
   UNIQUE KEY `unique_refund_order_id` (`order_id`),
   CONSTRAINT `fk_refund_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -305,9 +305,9 @@ CREATE TABLE `refund` (
 DROP TABLE IF EXISTS `trial`;
 CREATE TABLE `trial` (
   `trial_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(63) COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` text COLLATE utf8mb4_general_ci NOT NULL,
-  `img_url` varchar(511) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `img_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `category_id` bigint(20) unsigned NOT NULL,
   `branch_id` bigint(20) unsigned NOT NULL,
   `lecturer_id` bigint(20) unsigned NOT NULL,
@@ -346,11 +346,11 @@ CREATE TABLE `trial_reservation` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `avatar_url` varchar(511) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `avatar_url` varchar(511) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `unique_email` (`email`),
   UNIQUE KEY `unique_mobile` (`mobile`)
