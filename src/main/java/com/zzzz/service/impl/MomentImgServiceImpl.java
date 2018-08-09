@@ -36,7 +36,7 @@ public class MomentImgServiceImpl implements MomentImgService {
         // Check if the parameters are valid
         checker.rejectIfNullOrEmpty(momentId, new MomentImgServiceException(EMPTY_MOMENT_ID));
         long momentIdLong = checker.parseUnsignedLong(momentId, new MomentImgServiceException(INVALID_MOMENT_ID));
-        if (imgUrls == null || imgUrls.isEmpty())
+        if (imgUrls == null)
             throw new MomentImgServiceException(EMPTY_IMG_URLS);
         if (imgUrls.size() > MAX_NUM_IMG)
             throw new MomentImgServiceException(INVALID_IMG_URLS);

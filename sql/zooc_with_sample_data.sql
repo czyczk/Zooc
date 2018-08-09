@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80011
 File Encoding         : 65001
 
-Date: 2018-08-07 15:28:36
+Date: 2018-08-09 09:48:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -94,11 +94,18 @@ CREATE TABLE `coupon` (
   PRIMARY KEY (`coupon_id`),
   KEY `idx_coupon_enterprise_id_status` (`enterprise_id`,`status`),
   CONSTRAINT `fk_coupon_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of coupon
 -- ----------------------------
+INSERT INTO `coupon` VALUES ('1', '1', '10.00', '100.00', '2018-08-07 13:16:35', 'ENABLED');
+INSERT INTO `coupon` VALUES ('2', '1', '10.00', '200.00', '2018-08-07 13:16:47', 'ENABLED');
+INSERT INTO `coupon` VALUES ('3', '1', '5.00', '0.00', '2018-08-07 13:16:59', 'ENABLED');
+INSERT INTO `coupon` VALUES ('4', '1', '50.00', '500.00', '2018-08-07 13:17:47', 'ENABLED');
+INSERT INTO `coupon` VALUES ('5', '1', '100.00', '1000.00', '2018-08-07 13:18:05', 'ENABLED');
+INSERT INTO `coupon` VALUES ('6', '1', '10.00', '0.00', '2018-08-07 13:18:16', 'ENABLED');
+INSERT INTO `coupon` VALUES ('7', '1', '1.00', '1.00', '2018-08-07 15:07:53', 'ENABLED');
 
 -- ----------------------------
 -- Table structure for coupon_record
@@ -141,7 +148,7 @@ CREATE TABLE `course` (
   KEY `fk_course_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_course_category_id` FOREIGN KEY (`category_id`) REFERENCES `course_category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course
@@ -155,6 +162,10 @@ INSERT INTO `course` VALUES ('6', '1', 'React 16.4 开发简书项目 从零基�
 INSERT INTO `course` VALUES ('7', '1', 'GO 实现千万级 WebSocket 消息推送服务', '随着互联网的发展，网络直播已然成为各大新媒体平台的宠儿。如果，你对直播中的 “弹幕聊天” 服务的实现原理感兴趣，就请进入课程，随着老师的脚步进入他的“主控室”。 在本课程中，老师会依次带领大家分析弹幕系统的技术难点、如何快速掌握WebSocket的协议与交互流程、如何用GO封装一个具有工程化实践意义的WebSocket服务端完成信息交互，并在课程最后，揭秘高并发分布式系统架构技术中难点的解决方案！', 'https://img1.sycdn.imooc.com/5b55b3f400017b9906000338-240-135.jpg', '10', '2018-08-06 21:00:56', '0.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('8', '1', 'Java仿微信全栈\r\nJava 仿微信全栈高性能后台+移动客户端', '课程中讲师将带你从无到有的开发一个仿微信的聊天App，其中涉及 Netty的websocket开发、SpringBoot开发、MUI与H5Plus（H5+）相关知识点开发和Nginx+FastDFS分布式文件系统搭建与使用等，整个课程一气呵成。学习之后自己也能开发出一个高颜值高水平的App，并且发布上线。', 'https://img4.sycdn.imooc.com/szimg/5b5ad11b0001261305400300.jpg', '1', '2018-08-06 21:05:41', '348.00', 'AVAILABLE');
 INSERT INTO `course` VALUES ('9', '1', '深度学习之神经网络（CNN/RNN/GAN）算法原理+实战', '本课程使用原理讲解加实战的方式对深度学习中的卷积神经网络（CNN）、循环神经网络（RNN）、对抗神经网络（GAN）进行深入浅出的讲解。通过图像分类、文本分类、图像风格转换、图像文本生成、图像翻译等项目，让学员获得灵活使用CNN、RNN、GAN的能力、深度学习算法调参的能力和使用Tensorflow进行编程的能力，提升深度学习算法能力与项目开发经验。', 'https://img4.sycdn.imooc.com/szimg/5b56952600014eb005400300.jpg', '12', '2018-08-06 21:07:55', '366.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('10', '1', '纯正商业级应用-微信小程序开发实战', '小程序的成功，让广大程序员早已不再纠结该不该学习小程序开发 ，但会纠结如何学习小程序开发，直到他们遇到了 “七月”老师，你可以自行看看七月老师其它课程的学员对他课程的真实评价，选择他的课，不需要纠结，更不需要犹豫', 'http://img.mukewang.com/szimg/5b4bfb86000183eb09000500.jpg', '13', '2018-08-08 14:46:07', '366.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('11', '1', 'Python Flask 构建微信小程序订餐系统', '本课程是python flask+微信小程序完美结合，从项目搭建到腾讯云部署上线，打造一个全栈订餐系统。从基础语法入手，易于掌握，构建MVC架构，增进对小程序和后端API的理解认识。深入浅出带你进阶全栈工程师课程，帮助你快速提升项目经验，掌握项目开发技巧，提高项目中解决问题的能力。', 'https://img3.mukewang.com/szimg/5b67a8a10001d05905400300.jpg', '2', '2018-08-08 14:54:26', '348.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('12', '1', 'Java 从零到企业级电商项目实战-服务端', '本课程将手把手的，由浅入深的，带你从零到项目发布上线与运维，让你体验真实的企业级项目开发过程，掌握大牛的编码思维、经验与技巧，并拥有一个属于自己的高质量的线上作品。（特别说明：本课程并非从Java语法开始的，毕竟是项目实战课程，不会讲语法层面的内容，实战前需具备Java，SSM，Linux等基础）【二期课程已上线】', 'https://img4.mukewang.com/szimg/58f57d200001461105400300.jpg', '1', '2018-08-08 15:05:00', '348.00', 'AVAILABLE');
+INSERT INTO `course` VALUES ('13', '1', 'RabbitMQ 消息中间件技术精讲', '<div class=\"pic-wrap\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015cb0001770607501590.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015d500019d6607501074.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015e00001d8bc07501140.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015ea0001b79b07501006.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015f500013ab507501392.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b6015ff0001b38707501224.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b60160800012f8707500560.jpg\">\r\n    <img src=\"http://img.mukewang.com/szimg/5b601612000189ff07501006.jpg\">\r\n<div class=\"pic-wrap\"><img src=\"http://img.mukewang.com/szimg/5b6015cb0001770607501590.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015d500019d6607501074.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015e00001d8bc07501140.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015ea0001b79b07501006.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015f500013ab507501392.jpg\"><img src=\"http://img.mukewang.com/szimg/5b6015ff0001b38707501224.jpg\"><img src=\"http://img.mukewang.com/szimg/5b60160800012f8707500560.jpg\"><img src=\"http://img.mukewang.com/szimg/5b601612000189ff07501006.jpg\"></div>', 'https://img3.mukewang.com/szimg/5b6015ac00011ca105400300.jpg', '6', '2018-08-08 19:52:54', '348.00', 'AVAILABLE');
 
 -- ----------------------------
 -- Table structure for course_category
@@ -165,7 +176,7 @@ CREATE TABLE `course_category` (
   `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `unique_course_category_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course_category
@@ -180,6 +191,7 @@ INSERT INTO `course_category` VALUES ('11', 'React');
 INSERT INTO `course_category` VALUES ('8', 'Swift');
 INSERT INTO `course_category` VALUES ('7', 'Vue.js');
 INSERT INTO `course_category` VALUES ('6', '分布式系统');
+INSERT INTO `course_category` VALUES ('13', '微信小程序');
 INSERT INTO `course_category` VALUES ('12', '深度学习');
 INSERT INTO `course_category` VALUES ('9', '软件测试');
 
@@ -199,7 +211,7 @@ CREATE TABLE `course_offering` (
   CONSTRAINT `fk_course_offering` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_course_offering_lecturer_id` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`lecturer_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of course_offering
@@ -215,6 +227,10 @@ INSERT INTO `course_offering` VALUES ('8', '6', '1', '6');
 INSERT INTO `course_offering` VALUES ('9', '7', '1', '7');
 INSERT INTO `course_offering` VALUES ('10', '8', '1', '3');
 INSERT INTO `course_offering` VALUES ('11', '9', '3', '8');
+INSERT INTO `course_offering` VALUES ('12', '10', '2', '9');
+INSERT INTO `course_offering` VALUES ('13', '11', '1', '10');
+INSERT INTO `course_offering` VALUES ('14', '12', '1', '11');
+INSERT INTO `course_offering` VALUES ('15', '13', '1', '12');
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -251,7 +267,7 @@ CREATE TABLE `lecturer` (
   PRIMARY KEY (`lecturer_id`),
   KEY `fk_lecturer_enterprise_id` (`enterprise_id`),
   CONSTRAINT `fk_lecturer_enterprise_id` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`enterprise_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of lecturer
@@ -264,6 +280,10 @@ INSERT INTO `lecturer` VALUES ('5', '1', '陈子康', 'https://img.moegirl.org/c
 INSERT INTO `lecturer` VALUES ('6', '1', 'DellLee', 'https://img.mukewang.com/user/5abe468b0001664107390741.jpg', 'BAT资深前端工程师，负责数据平台技术研发。曾任去哪儿网高级前端工程师，主导去哪儿网内部前端监控系统设计，负责去哪儿网门票用户端的前端设计开发。曾任国内知名培训机构高级前端讲师，负责', '\0');
 INSERT INTO `lecturer` VALUES ('7', '1', '小鱼儿老师', 'https://img4.mukewang.com/5b56967200018f7a08781240-140-140.jpg', 'BAT资深研发工程师，现任应用架构师与公司内训讲师，负责应用架构设计与研发，具有丰富的高性能程序设计、分布式海量服务研发经验。擅长C/C /GO等服务端研发技术，对大数据、推荐系统等方向具备一定的实', '\0');
 INSERT INTO `lecturer` VALUES ('8', '1', '正十七_卢云', 'https://img.mukewang.com/user/5b508dd00001630307410721.jpg', '目前供职于Google，技术方向是深度学习，具有五年工作经验，曾先后在百度、腾讯工作。对机器学习算法抱有强烈的兴趣，先后从事过图像检索与分类、文本分类、人脸识别、广告点击率预估、图像翻译等方面的项目，有丰富的炼丹经验。讲课风格干货满满，希望大家能通过我的课程得到成长进步。', '\0');
+INSERT INTO `lecturer` VALUES ('9', '1', '7七月', 'http://img.mukewang.com/user/54584e2c00010a2c02200220.jpg', '慕课网热门讲师，在慕课网推出多个热门课程，学员评价极高\r\n\r\n八年研发及团队管理经验，从普通程序员到技术总监的成长经历，让他对程序员面临的各种问题深有体会；精通Python、Node.js、JavaScript、PHP等语言，对各类技术的发展方向非常了解\r\n慕课网热门讲师，在慕课网推出多个热门课程，学员评价极高\r\n\r\n八年研发及团队管理经验，从普通程序员到技术总监的成长经历，让他对程序员面临的各种问题深有体会；精通Python、Node.js、JavaScript、PHP等语言，对各类技术的发展方向非常了解\r\n', '\0');
+INSERT INTO `lecturer` VALUES ('10', '1', '编_程_浪_子', 'http://img.mukewang.com/583e9afa000166c410240770.jpg', '从事互联网Web开发6年，曾就职于多家知名互联网公司，对PHP、Python、Java均有涉猎，曾有过完整的千万级PV的设计经验。实际项目经验丰富，热爱分享、喜爱钻研新技术、热爱IT行业且有代码洁癖\r\n\r\n课程收获大批同学的喜爱，好评不断。通俗易懂的讲课风格，诙谐幽默的语言，让大家笑称浪子老师。', '\0');
+INSERT INTO `lecturer` VALUES ('11', '1', 'Geely', 'https://img.mukewang.com/user/566f7dd600019fdf06000608.jpg', '多年一线开发、架构及技术团队管理经验，是门户、搜索、报价、店铺、专题等核心系统的负责人；担任所在企业的技术讲师、应届生导师、校招、社招面试官；擅长通过缓存、消息队列、集群和分布式等搭建高并发、高性能、高可用系统，有丰富的大型网站架构设计经验', '\0');
+INSERT INTO `lecturer` VALUES ('12', '1', '阿神_', 'https://img.mukewang.com/user/5b614d33000131ac03000331.jpg', '10余年JAVA架构设计与研发经验。目前就职于国内知名O2O互联网公司，从事基础架构设计研发工作。擅长系统架构，应用架构和基础组件架构设计，对高并发、高可用、分布式系统设计有着丰富的经验和实战，精通互联网Java主流技术。', '\0');
 
 -- ----------------------------
 -- Table structure for moment
@@ -325,7 +345,7 @@ CREATE TABLE `moment_img` (
 -- ----------------------------
 -- Records of moment_img
 -- ----------------------------
-INSERT INTO `moment_img` VALUES ('1', '1', 'http://www.59xihuan.cn/uploads/allimg/201309/97621379293638-lp.jpg');
+INSERT INTO `moment_img` VALUES ('1', '1', 'http://140.143.59.220:8000/group1/M00/00/00/rBUADFtfxNGAOKEIAACJZUBt44E526.jpg');
 
 -- ----------------------------
 -- Table structure for moment_like
@@ -504,7 +524,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'zenas', 'zzzz', 'czyczk@qq.com', '12345678901', null);
+INSERT INTO `user` VALUES ('1', 'Zenas', 'zzzz', 'czyczk@qq.com', '12345678901', 'group1/M00/00/00/rBUADFtrlM2AAaB0AAOvH0hvR_E370.jpg\r\ngroup1/M00/00/00/rBUADFtrlM2AAaB0AAOvH0hvR_E370.jpg\r\ngroup1/M00/00/00/rBUADFtrlM2AAaB0AAOvH0hvR_E370.jpg\r\nhttp://140.143.59.220:8000/group1/M00/00/00/rBUADFtrlM2AAaB0AAOvH0hvR_E370.jpg');
 
 -- ----------------------------
 -- View structure for view_available_branch
@@ -546,13 +566,13 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- View structure for view_order_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_order_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_order_detail` AS select `order`.`order_id` AS `order_id`,`course`.`enterprise_id` AS `enterprise_id`,`order`.`user_id` AS `user_id`,`user`.`username` AS `username`,`user`.`email` AS `user_email`,`user`.`mobile` AS `user_mobile`,`order`.`course_id` AS `course_id`,`course`.`name` AS `course_name`,`course`.`price` AS `course_price`,`order`.`time` AS `time`,`order`.`status` AS `status`,`refund`.`refund_id` AS `refund_id`,`refund`.`time` AS `refund_time`,`refund`.`reason` AS `refund_reason` from (((`order` join `user` on((`order`.`user_id` = `user`.`user_id`))) join `course` on((`order`.`course_id` = `course`.`course_id`))) left join `refund` on((`refund`.`order_id` = `order`.`order_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_order_detail` AS select `order`.`order_id` AS `order_id`,`course`.`enterprise_id` AS `enterprise_id`,`order`.`user_id` AS `user_id`,`user`.`username` AS `username`,`user`.`email` AS `user_email`,`user`.`mobile` AS `user_mobile`,`order`.`course_id` AS `course_id`,`course`.`name` AS `course_name`,`course`.`price` AS `course_price`,`order`.`time` AS `time`,`order`.`paid` AS `paid`,`order`.`status` AS `status`,`refund`.`refund_id` AS `refund_id`,`refund`.`time` AS `refund_time`,`refund`.`reason` AS `refund_reason` from (((`order` join `user` on((`order`.`user_id` = `user`.`user_id`))) join `course` on((`order`.`course_id` = `course`.`course_id`))) left join `refund` on((`refund`.`order_id` = `order`.`order_id`))) ;
 
 -- ----------------------------
 -- View structure for view_refund_detail
 -- ----------------------------
 DROP VIEW IF EXISTS `view_refund_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_refund_detail` AS select `view_order_detail`.`order_id` AS `order_id`,`view_order_detail`.`enterprise_id` AS `enterprise_id`,`view_order_detail`.`user_id` AS `user_id`,`view_order_detail`.`username` AS `username`,`view_order_detail`.`user_email` AS `user_email`,`view_order_detail`.`user_mobile` AS `user_mobile`,`view_order_detail`.`course_id` AS `course_id`,`view_order_detail`.`course_name` AS `course_name`,`view_order_detail`.`course_price` AS `course_price`,`view_order_detail`.`time` AS `time`,`view_order_detail`.`status` AS `status`,`view_order_detail`.`refund_id` AS `refund_id`,`view_order_detail`.`refund_time` AS `refund_time`,`view_order_detail`.`refund_reason` AS `refund_reason` from `view_order_detail` where ((`view_order_detail`.`status` = 'REFUND_REQUESTED') or (`view_order_detail`.`status` = 'REFUNDED')) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_refund_detail` AS select `view_order_detail`.`order_id` AS `order_id`,`view_order_detail`.`enterprise_id` AS `enterprise_id`,`view_order_detail`.`user_id` AS `user_id`,`view_order_detail`.`username` AS `username`,`view_order_detail`.`user_email` AS `user_email`,`view_order_detail`.`user_mobile` AS `user_mobile`,`view_order_detail`.`course_id` AS `course_id`,`view_order_detail`.`course_name` AS `course_name`,`view_order_detail`.`course_price` AS `course_price`,`view_order_detail`.`time` AS `time`,`view_order_detail`.`paid` AS `paid`,`view_order_detail`.`status` AS `status`,`view_order_detail`.`refund_id` AS `refund_id`,`view_order_detail`.`refund_time` AS `refund_time`,`view_order_detail`.`refund_reason` AS `refund_reason` from `view_order_detail` where ((`view_order_detail`.`status` = 'REFUND_REQUESTED') or (`view_order_detail`.`status` = 'REFUNDED')) ;
 
 -- ----------------------------
 -- View structure for view_trial_detail
